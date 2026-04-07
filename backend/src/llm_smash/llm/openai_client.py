@@ -4,8 +4,11 @@ from __future__ import annotations
 
 from importlib import import_module
 import json
+import re
 import time
 from typing import Any
+
+_THINK_TAG_PATTERN = re.compile(r"<think.*?>.*?</think\s*>", re.DOTALL)
 
 from llm_smash.engine.state import BattleState, TurnLog
 from llm_smash.fighters.roster import get_system_prompt
@@ -75,7 +78,11 @@ class OpenAIClient(LLMAdapter):
                 max_tokens=80,
             )
             content = completion.choices[0].message.content
-            return content.strip().strip('"') if content else ""
+            if not content:
+                return ""
+            # Strip chain-of-thought blocks some models emit
+            content = _THINK_TAG_PATTERN.sub("", content).strip()
+            return content.strip('"')
         except Exception:
             return ""
 

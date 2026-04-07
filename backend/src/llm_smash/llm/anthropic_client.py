@@ -4,7 +4,10 @@ from __future__ import annotations
 
 from importlib import import_module
 import json
+import re
 import time
+
+_THINK_TAG_PATTERN = re.compile(r"<think.*?>.*?</think\s*>", re.DOTALL)
 
 from llm_smash.engine.state import BattleState, TurnLog
 from llm_smash.fighters.roster import get_system_prompt
@@ -70,7 +73,11 @@ class AnthropicClient(LLMAdapter):
                 messages=[{"role": "user", "content": prompt}],
             )
             text = message.content[0].text if message.content else ""
-            return text.strip().strip('"')
+            if not text:
+                return ""
+            # Strip chain-of-thought blocks some models emit
+            text = _THINK_TAG_PATTERN.sub("", text).strip()
+            return text.strip('"')
         except Exception:
             return ""
 

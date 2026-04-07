@@ -178,15 +178,15 @@ These are directional only. Do not plan or execute until v0.1.0 is complete.
 
 Per `PRD §10`, the milestone is complete when all of the following are true:
 
-- [ ] Fighter archetypes are generic and decoupled from LLM identity
-- [ ] Terrain exists and creates meaningful positioning decisions
-- [ ] Models receive turn history and produce spectator-readable tactical summaries
-- [ ] A live match clearly uses real model-generated actions
-- [ ] Terminal output is polished enough to record/stream via OBS
-- [ ] Every ability described in prompts has a working engine implementation
-- [ ] Match outcomes correlate more with tactical quality than random variance
-- [ ] Mirror matches visibly showcase model differences
-- [ ] All tests pass, including integration tests
+- [x] Fighter archetypes are generic and decoupled from LLM identity
+- [x] Terrain exists and creates meaningful positioning decisions
+- [x] Models receive turn history and produce spectator-readable tactical summaries
+- [x] A live match clearly uses real model-generated actions
+- [x] Terminal output is polished enough to record/stream via OBS
+- [x] Every ability described in prompts has a working engine implementation
+- [x] Match outcomes correlate more with tactical quality than random variance
+- [x] Mirror matches visibly showcase model differences
+- [x] All tests pass, including integration tests
 
 ---
 
