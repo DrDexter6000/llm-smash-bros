@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+from collections import deque
 from collections.abc import Awaitable, Callable
 
 from pydantic import BaseModel, Field, model_validator
@@ -81,12 +82,14 @@ class GameEngine:
         self.state.phase = MatchPhase.FIGHTING
 
         turn_log: list[TurnLog] = []
+        recent_logs: deque[TurnLog] = deque(maxlen=3)
         total_fumbles = 0
         result: MatchResult | None = None
 
         for turn_num in range(1, self.config.max_turns + 1):
-            turn = await self._execute_turn(turn_num)
+            turn = await self._execute_turn(turn_num, recent_logs=list(recent_logs))
             turn_log.append(turn)
+            recent_logs.append(turn)
             total_fumbles += len(turn.fumbles)
 
             result = self._check_end_conditions()
@@ -104,7 +107,9 @@ class GameEngine:
         result.total_fumbles = total_fumbles
         return result
 
-    async def _execute_turn(self, turn_num: int) -> TurnLog:
+    async def _execute_turn(
+        self, turn_num: int, recent_logs: list[TurnLog] | None = None
+    ) -> TurnLog:
         """Execute a single turn of movement, combat, and environmental effects."""
         self._ensure_state()
         assert self.state is not None
@@ -127,7 +132,7 @@ class GameEngine:
                 actions[fighter_id] = self._build_status_action(
                     fighter_id=fighter_id,
                     action_type=ActionType.DEFEND.value,
-                    inner_monologue="Stunned. Forced into a defensive stance.",
+                    tactical_summary="Stunned and forced into a defensive stance.",
                     trash_talk="...ngh...",
                 )
                 events.append(
@@ -142,7 +147,9 @@ class GameEngine:
 
         adapter_results = await asyncio.gather(
             *(
-                self._request_action(fighter_id, turn_num)
+                self._request_action(
+                    fighter_id, turn_num, recent_logs=recent_logs or []
+                )
                 for fighter_id in request_fighter_ids
             )
         )
@@ -253,7 +260,7 @@ class GameEngine:
             fighter.last_action = {
                 "action": response.action,
                 "move": response.move,
-                "inner_monologue": response.inner_monologue,
+                "tactical_summary": response.tactical_summary,
                 "trash_talk": response.trash_talk,
             }
 
@@ -453,7 +460,7 @@ class GameEngine:
             turn=self.state.turn,
             action={"type": ActionType.DEFEND.value},
             move=None,
-            inner_monologue="Signal lost. Defensive fallback engaged.",
+            tactical_summary="No tactical commentary.",
             trash_talk="...buffer underrun...",
         )
 
@@ -461,15 +468,16 @@ class GameEngine:
         self,
         fighter_id: str,
         action_type: str,
-        inner_monologue: str,
+        tactical_summary: str,
         trash_talk: str,
     ) -> ActionResponse:
         assert self.state is not None
+        del fighter_id
         return ActionResponse(
             turn=self.state.turn,
             action={"type": action_type},
             move=None,
-            inner_monologue=inner_monologue,
+            tactical_summary=tactical_summary,
             trash_talk=trash_talk,
         )
 
@@ -583,12 +591,16 @@ class GameEngine:
             phase=MatchPhase.READY,
         )
 
-    async def _request_action(self, fighter_id: str, turn_num: int) -> AdapterResult:
+    async def _request_action(
+        self, fighter_id: str, turn_num: int, recent_logs: list[TurnLog] | None = None
+    ) -> AdapterResult:
         assert self.state is not None
         client = self.llm_clients[fighter_id]
         try:
             return await asyncio.wait_for(
-                client.get_action(self.state, turn_num, fighter_id),
+                client.get_action(
+                    self.state, turn_num, fighter_id, recent_logs=recent_logs
+                ),
                 timeout=self.config.timeout_per_turn,
             )
         except asyncio.TimeoutError:

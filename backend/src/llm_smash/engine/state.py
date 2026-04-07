@@ -13,6 +13,8 @@ from typing import Any
 
 from pydantic import BaseModel, Field, model_validator
 
+from llm_smash.engine.turn_summary import summarize_turn
+
 
 class MatchPhase(str, Enum):
     """Match lifecycle phases."""
@@ -286,7 +288,9 @@ class BattleState(BaseModel):
                 return fighter
         return None
 
-    def to_fighter_perspective(self, fighter_id: str) -> dict[str, Any]:
+    def to_fighter_perspective(
+        self, fighter_id: str, recent_logs: list[TurnLog] | None = None
+    ) -> dict[str, Any]:
         """Generate the battle state JSON from one fighter's perspective.
 
         This is what gets sent to the LLM API — the fighter sees itself as 'you'
@@ -350,11 +354,14 @@ class BattleState(BaseModel):
                 fighters=[me, opponent],
                 perspective_fighter_id=fighter_id,
             ),
+            "recent_turns": [
+                summarize_turn(turn_log, fighter_id) for turn_log in (recent_logs or [])
+            ],
             "audience_events": self.audience_events,
             "rules_reminder": (
                 "Respond with valid JSON. You may move 1 tile AND perform 1 action "
                 "(attack, ability, or defend) per turn. Movement resolves first, then action. "
-                "You MUST include inner_monologue and trash_talk fields."
+                "You MUST include tactical_summary and trash_talk fields."
             ),
         }
 
@@ -367,7 +374,7 @@ class ActionResponse(BaseModel):
         str, Any
     ]  # {"type": "attack|defend|wait", "ability": "...", "target": "..."}
     move: dict[str, Any] | None = None  # {"direction": "left"} or None
-    inner_monologue: str = ""
+    tactical_summary: str = ""
     trash_talk: str = ""
 
 

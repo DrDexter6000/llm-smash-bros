@@ -21,13 +21,10 @@ MOCK_TRASH_TALK = [
     "I'll have you know I graduated top of my batch.",
 ]
 
-MOCK_MONOLOGUES = [
-    "Calculating optimal strategy...",
-    "Opponent appears vulnerable.",
-    "Energy levels sufficient for assault.",
-    "Defensive posture may be wise here.",
-    "Time to press the advantage.",
-    "Analyzing opponent's movement pattern.",
+MOCK_TACTICAL_SUMMARIES = [
+    "Attacking to deal damage while the opening is there.",
+    "Defending to reduce incoming damage.",
+    "Waiting to recover energy for a stronger follow-up.",
 ]
 
 
@@ -45,9 +42,14 @@ class MockLLMClient(LLMAdapter):
         self._random = random.Random(seed)
 
     async def get_action(
-        self, state: BattleState, turn: int, fighter_id: str
+        self,
+        state: BattleState,
+        turn: int,
+        fighter_id: str,
+        recent_logs=None,
     ) -> AdapterResult:
         started = time.perf_counter()
+        del recent_logs
 
         fighter = state.get_fighter(fighter_id)
         opponent = state.get_opponent(fighter_id)
@@ -86,7 +88,7 @@ class MockLLMClient(LLMAdapter):
             "turn": turn,
             "action": action,
             "move": move,
-            "inner_monologue": self._random.choice(MOCK_MONOLOGUES),
+            "tactical_summary": self._choose_tactical_summary(action_type, action),
             "trash_talk": self._random.choice(MOCK_TRASH_TALK),
         }
 
@@ -110,3 +112,10 @@ class MockLLMClient(LLMAdapter):
         if chosen_direction is None:
             return None
         return {"direction": chosen_direction}
+
+    def _choose_tactical_summary(self, action_type: str, action: dict[str, str]) -> str:
+        if action_type == ActionType.ATTACK.value:
+            return f"Attacking with {action['ability']} to deal damage."
+        if action_type == ActionType.DEFEND.value:
+            return "Defending to reduce incoming damage."
+        return "Waiting to recover energy."

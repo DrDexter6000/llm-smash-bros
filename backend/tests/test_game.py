@@ -35,12 +35,28 @@ class StaticAdapter(LLMAdapter):
         self.payload = payload
         self.calls = 0
 
-    async def get_action(self, state, turn: int, fighter_id: str) -> AdapterResult:
+    async def get_action(
+        self, state, turn: int, fighter_id: str, recent_logs=None
+    ) -> AdapterResult:
         del state, fighter_id
+        del recent_logs
         self.calls += 1
         body = dict(self.payload)
         body["turn"] = turn
         return AdapterResult(raw_response=json.dumps(body))
+
+
+class RecordingAdapter(LLMAdapter):
+    def __init__(self, payload: dict[str, object]):
+        self.payload = payload
+        self.recent_log_lengths: list[int] = []
+
+    async def get_action(
+        self, state, turn: int, fighter_id: str, recent_logs=None
+    ) -> AdapterResult:
+        del state, turn, fighter_id
+        self.recent_log_lengths.append(len(recent_logs or []))
+        return AdapterResult(raw_response=json.dumps(self.payload))
 
 
 def make_clients(
@@ -255,7 +271,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": None,
-                "inner_monologue": "should not be used",
+                "tactical_summary": "should not be used",
                 "trash_talk": "",
             }
         )
@@ -263,7 +279,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": None,
-                "inner_monologue": "waiting",
+                "tactical_summary": "waiting",
                 "trash_talk": "",
             }
         )
@@ -298,7 +314,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": {"direction": "left"},
-                "inner_monologue": "stuck",
+                "tactical_summary": "stuck",
                 "trash_talk": "",
             }
         )
@@ -306,7 +322,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": None,
-                "inner_monologue": "waiting",
+                "tactical_summary": "waiting",
                 "trash_talk": "",
             }
         )
@@ -338,7 +354,7 @@ class TestGameEngine:
                     "target": "striker",
                 },
                 "move": None,
-                "inner_monologue": "push them back",
+                "tactical_summary": "push them back",
                 "trash_talk": "",
             }
         )
@@ -346,7 +362,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": None,
-                "inner_monologue": "waiting",
+                "tactical_summary": "waiting",
                 "trash_talk": "",
             }
         )
@@ -379,7 +395,7 @@ class TestGameEngine:
                     "target": "guardian",
                 },
                 "move": None,
-                "inner_monologue": "power up",
+                "tactical_summary": "power up",
                 "trash_talk": "",
             }
         )
@@ -387,7 +403,7 @@ class TestGameEngine:
             {
                 "action": {"type": "wait"},
                 "move": None,
-                "inner_monologue": "waiting",
+                "tactical_summary": "waiting",
                 "trash_talk": "",
             }
         )
@@ -407,3 +423,24 @@ class TestGameEngine:
         assert berserker.has_status("damage_boost")
         assert any(event.type == "status_applied" for event in turn_log.events)
         assert any(event.type == "self_damage" for event in turn_log.events)
+
+    @pytest.mark.asyncio
+    async def test_recent_logs_are_passed_to_adapters(self):
+        payload = {
+            "turn": 1,
+            "action": {"type": "wait"},
+            "move": None,
+            "tactical_summary": "Waiting for an opening.",
+            "trash_talk": "",
+        }
+        striker_adapter = RecordingAdapter(payload)
+        guardian_adapter = RecordingAdapter(payload)
+        engine = GameEngine(
+            MatchConfig(fighter_ids=["striker", "guardian"], max_turns=3, seed=47),
+            llm_clients={"striker": striker_adapter, "guardian": guardian_adapter},
+        )
+
+        await engine.run_match()
+
+        assert striker_adapter.recent_log_lengths == [0, 1, 2]
+        assert guardian_adapter.recent_log_lengths == [0, 1, 2]

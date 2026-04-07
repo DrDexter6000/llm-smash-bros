@@ -6,7 +6,7 @@ from importlib import import_module
 import json
 import time
 
-from llm_smash.engine.state import BattleState
+from llm_smash.engine.state import BattleState, TurnLog
 from llm_smash.fighters.roster import get_system_prompt
 from llm_smash.llm.adapter import AdapterResult, LLMAdapter
 
@@ -37,14 +37,21 @@ class AnthropicClient(LLMAdapter):
         self._client = AsyncAnthropic(**kwargs)
 
     async def get_action(
-        self, state: BattleState, turn: int, fighter_id: str
+        self,
+        state: BattleState,
+        turn: int,
+        fighter_id: str,
+        recent_logs: list[TurnLog] | None = None,
     ) -> AdapterResult:
         del turn
 
         started = time.perf_counter()
         system_prompt = get_system_prompt(fighter_id)
         user_message = (
-            json.dumps(state.to_fighter_perspective(fighter_id)) + JSON_ONLY_SUFFIX
+            json.dumps(
+                state.to_fighter_perspective(fighter_id, recent_logs=recent_logs)
+            )
+            + JSON_ONLY_SUFFIX
         )
 
         try:

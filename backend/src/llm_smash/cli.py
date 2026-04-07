@@ -92,6 +92,8 @@ async def turn_callback(turn_log: TurnLog, fighters: dict[str, Fighter]) -> None
             continue
         fighter = fighters.get(fighter_id)
         name = fighter.codename if fighter else fighter_id
+        if response.tactical_summary:
+            safe_print(f"  {DIM}🧠 {name}: {response.tactical_summary}{RESET}")
         safe_print(f'  {DIM}💬 {name}: "{response.trash_talk}"{RESET}')
 
 

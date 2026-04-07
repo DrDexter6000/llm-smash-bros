@@ -99,10 +99,16 @@ class TestSystemPrompt:
         assert "LLM Smash Bros" in prompt
         assert "JSON" in prompt
         assert BASE_SYSTEM_PROMPT in prompt
+        assert '"tactical_summary"' in prompt
+        assert "BATTLE MEMORY" in prompt
 
     def test_system_prompt_includes_archetype_identity(self):
         prompt = get_system_prompt("striker")
         assert "ARCHETYPE: Striker" in prompt
+        assert "HP:" in prompt
+        assert "Energy:" in prompt
+        assert "Range:" in prompt
+        assert "TERRAIN TIPS:" in prompt
         prompt_guardian = get_system_prompt("guardian")
         assert "ARCHETYPE: Guardian" in prompt_guardian
 

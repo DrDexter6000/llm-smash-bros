@@ -7,7 +7,7 @@ import json
 import time
 from typing import Any
 
-from llm_smash.engine.state import BattleState
+from llm_smash.engine.state import BattleState, TurnLog
 from llm_smash.fighters.roster import get_system_prompt
 from llm_smash.llm.adapter import AdapterResult, LLMAdapter
 
@@ -42,14 +42,20 @@ class OpenAIClient(LLMAdapter):
         return self.client
 
     async def get_action(
-        self, state: BattleState, turn: int, fighter_id: str
+        self,
+        state: BattleState,
+        turn: int,
+        fighter_id: str,
+        recent_logs: list[TurnLog] | None = None,
     ) -> AdapterResult:
         started = time.perf_counter()
         messages = [
             {"role": "system", "content": get_system_prompt(fighter_id)},
             {
                 "role": "user",
-                "content": json.dumps(state.to_fighter_perspective(fighter_id)),
+                "content": json.dumps(
+                    state.to_fighter_perspective(fighter_id, recent_logs=recent_logs)
+                ),
             },
         ]
 

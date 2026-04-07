@@ -41,6 +41,9 @@ class ResponseValidator:
         except ValidationError as exc:
             return ValidationResult(is_valid=False, error=f"Invalid schema: {exc}")
 
+        if not response.tactical_summary.strip():
+            response.tactical_summary = "No tactical commentary."
+
         if response.turn != turn:
             return ValidationResult(
                 is_valid=False,

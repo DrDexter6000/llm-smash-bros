@@ -252,23 +252,40 @@ Record the measurement in the writeback.
 
 > *This section is filled by the executor after phase completion. Do not pre-fill.*
 
-**Completed by:** _(executor name/model)_
-**Date:** _(date)_
+**Completed by:** Sisyphus-Junior / gpt-5.4
+**Date:** 2026-04-07
 
 **What was done:**
+- Added `backend/src/llm_smash/engine/turn_summary.py` with compact `summarize_turn()` logic for attack, defend, wait, fumble, hazard, and KO summaries.
+- Updated `BattleState.to_fighter_perspective()` to accept `recent_logs`, inject `recent_turns`, and rename the response contract from `inner_monologue` to `tactical_summary`.
+- Added rolling recent-log tracking in `GameEngine`, threaded recent logs through `_request_action()` and all LLM adapters, and updated status/fumble/last_action handling to use `tactical_summary`.
+- Reworked prompts in `backend/src/llm_smash/fighters/roster.py` to include battle memory guidance, richer archetype identity, and spectator-facing tactical summary instructions.
+- Updated validator fallback behavior, mock client payloads, CLI spectator output, and all affected tests.
 
 **What passed:**
+- `backend/.venv/Scripts/python.exe -m pytest -q` → 179 passed.
+- Focused Phase 4 test slice covering state/game/validator/adapters/roster/turn summary/client prompt plumbing → 133 passed.
+- `lsp_diagnostics` on `backend/src/llm_smash` reported 0 errors.
+- `grep -ri "inner_monologue" backend/` returned zero matches.
 
 **Measured prompt token count:**
-- System prompt (per archetype): ___ tokens
-- Perspective JSON (with 3 turns + grid): ___ tokens
-- Total: ___ tokens (budget: 2000)
+- System prompt (per archetype): 844.2 tokens
+- Perspective JSON (with 3 turns + grid): 454.8 tokens
+- Total: 1299.0 tokens (budget: 2000)
 
 **What failed or was unexpected:**
+- Initial red test run failed as expected because `turn_summary.py` did not exist yet.
+- Hit one circular import between `state.py` and `turn_summary.py`; resolved by making `turn_summary.py` type-check-only import `TurnLog`/`TurnEvent`.
 
 **What changed from plan:**
+- Kept the 3-turn history budget; no need to trim to 2 turns because the measured prompt stayed comfortably under 2000 tokens.
+- CLI now prints `tactical_summary` lines in addition to the required field rename, which is still within Phase 4's allowed display-surface rename scope.
 
 **State left for Phase 5:**
+- `tactical_summary` is available everywhere in engine responses, logs, mock/live adapters, and CLI turn output.
+- `recent_turns` is present in fighter perspective payloads with concise summaries of the last 3 turns.
+- System prompts now include archetype strategic identity plus battle memory instructions.
+- Full backend test suite is green and prompt budget is verified under `STRATEGY §4` / `PRD §7.3` limits.
 
 ---
 

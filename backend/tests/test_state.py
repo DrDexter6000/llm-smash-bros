@@ -23,6 +23,8 @@ from llm_smash.engine.state import (
     Position,
     StatusEffect,
     TerrainType,
+    TurnEvent,
+    TurnLog,
 )
 
 
@@ -302,6 +304,49 @@ class TestBattleState:
         assert "arena" in perspective
         assert "arena_grid" in perspective
 
+    def test_to_fighter_perspective_includes_recent_turns(self, sample_battle_state):
+        recent_log = TurnLog(
+            turn_number=1,
+            actions={
+                "striker": ActionResponse(
+                    turn=1,
+                    action={
+                        "type": "attack",
+                        "ability": "Quick Strike",
+                        "target": "guardian",
+                    },
+                    tactical_summary="Closing in for burst damage.",
+                ),
+                "guardian": ActionResponse(
+                    turn=1,
+                    action={"type": "defend"},
+                    tactical_summary="Bracing for impact.",
+                ),
+            },
+            events=[
+                TurnEvent(
+                    type="damage",
+                    source_id="striker",
+                    target_id="guardian",
+                    value=12,
+                    description="Guardian takes 12 damage.",
+                )
+            ],
+        )
+
+        perspective = sample_battle_state.to_fighter_perspective(
+            "striker", recent_logs=[recent_log]
+        )
+
+        assert perspective["recent_turns"] == [
+            {
+                "turn": 1,
+                "you": "attacked with Quick Strike → 12 dmg",
+                "opponent": "defended",
+            }
+        ]
+        assert "tactical_summary" in perspective["rules_reminder"]
+
     def test_to_fighter_perspective_unknown_raises(self, sample_battle_state):
         with pytest.raises(ValueError):
             sample_battle_state.to_fighter_perspective("nonexistent")
@@ -313,18 +358,19 @@ class TestActionResponse:
             turn=5,
             action={"type": "attack", "ability": "Quick Strike", "target": "guardian"},
             move={"direction": "left"},
-            inner_monologue="Going in for the kill.",
+            tactical_summary="Going in for the kill.",
             trash_talk="GG no re.",
         )
         assert resp.turn == 5
         assert resp.action["type"] == "attack"
+        assert resp.tactical_summary == "Going in for the kill."
 
     def test_defend_action(self):
         resp = ActionResponse(
             turn=5,
             action={"type": "defend"},
             move=None,
-            inner_monologue="Playing it safe.",
+            tactical_summary="Playing it safe.",
             trash_talk="Come at me.",
         )
         assert resp.action["type"] == "defend"
@@ -333,7 +379,7 @@ class TestActionResponse:
         resp = ActionResponse(
             turn=3,
             action={"type": "wait"},
-            inner_monologue="Conserving energy.",
+            tactical_summary="Conserving energy.",
             trash_talk="Patience is a virtue.",
         )
         assert resp.action["type"] == "wait"

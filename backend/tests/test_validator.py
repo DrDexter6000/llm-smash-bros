@@ -94,14 +94,14 @@ def make_raw_response(
     turn: int = 5,
     action: dict,
     move: dict | None = None,
-    inner_monologue: str = "Time to strike.",
+    tactical_summary: str = "Time to strike.",
     trash_talk: str = "Your guard is slipping.",
 ) -> str:
     payload = {
         "turn": turn,
         "action": action,
         "move": move,
-        "inner_monologue": inner_monologue,
+        "tactical_summary": tactical_summary,
         "trash_talk": trash_talk,
     }
     return json.dumps(payload)
@@ -179,7 +179,7 @@ class TestResponseValidator:
             {
                 "turn": 5,
                 "move": {"direction": "right"},
-                "inner_monologue": "Oops.",
+                "tactical_summary": "Oops.",
                 "trash_talk": "Still invalid.",
             }
         )
@@ -191,6 +191,39 @@ class TestResponseValidator:
         assert result.is_valid is False
         assert result.response is None
         assert result.error is not None
+
+    def test_missing_tactical_summary_defaults_to_fallback(
+        self, validator: ResponseValidator, sample_state: BattleState
+    ):
+        raw = json.dumps(
+            {
+                "turn": 5,
+                "action": {"type": "wait"},
+                "move": None,
+                "trash_talk": "Holding steady.",
+            }
+        )
+
+        result = validator.validate(
+            raw, turn=5, fighter_id="striker", state=sample_state
+        )
+
+        assert result.is_valid is True
+        assert result.response is not None
+        assert result.response.tactical_summary == "No tactical commentary."
+
+    def test_blank_tactical_summary_defaults_to_fallback(
+        self, validator: ResponseValidator, sample_state: BattleState
+    ):
+        raw = make_raw_response(action={"type": "defend"}, tactical_summary="   ")
+
+        result = validator.validate(
+            raw, turn=5, fighter_id="striker", state=sample_state
+        )
+
+        assert result.is_valid is True
+        assert result.response is not None
+        assert result.response.tactical_summary == "No tactical commentary."
 
     def test_stale_turn_echo_fails_validation(
         self, validator: ResponseValidator, sample_state: BattleState

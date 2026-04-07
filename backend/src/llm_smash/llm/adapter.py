@@ -6,7 +6,7 @@ import abc
 
 from pydantic import BaseModel
 
-from llm_smash.engine.state import BattleState
+from llm_smash.engine.state import BattleState, TurnLog
 
 
 class AdapterResult(BaseModel):
@@ -21,7 +21,11 @@ class LLMAdapter(abc.ABC):
 
     @abc.abstractmethod
     async def get_action(
-        self, state: BattleState, turn: int, fighter_id: str
+        self,
+        state: BattleState,
+        turn: int,
+        fighter_id: str,
+        recent_logs: list[TurnLog] | None = None,
     ) -> AdapterResult:
         """Return the raw JSON response for a fighter's turn."""
         raise NotImplementedError

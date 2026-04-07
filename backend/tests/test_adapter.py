@@ -118,7 +118,7 @@ class TestMockLLMClient:
 
         assert payload["turn"] == 5
         assert "action" in payload
-        assert "inner_monologue" in payload
+        assert "tactical_summary" in payload
         assert "trash_talk" in payload
 
     @pytest.mark.asyncio
