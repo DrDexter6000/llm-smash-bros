@@ -1,3 +1,5 @@
+<center>
+
 # LLM Smash Bros - 大模型大乱斗
 
 > When LLMs stop benchmarking and start brawling.
@@ -5,8 +7,6 @@
 **English | [中文](./README.zh.md)**
 
 ![LLM Smash Bros banner](./assets/llm_smash_banner.jpg)
-
-<p align="center">
 
 ```
 ╔══════════════════════════════════════════════════════════╗
@@ -25,33 +25,21 @@ Turn 12: The Oracle uses System Override!
 [ Live battle replay loading... ]
 ```
 
-</p>
-
-<p align="center">
+</center>
 
 🎮 **An unserious-looking turn-based fighting game for a very serious question:**
 
 **what happens when you force language models to read the room, make a plan, and throw hands under pressure?**
 
-</p>
-
-<p align="center">
-
 On the surface, this project is four AI fighters yelling at each other and occasionally eating a firewall 🔥
 
 Under the hood, it is gradually evolving into a sandbox for exposing pieces of LLM capability in a form that is actually fun to watch: situation reading, tactical reasoning, strategy selection, failure handling, and eventually more interesting forms of AI-vs-AI play.
-
-</p>
 
 ---
 
 ## 🤔 What even is this?
 
-<p align="center">
-
 Every turn, a model receives a structured snapshot of the battlefield: health, energy, position, hazards, cooldowns, and the opponent's recent state. It must then decide what to do next.
-
-</p>
 
 That means choosing things like:
 
@@ -60,27 +48,19 @@ That means choosing things like:
 - ⚡ which ability is worth spending energy on
 - 😎 how much confidence to fake while the arena is actively on fire
 
-<p align="center">
-
 If it reasons well, it looks clever ✨
 
 If it panics, times out, or emits cursed JSON, it **fumbles** in public 💥
 
 Which, to be clear, is also content.
 
-</p>
-
 ---
 
 ## 🎯 Why this exists
 
-<p align="center">
-
 Leaderboards are useful, but they are also emotionally dead 💀
 
 This project is trying to make model differences **watchable** 👀
-
-</p>
 
 Not just "which model scored higher," but:
 
@@ -90,46 +70,30 @@ Not just "which model scored higher," but:
 - 🧠 who adapts under pressure
 - 💬 who talks the most trash while doing all of the above
 
-<p align="center">
-
 The long-term goal is not "haha chatbot fight funny" — although yes, that part stays 😄
 
 The long-term goal is to build a game-shaped arena where pieces of LLM ability can be observed more directly: **recognition, reasoning, strategy, and eventually richer forms of AI-versus-AI interaction** 🚀
-
-</p>
 
 ---
 
 ## 📊 Current state
 
-<p align="center">
-
 Right now, the real thing that exists is the **Python CLI battle engine** 🐍
-
-</p>
 
 - 🧪 **Mock mode** exists for cheap local matches and testing
 - 🌐 **Live mode** uses real LLM APIs
 - 💻 The current interface is terminal-first
 - 🎨 The future spectator layer (GUI / animation / streaming theatrics) is still in development
 
-<p align="center">
-
 So yes: the current version is closer to "AI fight club in a command line" than "full esports broadcast" 📺
 
 That is fine. Rome was not built in a day, and neither was a tasteful multimodal cage match 🏛️
-
-</p>
 
 ---
 
 ## 🥊 The roster
 
-<p align="center">
-
 Current fighters include:
-
-</p>
 
 | Fighter | Model | Role |
 |---------|-------|------|
@@ -138,23 +102,15 @@ Current fighters include:
 | 👁️ **The Observer** | Gemini 1.5 Pro | Tank / Patient |
 | 🐝 **The Swarm** | Llama 3 | Berserker / Wild |
 
-<p align="center">
-
 Each one is designed as both a combat kit and a personality joke 🤡
 
 The point is not just to make them hit differently, but to make them **feel** different ✨
-
-</p>
 
 ---
 
 ## 🎭 Design philosophy
 
-<p align="center">
-
 This project should stay funny without becoming fake 🤡
-
-</p>
 
 - ✅ live matches should use **real** model output
 - ✅ failure should be **visible** instead of politely hidden
@@ -162,32 +118,20 @@ This project should stay funny without becoming fake 🤡
 - ✅ trash talk should support the spectacle, not replace it
 - ✅ the system should gradually reveal more of what a model is actually good at
 
-<p align="center">
-
 **In other words: comedy outside, evaluation goblin inside** 🎪🧙
-
-</p>
 
 ---
 
 ## 🚀 If you want to poke it
 
-<p align="center">
-
 Current entrypoint:
-
-</p>
 
 ```bash
 cd backend
 python -m llm_smash
 ```
 
-<p align="center">
-
 That runs a mock match by default 🎯
-
-</p>
 
 For live battles, configure `backend/.env` and run:
 
@@ -200,20 +144,12 @@ python -m llm_smash --live
 
 ## 👨‍💻 For developers
 
-<p align="center">
-
 📋 Repo instructions: [`AGENTS.md`](./AGENTS.md)
 
 📚 Development SSOT: [`docs/dev/README.md`](./docs/dev/README.md)
 
-</p>
-
 ---
-
-<p align="center">
 
 *"As an AI language model, I will now terminate your process."* 🤖⚡
 
 **— GPT-4o, probably**
-
-</p>
