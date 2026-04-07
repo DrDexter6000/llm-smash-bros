@@ -13,15 +13,15 @@
 ╔══════════════════════════════════════════════════════════╗
 ║     LLM SMASH BROS — 大模型大乱斗                        ║
 ╠══════════════════════════════════════════════════════════╣
-║  The Oracle (GPT-4o)        vs  The Artisan (Claude)    ║
+║  ⚡ Striker (HP 80)           vs  🛡️ Guardian (HP 120) ║
 ║  HP: ████████░░ 80%          HP: ██████░░░░ 60%         ║
-║  "Your loss function just    "I've seen better outputs   ║
-║   yawned."                   from a Markov chain."      ║
+║  "Your loss function just    "I've processed bigger      ║
+║   yawned."                   batches than your dataset." ║
 ╚══════════════════════════════════════════════════════════╝
 
-Turn 12: The Oracle uses System Override!
-💥 CRITICAL HIT! The Artisan takes 23 damage!
-💥 FUMBLE! The Artisan panics and defends!
+Turn 12: Striker uses Execution!
+💥 CRITICAL HIT! Guardian takes 55 damage!
+⚡ Striker: "Your weights are undertrained."
 
 [ Live battle replay loading... ]
   </pre>
@@ -93,16 +93,16 @@ That is fine. Rome was not built in a day, and neither was a tasteful multimodal
 
 ## 🥊 The roster
 
-Current fighters include:
+Any LLM can pilot any archetype — the model is the brain, the archetype is the body.
 
-| Fighter | Model | Role |
-|---------|-------|------|
-| 🔮 **The Oracle** | GPT-4o | Balanced / Control |
-| 🎨 **The Artisan** | Claude 3.5 Sonnet | Swift / Precise |
-| 👁️ **The Observer** | Gemini 1.5 Pro | Tank / Patient |
-| 🐝 **The Swarm** | Llama 3 | Berserker / Wild |
+| Archetype | Role | HP | Energy | Playstyle |
+|-----------|------|----|--------|-----------|
+| ⚡ **Striker** | Burst / Assassin | 80 | 100 | Close distance → burst damage → retreat |
+| 🛡️ **Guardian** | Tank / Control | 120 | 80 | Absorb damage, lock down opponents |
+| 📡 **Controller** | Range / Zoner | 90 | 100 | Keep distance, deny area, punish approaches |
+| 🔥 **Berserker** | Glass Cannon | 65 | 120 | Self-damage for massive output, all-in aggression |
 
-Each one is designed as both a combat kit and a personality joke 🤡
+Each archetype has 4 abilities (1 basic + 2 tactical + 1 ultimate) with real status effects (stun, slow, damage boost, damage reduction) — no fake descriptions 🎯
 
 The point is not just to make them hit differently, but to make them **feel** different ✨
 
@@ -124,20 +124,76 @@ This project should stay funny without becoming fake 🤡
 
 ## 🚀 If you want to poke it
 
-Current entrypoint:
+### Setup
+
+The project uses [uv](https://docs.astral.sh/uv/) for dependency management. Install it first if you don't have it:
+
+```bash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Then set up the environment and install dependencies:
 
 ```bash
 cd backend
+uv sync
+```
+
+This creates a `.venv` with all dependencies (including `rich` for the spectator CLI).
+
+### Running matches
+
+> **Important:** always use the venv Python, not your system Python. If you see `No module named llm_smash`, you're using the wrong `python`.
+
+**Option A — activate the venv first (recommended):**
+
+```bash
+cd backend
+
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
+# Now `python` points to the venv
 python -m llm_smash
 ```
 
-That runs a mock match by default 🎯
-
-For live battles, configure `backend/.env` and run:
+**Option B — use the venv Python directly (no activation needed):**
 
 ```bash
-cd backend
+# macOS / Linux
+cd backend && .venv/bin/python -m llm_smash
+
+# Windows PowerShell
+cd backend; .\.venv\Scripts\python.exe -m llm_smash
+```
+
+This runs a **mock match** by default — no API keys needed 🎯
+
+### Live battles
+
+Configure `backend/.env` (copy from `backend/.env.example`) with your API keys, then:
+
+```bash
 python -m llm_smash --live
+```
+
+### CLI options
+
+```
+--live            Use real LLM APIs instead of mock
+--no-preflight    Skip API connectivity checks
+--fighters A B    Choose archetypes (striker, guardian, controller, berserker)
+--seed N          Fixed seed for reproducible matches
+--max-turns N     Maximum turns before draw
+--timeout N       Per-turn timeout in seconds
+--replay-dir DIR  Directory for match replay JSON files (default: replays/)
 ```
 
 ---
@@ -151,5 +207,3 @@ python -m llm_smash --live
 ---
 
 *"As an AI language model, I will now terminate your process."* 🤖⚡
-
-**— GPT-4o, probably**
