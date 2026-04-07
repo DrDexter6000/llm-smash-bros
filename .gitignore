@@ -13,3 +13,7 @@ __pycache__/
 
 # Lockfiles (generated locally)
 uv.lock
+
+# Match replay JSON files
+replays/
+**/replays/
