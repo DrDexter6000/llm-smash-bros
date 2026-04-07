@@ -18,6 +18,7 @@ from llm_smash.engine.state import (
     MoveDirection,
     Position,
     StatusEffect,
+    TerrainType,
     TurnEvent,
     DIRECTION_VECTORS,
 )
@@ -67,6 +68,7 @@ class CombatResolver:
         defender: Fighter,
         ability: Ability,
         is_defending: bool,
+        arena: Arena | None = None,
     ) -> int:
         """Calculate damage dealt by an ability, accounting for variance, crits, distance, and defend."""
         if ability.damage <= 0:
@@ -87,12 +89,25 @@ class CombatResolver:
 
         # Distance penalty: if target is out of ability range → 50% damage
         distance = attacker.position.distance_to(defender.position)
-        if distance > ability.range:
+        effective_range = ability.range
+        if (
+            arena is not None
+            and arena.get_terrain_at(attacker.position) == TerrainType.HIGH_GROUND
+        ):
+            effective_range += 1
+        if distance > effective_range:
             damage *= DISTANCE_PENALTY_MULTIPLIER
 
         # Defend bonus: defender takes 80% damage
         if is_defending:
             damage *= DEFEND_REDUCTION
+
+        if (
+            arena is not None
+            and ability.range > 2
+            and arena.get_terrain_at(defender.position) == TerrainType.COVER
+        ):
+            damage *= 0.7
 
         damage_reduction = self._get_status_value(defender, "damage_reduction")
         if damage_reduction > 0:
@@ -113,8 +128,7 @@ class CombatResolver:
         self,
         fighter: Fighter,
         direction: str | None,
-        arena_width: int,
-        arena_height: int,
+        arena: Arena | None = None,
     ) -> Position:
         """Resolve a movement command, clamping to arena bounds."""
         if direction is None:
@@ -125,11 +139,18 @@ class CombatResolver:
         except ValueError:
             return fighter.position
 
+        arena_width = arena.width if arena is not None else 8
+        arena_height = arena.height if arena is not None else 6
+
         dx, dy = DIRECTION_VECTORS[move_dir]
         new_x = max(0, min(fighter.position.x + dx, arena_width - 1))
         new_y = max(0, min(fighter.position.y + dy, arena_height - 1))
+        new_position = Position(x=new_x, y=new_y)
 
-        return Position(x=new_x, y=new_y)
+        if arena is not None and not arena.is_passable(new_position):
+            return fighter.position
+
+        return new_position
 
     def apply_energy_regen(self, fighter: Fighter) -> None:
         """Apply passive energy regeneration (+5 per turn)."""
@@ -222,7 +243,11 @@ class CombatResolver:
             pos = Position(x=x, y=y)
 
             # Check not occupied by fighter or existing hazard
-            if pos not in occupied_positions and arena.get_hazard_at(pos) is None:
+            if (
+                pos not in occupied_positions
+                and arena.get_hazard_at(pos) is None
+                and arena.is_passable(pos)
+            ):
                 hazard = Hazard(
                     type=hazard_template["type"],
                     position=pos,

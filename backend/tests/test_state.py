@@ -1,5 +1,7 @@
 """Tests for core state models."""
 
+# pyright: reportMissingImports=false
+
 import sys
 from pathlib import Path
 
@@ -20,6 +22,7 @@ from llm_smash.engine.state import (
     Ability,
     Position,
     StatusEffect,
+    TerrainType,
 )
 
 
@@ -246,6 +249,24 @@ class TestArena:
         assert arena.get_hazard_at(Position(x=3, y=3)) is not None
         assert arena.get_hazard_at(Position(x=0, y=0)) is None
 
+    def test_get_terrain_defaults_to_open(self):
+        arena = Arena(width=8, height=6)
+        assert arena.get_terrain_at(Position(x=2, y=1)) == TerrainType.OPEN
+
+    def test_get_terrain_returns_configured_type(self):
+        arena = Arena(width=8, height=6, terrain={"2,1": TerrainType.COVER.value})
+        assert arena.get_terrain_at(Position(x=2, y=1)) == TerrainType.COVER
+
+    def test_is_passable_rejects_rift_and_oob(self):
+        arena = Arena(width=8, height=6, terrain={"2,1": TerrainType.RIFT.value})
+        assert not arena.is_passable(Position(x=2, y=1))
+        assert not arena.is_passable(Position(x=8, y=1))
+
+    def test_is_passable_allows_open_tiles(self):
+        arena = Arena(width=8, height=6, terrain={"2,1": TerrainType.COVER.value})
+        assert arena.is_passable(Position(x=2, y=1))
+        assert arena.is_passable(Position(x=1, y=1))
+
 
 class TestBattleState:
     def test_create_battle_state(self, striker_fighter, guardian_fighter, basic_arena):
@@ -279,6 +300,7 @@ class TestBattleState:
         assert perspective["opponent"]["id"] == "guardian"
         assert "rules_reminder" in perspective
         assert "arena" in perspective
+        assert "arena_grid" in perspective
 
     def test_to_fighter_perspective_unknown_raises(self, sample_battle_state):
         with pytest.raises(ValueError):

@@ -44,6 +44,15 @@ class MoveDirection(str, Enum):
     DOWN_RIGHT = "down-right"
 
 
+class TerrainType(str, Enum):
+    """Static terrain types present on arena tiles."""
+
+    OPEN = "open"
+    HIGH_GROUND = "high_ground"
+    COVER = "cover"
+    RIFT = "rift"
+
+
 # Direction vectors for grid movement
 DIRECTION_VECTORS: dict[MoveDirection, tuple[int, int]] = {
     MoveDirection.UP: (0, -1),
@@ -180,6 +189,7 @@ class Arena(BaseModel):
 
     width: int = 8
     height: int = 6
+    terrain: dict[str, str] = Field(default_factory=dict)
     hazards: list[Hazard] = Field(default_factory=list)
 
     def is_valid_position(self, pos: Position) -> bool:
@@ -192,6 +202,64 @@ class Arena(BaseModel):
             if hazard.position == pos:
                 return hazard
         return None
+
+    def get_terrain_at(self, pos: Position) -> TerrainType:
+        """Return terrain type at position. Defaults to OPEN."""
+        if not self.is_valid_position(pos):
+            return TerrainType.OPEN
+        terrain_value = self.terrain.get(f"{pos.x},{pos.y}", TerrainType.OPEN.value)
+        return TerrainType(terrain_value)
+
+    def is_passable(self, pos: Position) -> bool:
+        """Return False if position is a Rift or out of bounds."""
+        return (
+            self.is_valid_position(pos) and self.get_terrain_at(pos) != TerrainType.RIFT
+        )
+
+    def to_ascii_grid(
+        self, fighters: list[Fighter], perspective_fighter_id: str = ""
+    ) -> str:
+        """Generate compact ASCII arena representation for prompts."""
+        terrain_symbols = {
+            TerrainType.OPEN: ".",
+            TerrainType.HIGH_GROUND: "H",
+            TerrainType.COVER: "C",
+            TerrainType.RIFT: "#",
+        }
+
+        fighter_symbols: dict[tuple[int, int], str] = {}
+        for fighter in fighters:
+            symbol = "A" if fighter.id == perspective_fighter_id else "B"
+            fighter_symbols[(fighter.position.x, fighter.position.y)] = symbol
+
+        rows = [
+            f"Arena ({self.width}x{self.height}):",
+            f"  {''.join(str(x) for x in range(self.width))}",
+        ]
+        for y in range(self.height):
+            row_chars: list[str] = []
+            for x in range(self.width):
+                fighter_symbol = fighter_symbols.get((x, y))
+                if fighter_symbol is not None:
+                    row_chars.append(fighter_symbol)
+                    continue
+                row_chars.append(
+                    terrain_symbols[self.get_terrain_at(Position(x=x, y=y))]
+                )
+            rows.append(f"{y} {''.join(row_chars)}")
+
+        rows.append("")
+        rows.append("A=You  B=Opponent")
+        rows.append("H=High Ground  C=Cover  #=Rift  .=Open")
+        if self.hazards:
+            hazard_summary = ", ".join(
+                f"{hazard.type}@({hazard.position.x},{hazard.position.y})[{hazard.turns_remaining}t]"
+                for hazard in self.hazards
+            )
+        else:
+            hazard_summary = "none"
+        rows.append(f"Hazards: {hazard_summary}")
+        return "\n".join(rows)
 
 
 class BattleState(BaseModel):
@@ -267,6 +335,7 @@ class BattleState(BaseModel):
             "arena": {
                 "width": self.arena.width,
                 "height": self.arena.height,
+                "terrain": self.arena.terrain,
                 "hazards": [
                     {
                         "type": h.type,
@@ -277,6 +346,10 @@ class BattleState(BaseModel):
                     for h in self.arena.hazards
                 ],
             },
+            "arena_grid": self.arena.to_ascii_grid(
+                fighters=[me, opponent],
+                perspective_fighter_id=fighter_id,
+            ),
             "audience_events": self.audience_events,
             "rules_reminder": (
                 "Respond with valid JSON. You may move 1 tile AND perform 1 action "

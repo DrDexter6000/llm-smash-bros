@@ -1,5 +1,7 @@
 """Tests for the combat resolution engine."""
 
+# pyright: reportMissingImports=false
+
 import sys
 from pathlib import Path
 
@@ -21,6 +23,7 @@ from llm_smash.engine.state import (
     Hazard,
     Position,
     StatusEffect,
+    TerrainType,
 )
 
 
@@ -182,64 +185,156 @@ class TestCalculateDamage:
         )
         assert reduced < normal
 
+    def test_high_ground_extends_effective_range(
+        self, attacker, defender, basic_ability
+    ):
+        attacker.position = Position(x=0, y=0)
+        defender.position = Position(x=5, y=0)
+        arena_open = Arena(width=8, height=6)
+        arena_high_ground = Arena(
+            width=8,
+            height=6,
+            terrain={"0,0": TerrainType.HIGH_GROUND.value},
+        )
+
+        normal = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+            arena=arena_open,
+        )
+        boosted = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+            arena=arena_high_ground,
+        )
+
+        assert boosted > normal
+
+    def test_cover_reduces_ranged_damage(self, attacker, defender, basic_ability):
+        arena_open = Arena(width=8, height=6)
+        arena_cover = Arena(
+            width=8,
+            height=6,
+            terrain={"2,0": TerrainType.COVER.value},
+        )
+
+        normal = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+            arena=arena_open,
+        )
+        reduced = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+            arena=arena_cover,
+        )
+
+        assert reduced < normal
+
+    def test_cover_does_not_reduce_melee_damage(self, attacker, defender):
+        melee_ability = Ability(name="Slash", type="attack", damage=12, range=2)
+        defender.position = Position(x=1, y=0)
+        arena_open = Arena(width=8, height=6)
+        arena_cover = Arena(
+            width=8,
+            height=6,
+            terrain={"1,0": TerrainType.COVER.value},
+        )
+
+        normal = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            melee_ability,
+            is_defending=False,
+            arena=arena_open,
+        )
+        covered = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            melee_ability,
+            is_defending=False,
+            arena=arena_cover,
+        )
+
+        assert covered == normal
+
 
 class TestResolveMovement:
     def test_move_right(self, resolver, attacker):
         new_pos = resolver.resolve_movement(
-            attacker, "right", arena_width=8, arena_height=6
+            attacker, "right", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=1, y=0)
 
     def test_move_down(self, resolver, attacker):
         new_pos = resolver.resolve_movement(
-            attacker, "down", arena_width=8, arena_height=6
+            attacker, "down", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=0, y=1)
 
     def test_move_diagonal(self, resolver, attacker):
         new_pos = resolver.resolve_movement(
-            attacker, "down-right", arena_width=8, arena_height=6
+            attacker, "down-right", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=1, y=1)
 
     def test_clamped_at_left_boundary(self, resolver, attacker):
         attacker.position = Position(x=0, y=0)
         new_pos = resolver.resolve_movement(
-            attacker, "left", arena_width=8, arena_height=6
+            attacker, "left", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=0, y=0)
 
     def test_clamped_at_right_boundary(self, resolver, attacker):
         attacker.position = Position(x=7, y=0)
         new_pos = resolver.resolve_movement(
-            attacker, "right", arena_width=8, arena_height=6
+            attacker, "right", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=7, y=0)
 
     def test_clamped_at_top_boundary(self, resolver, attacker):
         attacker.position = Position(x=0, y=0)
         new_pos = resolver.resolve_movement(
-            attacker, "up", arena_width=8, arena_height=6
+            attacker, "up", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=0, y=0)
 
     def test_clamped_at_bottom_boundary(self, resolver, attacker):
         attacker.position = Position(x=0, y=5)
         new_pos = resolver.resolve_movement(
-            attacker, "down", arena_width=8, arena_height=6
+            attacker, "down", arena=Arena(width=8, height=6)
         )
         assert new_pos == Position(x=0, y=5)
 
     def test_null_direction_stays_put(self, resolver, attacker):
         new_pos = resolver.resolve_movement(
-            attacker, None, arena_width=8, arena_height=6
+            attacker, None, arena=Arena(width=8, height=6)
         )
         assert new_pos == attacker.position
 
     def test_invalid_direction_stays_put(self, resolver, attacker):
         new_pos = resolver.resolve_movement(
-            attacker, "teleport", arena_width=8, arena_height=6
+            attacker, "teleport", arena=Arena(width=8, height=6)
         )
+        assert new_pos == attacker.position
+
+    def test_rift_blocks_movement(self, resolver, attacker):
+        arena = Arena(
+            width=8,
+            height=6,
+            terrain={"1,0": TerrainType.RIFT.value},
+        )
+
+        new_pos = resolver.resolve_movement(attacker, "right", arena=arena)
+
         assert new_pos == attacker.position
 
 
@@ -368,6 +463,19 @@ class TestHazards:
         # Occupy (0,0)
         occupied = [Position(x=0, y=0)]
         hazard = resolver.spawn_hazard(arena, occupied_positions=occupied)
+        if hazard is not None:
+            assert hazard.position != Position(x=0, y=0)
+
+    def test_spawn_hazard_avoids_rift_tiles(self, resolver):
+        arena = Arena(
+            width=2,
+            height=1,
+            terrain={"0,0": TerrainType.RIFT.value},
+            hazards=[],
+        )
+
+        hazard = resolver.spawn_hazard(arena, occupied_positions=[])
+
         if hazard is not None:
             assert hazard.position != Position(x=0, y=0)
 

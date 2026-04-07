@@ -23,6 +23,7 @@ ActionType = state_module.ActionType
 ActionResponse = state_module.ActionResponse
 StatusEffect = state_module.StatusEffect
 TurnLog = state_module.TurnLog
+TerrainType = state_module.TerrainType
 MockLLMClient = mock_client_module.MockLLMClient
 AdapterResult = adapter_module.AdapterResult
 LLMAdapter = adapter_module.LLMAdapter
@@ -65,6 +66,37 @@ async def collect_turn(turn_log: TurnLog, sink: list[TurnLog]) -> None:
 
 
 class TestGameEngine:
+    def test_ensure_state_generates_symmetric_terrain(self):
+        fighter_ids = ["striker", "guardian"]
+        engine = GameEngine(
+            MatchConfig(fighter_ids=fighter_ids, max_turns=3, seed=42),
+            llm_clients=make_clients(fighter_ids, seed_base=5),
+        )
+
+        engine._ensure_state()
+
+        assert engine.state is not None
+        assert engine.state.arena.terrain
+        for key, value in engine.state.arena.terrain.items():
+            x_str, y_str = key.split(",")
+            mirror = f"{engine.state.arena.width - 1 - int(x_str)},{int(y_str)}"
+            assert engine.state.arena.terrain.get(mirror) == value
+
+    def test_ensure_state_keeps_fighter_spawns_open(self):
+        fighter_ids = ["striker", "guardian"]
+        engine = GameEngine(
+            MatchConfig(fighter_ids=fighter_ids, max_turns=3, seed=42),
+            llm_clients=make_clients(fighter_ids, seed_base=5),
+        )
+
+        engine._ensure_state()
+
+        assert engine.state is not None
+        for fighter in engine.state.fighters:
+            assert (
+                engine.state.arena.get_terrain_at(fighter.position) == TerrainType.OPEN
+            )
+
     @pytest.mark.asyncio
     async def test_match_runs_to_completion(self):
         fighter_ids = ["striker", "guardian"]

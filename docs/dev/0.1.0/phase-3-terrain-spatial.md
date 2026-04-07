@@ -286,20 +286,43 @@ After completing all tasks:
 
 > *This section is filled by the executor after phase completion. Do not pre-fill.*
 
-**Completed by:** _(executor name/model)_
-**Date:** _(date)_
+**Completed by:** gpt-5.4
+**Date:** 2026-04-07
 
 **What was done:**
+- Added `TerrainType`, sparse terrain storage, passability/lookup helpers, and ASCII arena rendering in `state.py`.
+- Added `TerrainGenerator` in `engine/terrain.py` with seeded mirrored generation, start-zone protection, and connectivity validation.
+- Integrated terrain into damage resolution, movement blocking, hazard spawning, fighter perspective payloads, and match initialization.
+- Added terrain-specific tests in new `backend/tests/test_terrain.py` and expanded state/combat/game coverage for terrain behavior.
 
 **What passed:**
+- Focused terrain/state/combat/game test run: `97 passed`.
+- LSP diagnostics clean for `engine/state.py`, `engine/combat.py`, and `engine/game.py`.
 
 **What failed or was unexpected:**
+- Initial generator could underfill density because mirrored placement made odd target counts unattainable; fixed by normalizing target counts to achievable mirrored totals.
+- Initial random distribution could produce zero rifts in some seeds; added a minimum-rift safeguard so sample layouts consistently include the full terrain set while staying in density bounds.
 
 **Terrain generation stats (sample 10 seeds):**
+- seed=0 total=10 high_ground=4 cover=4 rift=2
+- seed=1 total=8 high_ground=2 cover=4 rift=2
+- seed=2 total=8 high_ground=2 cover=2 rift=4
+- seed=3 total=8 high_ground=2 cover=4 rift=2
+- seed=4 total=8 high_ground=2 cover=4 rift=2
+- seed=5 total=12 high_ground=6 cover=4 rift=2
+- seed=6 total=12 high_ground=4 cover=4 rift=4
+- seed=7 total=10 high_ground=4 cover=4 rift=2
+- seed=8 total=8 high_ground=2 cover=4 rift=2
+- seed=9 total=10 high_ground=4 cover=2 rift=4
 
 **What changed from plan:**
+- Used the sparse `dict[str, str]` terrain representation described in the task.
+- Kept `calculate_damage()` and `resolve_movement()` backward-compatible with optional `arena` parameters to minimize signature breakage outside terrain-aware call sites.
+- Applied a small generator constraint (minimum 2 rift tiles on standard layouts) to keep the generated terrain set representative across reproducible seeds.
 
 **State left for Phase 4:**
+- `to_fighter_perspective()` now includes `arena_grid`, ready for prompt-contract updates.
+- Terrain mechanics are engine-real and test-covered; Phase 4 can reference them without additional engine work.
 
 ---
 

@@ -8,6 +8,7 @@ from collections.abc import Awaitable, Callable
 from pydantic import BaseModel, Field, model_validator
 
 from llm_smash.engine.combat import CombatResolver
+from llm_smash.engine.terrain import TerrainGenerator
 from llm_smash.engine.state import (
     ActionResponse,
     ActionType,
@@ -210,8 +211,7 @@ class GameEngine:
             new_position = self.combat.resolve_movement(
                 fighter,
                 response.move["direction"] if response.move else None,
-                self.state.arena.width,
-                self.state.arena.height,
+                arena=self.state.arena,
             )
             if new_position != fighter.position:
                 fighter.position = new_position
@@ -268,6 +268,7 @@ class GameEngine:
                     opponent,
                     ability,
                     is_defending=opponent.id in defending,
+                    arena=self.state.arena,
                 )
                 pending_damage[opponent.id] += damage
                 pending_effects.append((fighter_id, opponent.id, ability.name))
@@ -570,10 +571,15 @@ class GameEngine:
         fighters = [get_fighter(fighter_id) for fighter_id in self.config.fighter_ids]
         fighters[0].position = Position(x=1, y=3)
         fighters[1].position = Position(x=6, y=3)
+        arena = Arena()
+        TerrainGenerator(seed=self.config.seed).generate(
+            arena,
+            start_positions=[fighter.position for fighter in fighters],
+        )
 
         self.state = BattleState(
             fighters=fighters,
-            arena=Arena(),
+            arena=arena,
             phase=MatchPhase.READY,
         )
 
