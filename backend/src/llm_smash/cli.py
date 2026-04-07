@@ -52,13 +52,7 @@ def display_fighter_panel(fighter: Fighter, turn_log: TurnLog | None = None) -> 
     if turn_log:
         if fighter.id in turn_log.fumbles:
             fumbled = True
-            # Fumble reason fallback
             fumble_reason = "Cognitive breakdown"
-            resp = turn_log.actions.get(fighter.id)
-            if resp and resp.raw_response:
-                fumble_reason = resp.raw_response[:100] + (
-                    "..." if len(resp.raw_response) > 100 else ""
-                )
         else:
             resp = turn_log.actions.get(fighter.id)
             if resp:
