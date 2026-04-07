@@ -169,7 +169,20 @@ Only add them when the active SSOT set stops being enough.
 
 ---
 
-## 9. Line Snapshot Registry (Informational Only)
+## 9. TDD Planning Discipline
+
+When `PLAN.md` or any future phase-specific TDD plan is expanded into executable work, the plan should scale to the real workload instead of using fixed ceremony.
+
+- Split into phases, batches, and tasks only when the work size justifies it.
+- Each phase should define: goal, execution rules, red/green acceptance, self-audit, self-check/self-optimization, and a writeback section.
+- Phase writeback is mandatory: once a phase finishes, append a short execution brief at the end of that phase so the plan remains a living record instead of a stale checklist.
+- The end of one phase should make the next step obvious. Plans should preserve a self-looping execution chain rather than stopping at “tasks completed.”
+
+`AGENTS.md` is the repo-level enforcement point for this rule; use this file to understand how it fits into the broader docs system.
+
+---
+
+## 10. Line Snapshot Registry (Informational Only)
 
 These line ranges are a snapshot for auditability as of **2026-04-07**. They are not the source of truth.
 

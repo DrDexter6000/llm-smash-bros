@@ -4,6 +4,8 @@
 
 **English | [中文](./README.zh.md)**
 
+![LLM Smash Bros banner](./assets/llm_smash_banner.png)
+
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║     LLM SMASH BROS — 大模型大乱斗                        ║

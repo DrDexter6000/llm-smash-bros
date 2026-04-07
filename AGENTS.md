@@ -80,3 +80,17 @@ Valid fighter IDs are fixed in `backend/src/llm_smash/fighters/roster.py`:
 
 - If a change affects product meaning, update `docs/dev/` in the same change.
 - Use `document + section number` references (`PRD §5.2`, `PLAN §5 Phase C`) rather than relying on line numbers.
+
+## TDD Plan Discipline
+
+- If you create or revise a TDD plan, scale the structure to the actual task size. Decide deliberately whether the work needs separate phases, batches, and tasks; do not split mechanically, and do not collapse complex work into one blob.
+- A phase must be a self-contained loop, not just a heading. Each phase should include:
+  - purpose / goal
+  - execution rules (`can do` vs `must not do`)
+  - acceptance criteria with explicit red/green conditions
+  - self-audit and self-check expectations
+  - self-optimization / retry guidance when the first pass is weak
+  - a required execution writeback section at the **end of that phase**
+- The execution writeback is mandatory. After completing a phase, append a short execution brief to the end of that phase in the TDD document covering what was done, what passed, what failed, what changed from plan, and what the next phase is starting with.
+- Plans should preserve forward motion. Once a phase is complete and its writeback is recorded, the next logical phase/batch/task should be obvious enough to start without re-deriving the whole plan.
+- Do not write TDD plans that only contain task lists. The plan must define the closed loop: intent → red/green check → audit → writeback → next step.
