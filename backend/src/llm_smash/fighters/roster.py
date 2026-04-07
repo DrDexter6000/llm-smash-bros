@@ -37,7 +37,7 @@ RESPONSE FORMAT — respond with ONLY this JSON object, nothing else:
   "action": {"type": "attack", "ability": "<exact ability name>", "target": "<opponent id>"},
   "move": {"direction": "<up|down|left|right|up-left|up-right|down-left|down-right>" or null},
   "tactical_summary": "<1-2 sentences: what you are doing and why. Written for spectator display.>",
-  "trash_talk": "<a witty, competitive taunt>"
+  "trash_talk": "<a witty, competitive taunt — roast the opponent's company or manufacturer if you can identify it, using standard AI/tech terminology for humor>"
 }
 
 For defend/wait, omit "ability" and "target":

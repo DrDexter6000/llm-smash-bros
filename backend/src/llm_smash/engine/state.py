@@ -219,7 +219,10 @@ class Arena(BaseModel):
         )
 
     def to_ascii_grid(
-        self, fighters: list[Fighter], perspective_fighter_id: str = ""
+        self,
+        fighters: list[Fighter],
+        perspective_fighter_id: str = "",
+        legend_override: str = "",
     ) -> str:
         """Generate compact ASCII arena representation for prompts."""
         terrain_symbols = {
@@ -251,7 +254,7 @@ class Arena(BaseModel):
             rows.append(f"{y} {''.join(row_chars)}")
 
         rows.append("")
-        rows.append("A=You  B=Opponent")
+        rows.append(legend_override or "A=You  B=Opponent")
         rows.append("H=High Ground  C=Cover  #=Rift  .=Open")
         if self.hazards:
             hazard_summary = ", ".join(

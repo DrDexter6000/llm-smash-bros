@@ -41,7 +41,9 @@ def get_hp_color(hp: int, max_hp: int) -> str:
     return "red"
 
 
-def display_fighter_panel(fighter: Fighter, turn_log: TurnLog | None = None) -> Panel:
+def display_fighter_panel(
+    fighter: Fighter, turn_log: TurnLog | None = None, model_label: str = ""
+) -> Panel:
     """Render a rich Panel for a single fighter's status and last action."""
     action_text = "None"
     tactical_summary = ""
@@ -104,24 +106,46 @@ def display_fighter_panel(fighter: Fighter, turn_log: TurnLog | None = None) -> 
         if trash_talk:
             content.add_row(f'Trash: [white]"{trash_talk}"[/white]')
 
+    panel_title = fighter.codename.upper()
+    if model_label:
+        panel_title += f" ({model_label})"
+
     return Panel(
         content,
-        title=f"[{hp_color} bold]{fighter.codename.upper()}[/]",
+        title=f"[{hp_color} bold]{panel_title}[/]",
         title_align="left",
         border_style=hp_color,
     )
 
 
 def display_turn(
-    engine: GameEngine, turn_log: TurnLog, fighters: dict[str, Fighter]
+    engine: GameEngine,
+    turn_log: TurnLog,
+    fighters: dict[str, Fighter],
+    model_labels: dict[str, str] | None = None,
 ) -> None:
     """Print the full turn display including arena and fighters."""
     assert engine.state is not None
+    model_labels = model_labels or {}
 
-    # Use the first fighter as A, second as B
+    # Build legend with model names
+    if len(engine.state.fighters) >= 2:
+        f0, f1 = engine.state.fighters[0], engine.state.fighters[1]
+        a_label = f"{f0.codename}"
+        b_label = f"{f1.codename}"
+        if f0.id in model_labels:
+            a_label += f" ({model_labels[f0.id]})"
+        if f1.id in model_labels:
+            b_label += f" ({model_labels[f1.id]})"
+        legend = f"A={a_label}  B={b_label}"
+    else:
+        legend = ""
+
     perspective_id = engine.state.fighters[0].id if engine.state.fighters else ""
     arena_grid = engine.state.arena.to_ascii_grid(
-        engine.state.fighters, perspective_fighter_id=perspective_id
+        engine.state.fighters,
+        perspective_fighter_id=perspective_id,
+        legend_override=legend,
     )
 
     grid_panel = Panel(
@@ -151,7 +175,9 @@ def display_turn(
 
     fighter_panels = []
     for f in engine.state.fighters:
-        fighter_panels.append(display_fighter_panel(f, turn_log))
+        fighter_panels.append(
+            display_fighter_panel(f, turn_log, model_label=model_labels.get(f.id, ""))
+        )
 
     console.rule(f"[bold white]TURN {turn_log.turn_number}[/bold white]")
     console.print(grid_panel)
@@ -162,7 +188,11 @@ def display_turn(
     console.print("")
 
 
-def display_match_result(result: MatchResult, fighters_map: dict[str, Fighter]) -> None:
+def display_match_result(
+    result: MatchResult,
+    fighters_map: dict[str, Fighter],
+    model_labels: dict[str, str] | None = None,
+) -> None:
     """Print the final match outcome statistics."""
     console.rule("[bold white]MATCH COMPLETE[/bold white]")
 
@@ -173,11 +203,16 @@ def display_match_result(result: MatchResult, fighters_map: dict[str, Fighter]) 
     stats_table.add_row("Turns played:", str(result.total_turns))
     stats_table.add_row("End reason:", result.end_reason)
 
+    model_labels = model_labels or {}
+
     if result.is_draw:
         stats_table.add_row("Winner:", "[yellow bold]DRAW![/yellow bold]")
     else:
         winner = fighters_map.get(result.winner or "")
         winner_name = winner.codename if winner else result.winner
+        winner_model = model_labels.get(result.winner or "", "")
+        if winner_model:
+            winner_name += f" ({winner_model})"
         stats_table.add_row("Winner:", f"[green bold]{winner_name}![/green bold]")
 
     stats_table.add_row("Total fumbles:", str(result.total_fumbles))
@@ -202,10 +237,13 @@ def save_replay(result: MatchResult, replay_dir: Path) -> Path:
 
 
 async def turn_callback(
-    turn_log: TurnLog, fighters: dict[str, Fighter], engine: GameEngine
+    turn_log: TurnLog,
+    fighters: dict[str, Fighter],
+    engine: GameEngine,
+    model_labels: dict[str, str] | None = None,
 ) -> None:
     """Callback passed to the engine to print each turn."""
-    display_turn(engine, turn_log, fighters)
+    display_turn(engine, turn_log, fighters, model_labels=model_labels)
 
 
 _SUPPORTED_PROVIDERS = {"openai", "anthropic"}
@@ -414,10 +452,31 @@ async def run_cli_match(
     fighter_a = get_archetype(fighter_ids[0])
     fighter_b = get_archetype(fighter_ids[1])
 
+    # Build model labels for display
+    model_labels: dict[str, str] = {}
+    if use_mock:
+        model_labels = {fid: "Mock" for fid in fighter_ids}
+    else:
+        from dotenv import load_dotenv
+
+        load_dotenv()
+        for idx, fid in enumerate(fighter_ids, start=1):
+            cfg = _read_fighter_env(idx)
+            model_labels[fid] = cfg["model"] or "Unknown"
+
+    a_display = fighter_a.codename
+    b_display = fighter_b.codename
+    a_model = model_labels.get(fighter_ids[0], "")
+    b_model = model_labels.get(fighter_ids[1], "")
+    if a_model:
+        a_display += f" ({a_model})"
+    if b_model:
+        b_display += f" ({b_model})"
+
     console.rule("[bold white]LLM SMASH BROS — 大模型大乱斗[/bold white]")
-    console.print(f"  [cyan]{fighter_a.codename}[/cyan] ({fighter_a.id})")
+    console.print(f"  [cyan]{a_display}[/cyan]")
     console.print("    vs")
-    console.print(f"  [magenta]{fighter_b.codename}[/magenta] ({fighter_b.id})")
+    console.print(f"  [magenta]{b_display}[/magenta]")
     console.print(
         f"  Max turns: {max_turns} | Mode: {'Mock' if use_mock else 'Live'} | Timeout: {effective_timeout}s"
     )
@@ -429,12 +488,12 @@ async def run_cli_match(
     fighters_map = {fighter.id: fighter for fighter in engine.state.fighters}
 
     async def callback(turn_log: TurnLog) -> None:
-        await turn_callback(turn_log, fighters_map, engine)
+        await turn_callback(turn_log, fighters_map, engine, model_labels=model_labels)
 
     engine.event_callback = callback
     result = await engine.run_match()
 
-    display_match_result(result, fighters_map)
+    display_match_result(result, fighters_map, model_labels=model_labels)
 
     # Save Replay
     saved_path = save_replay(result, replay_dir)
