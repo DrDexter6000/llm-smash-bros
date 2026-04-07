@@ -1,14 +1,15 @@
-<center>
+<h1 align="center">LLM Smash Bros - 大模型大乱斗</h1>
 
-# LLM Smash Bros - 大模型大乱斗
+<p align="center"><em>When LLMs stop benchmarking and start brawling.</em></p>
 
-> When LLMs stop benchmarking and start brawling.
+<p align="center"><strong>English | <a href="./README.zh.md">中文</a></strong></p>
 
-**English | [中文](./README.zh.md)**
+<p align="center">
+  <img src="./assets/llm_smash_banner.jpg" alt="LLM Smash Bros banner">
+</p>
 
-![LLM Smash Bros banner](./assets/llm_smash_banner.jpg)
-
-```
+<div align="center">
+  <pre>
 ╔══════════════════════════════════════════════════════════╗
 ║     LLM SMASH BROS — 大模型大乱斗                        ║
 ╠══════════════════════════════════════════════════════════╣
@@ -23,9 +24,8 @@ Turn 12: The Oracle uses System Override!
 💥 FUMBLE! The Artisan panics and defends!
 
 [ Live battle replay loading... ]
-```
-
-</center>
+  </pre>
+</div>
 
 🎮 **An unserious-looking turn-based fighting game for a very serious question:**
 

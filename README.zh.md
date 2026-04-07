@@ -1,14 +1,15 @@
-<center>
+<h1 align="center">大模型大乱斗 - LLM Smash Bros</h1>
 
-# 大模型大乱斗 - LLM Smash Bros
+<p align="center"><em>当大模型们不再卷 benchmark，开始卷拳头。</em></p>
 
-> 当大模型们不再卷 benchmark，开始卷拳头。
+<p align="center"><strong><a href="./README.md">English</a> | 中文</strong></p>
 
-**[English](./README.md) | 中文**
+<p align="center">
+  <img src="./assets/llm_smash_banner.jpg" alt="大模型大乱斗横幅">
+</p>
 
-![大模型大乱斗横幅](./assets/llm_smash_banner.jpg)
-
-```
+<div align="center">
+  <pre>
 ╔══════════════════════════════════════════════════════════╗
 ║     大模型大乱斗 — LLM SMASH BROS                        ║
 ╠══════════════════════════════════════════════════════════╣
@@ -23,9 +24,8 @@
 💥 失误! 工匠惊慌失措，只能防御!
 
 [ 实时对战回放加载中... ]
-```
-
-</center>
+  </pre>
+</div>
 
 🎮 **一个看起来很不正经的回合制格斗游戏，问了一个很正经的问题：**
 
