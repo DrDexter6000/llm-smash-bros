@@ -1,0 +1,987 @@
+{
+  "match_id": "9b193547-9cf3-451a-aea8-8f5bcd60069e",
+  "winner": "fighter_a",
+  "is_draw": false,
+  "total_turns": 3,
+  "total_fumbles": 0,
+  "turn_log": [
+    {
+      "turn_number": 1,
+      "actions": {
+        "fighter_a": {
+          "turn": 1,
+          "action": {
+            "type": "attack",
+            "ability": "Reckless Assault",
+            "target": "fighter_b"
+          },
+          "move": {
+            "direction": "down"
+          },
+          "tactical_summary": "Attacking with Reckless Assault to deal damage.",
+          "trash_talk": "You call that a forward pass?"
+        },
+        "fighter_b": {
+          "turn": 1,
+          "action": {
+            "type": "wait"
+          },
+          "move": {
+            "direction": "down"
+          },
+          "tactical_summary": "Waiting to recover energy.",
+          "trash_talk": "Your weights are undertrained."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "fighter_a",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker A moves to (1, 4)."
+        },
+        {
+          "type": "move",
+          "source_id": "fighter_b",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker B moves to (6, 4)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "fighter_a",
+          "target_id": "fighter_b",
+          "value": 9,
+          "description": "Berserker A uses Reckless Assault on Berserker B."
+        },
+        {
+          "type": "wait",
+          "source_id": "fighter_b",
+          "target_id": "",
+          "value": 5,
+          "description": "Berserker B waits and regains focus."
+        },
+        {
+          "type": "damage",
+          "source_id": "fighter_a",
+          "target_id": "fighter_b",
+          "value": 9,
+          "description": "Berserker B takes 9 damage."
+        },
+        {
+          "type": "self_damage",
+          "source_id": "fighter_a",
+          "target_id": "fighter_a",
+          "value": 8,
+          "description": "Berserker A takes 8 self-damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "9b193547-9cf3-451a-aea8-8f5bcd60069e",
+        "turn": 1,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "fighter_a",
+            "codename": "Berserker A",
+            "hp": 57,
+            "max_hp": 65,
+            "energy": 100,
+            "max_energy": 120,
+            "position": {
+              "x": 1,
+              "y": 4
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Reckless Assault",
+                "target": "fighter_b"
+              },
+              "move": {
+                "direction": "down"
+              },
+              "tactical_summary": "Attacking with Reckless Assault to deal damage.",
+              "trash_talk": "You call that a forward pass?"
+            }
+          },
+          {
+            "id": "fighter_b",
+            "codename": "Berserker B",
+            "hp": 56,
+            "max_hp": 65,
+            "energy": 120,
+            "max_energy": 120,
+            "position": {
+              "x": 6,
+              "y": 4
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "wait"
+              },
+              "move": {
+                "direction": "down"
+              },
+              "tactical_summary": "Waiting to recover energy.",
+              "trash_talk": "Your weights are undertrained."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,0": "high_ground",
+            "6,0": "high_ground",
+            "0,1": "cover",
+            "7,1": "cover",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,5": "high_ground",
+            "5,5": "high_ground",
+            "3,3": "rift",
+            "4,3": "rift",
+            "3,2": "cover",
+            "4,2": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 2,
+      "actions": {
+        "fighter_a": {
+          "turn": 2,
+          "action": {
+            "type": "defend"
+          },
+          "move": {
+            "direction": "down-left"
+          },
+          "tactical_summary": "Defending to reduce incoming damage.",
+          "trash_talk": "Even BERT could beat you."
+        },
+        "fighter_b": {
+          "turn": 2,
+          "action": {
+            "type": "attack",
+            "ability": "Bloodlust",
+            "target": "fighter_a"
+          },
+          "move": {
+            "direction": "down-right"
+          },
+          "tactical_summary": "Attacking with Bloodlust to deal damage.",
+          "trash_talk": "Even BERT could beat you."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "fighter_a",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker A moves to (0, 5)."
+        },
+        {
+          "type": "move",
+          "source_id": "fighter_b",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker B moves to (7, 5)."
+        },
+        {
+          "type": "defend",
+          "source_id": "fighter_a",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker A braces for impact."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "fighter_b",
+          "target_id": "fighter_a",
+          "value": 0,
+          "description": "Berserker B uses Bloodlust on Berserker A."
+        },
+        {
+          "type": "status_applied",
+          "source_id": "fighter_b",
+          "target_id": "fighter_b",
+          "value": 0,
+          "description": "Berserker B gains damage_boost for 2 turn(s)."
+        },
+        {
+          "type": "self_damage",
+          "source_id": "fighter_b",
+          "target_id": "fighter_b",
+          "value": 10,
+          "description": "Berserker B takes 10 self-damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "9b193547-9cf3-451a-aea8-8f5bcd60069e",
+        "turn": 2,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "fighter_a",
+            "codename": "Berserker A",
+            "hp": 57,
+            "max_hp": 65,
+            "energy": 105,
+            "max_energy": 120,
+            "position": {
+              "x": 0,
+              "y": 5
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "defend"
+              },
+              "move": {
+                "direction": "down-left"
+              },
+              "tactical_summary": "Defending to reduce incoming damage.",
+              "trash_talk": "Even BERT could beat you."
+            }
+          },
+          {
+            "id": "fighter_b",
+            "codename": "Berserker B",
+            "hp": 46,
+            "max_hp": 65,
+            "energy": 110,
+            "max_energy": 120,
+            "position": {
+              "x": 7,
+              "y": 5
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 2,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Bloodlust",
+                "turns_remaining": 2,
+                "effect_type": "damage_boost",
+                "value": 0.4
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Bloodlust",
+                "target": "fighter_a"
+              },
+              "move": {
+                "direction": "down-right"
+              },
+              "tactical_summary": "Attacking with Bloodlust to deal damage.",
+              "trash_talk": "Even BERT could beat you."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,0": "high_ground",
+            "6,0": "high_ground",
+            "0,1": "cover",
+            "7,1": "cover",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,5": "high_ground",
+            "5,5": "high_ground",
+            "3,3": "rift",
+            "4,3": "rift",
+            "3,2": "cover",
+            "4,2": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 3,
+      "actions": {
+        "fighter_a": {
+          "turn": 3,
+          "action": {
+            "type": "wait"
+          },
+          "move": {
+            "direction": "up-right"
+          },
+          "tactical_summary": "Waiting to recover energy.",
+          "trash_talk": "Is that your best inference?"
+        },
+        "fighter_b": {
+          "turn": 3,
+          "action": {
+            "type": "wait"
+          },
+          "move": {
+            "direction": "up-right"
+          },
+          "tactical_summary": "Waiting to recover energy.",
+          "trash_talk": "My loss function just yawned."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "fighter_a",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker A moves to (1, 4)."
+        },
+        {
+          "type": "move",
+          "source_id": "fighter_b",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker B moves to (7, 4)."
+        },
+        {
+          "type": "wait",
+          "source_id": "fighter_a",
+          "target_id": "",
+          "value": 5,
+          "description": "Berserker A waits and regains focus."
+        },
+        {
+          "type": "wait",
+          "source_id": "fighter_b",
+          "target_id": "",
+          "value": 5,
+          "description": "Berserker B waits and regains focus."
+        }
+      ],
+      "state_after": {
+        "match_id": "9b193547-9cf3-451a-aea8-8f5bcd60069e",
+        "turn": 3,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "fighter_a",
+            "codename": "Berserker A",
+            "hp": 57,
+            "max_hp": 65,
+            "energy": 115,
+            "max_energy": 120,
+            "position": {
+              "x": 1,
+              "y": 4
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "wait"
+              },
+              "move": {
+                "direction": "up-right"
+              },
+              "tactical_summary": "Waiting to recover energy.",
+              "trash_talk": "Is that your best inference?"
+            }
+          },
+          {
+            "id": "fighter_b",
+            "codename": "Berserker B",
+            "hp": 46,
+            "max_hp": 65,
+            "energy": 120,
+            "max_energy": 120,
+            "position": {
+              "x": 7,
+              "y": 4
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 1,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Bloodlust",
+                "turns_remaining": 1,
+                "effect_type": "damage_boost",
+                "value": 0.4
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "wait"
+              },
+              "move": {
+                "direction": "up-right"
+              },
+              "tactical_summary": "Waiting to recover energy.",
+              "trash_talk": "My loss function just yawned."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,0": "high_ground",
+            "6,0": "high_ground",
+            "0,1": "cover",
+            "7,1": "cover",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,5": "high_ground",
+            "5,5": "high_ground",
+            "3,3": "rift",
+            "4,3": "rift",
+            "3,2": "cover",
+            "4,2": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    }
+  ],
+  "end_reason": "timeout"
+}

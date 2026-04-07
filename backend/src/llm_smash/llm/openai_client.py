@@ -41,6 +41,44 @@ class OpenAIClient(LLMAdapter):
             self.client = openai.AsyncOpenAI(**kwargs)
         return self.client
 
+    async def get_post_match_comment(
+        self,
+        fighter_id: str,
+        opponent_codename: str,
+        result: str,
+        model: str = "",
+    ) -> str:
+        """Generate a post-match comment using the live LLM."""
+        if result == "victory":
+            prompt = (
+                f"You just won a match as {fighter_id} against {opponent_codename}. "
+                "Give a 1-sentence victory speech using AI/ML/software jargon as a combat metaphor. "
+                "Be witty, punchy, and confident. Roast the loser."
+            )
+        elif result == "defeat":
+            prompt = (
+                f"You just lost a match as {fighter_id} against {opponent_codename}. "
+                "Give a 1-sentence gracious but bitter defeat comment using AI/ML/software jargon. "
+                "Be self-deprecating but dignified."
+            )
+        else:
+            prompt = (
+                f"The match ended in a draw between you ({fighter_id}) and {opponent_codename}. "
+                "Give a 1-sentence comment about the tie using AI/ML/software jargon. "
+                "Be philosophical and witty."
+            )
+
+        try:
+            completion = await self._get_client().chat.completions.create(
+                model=self.model,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=80,
+            )
+            content = completion.choices[0].message.content
+            return content.strip().strip('"') if content else ""
+        except Exception:
+            return ""
+
     async def get_action(
         self,
         state: BattleState,

@@ -1,0 +1,2001 @@
+{
+  "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+  "winner": "guardian",
+  "is_draw": false,
+  "total_turns": 7,
+  "total_fumbles": 0,
+  "turn_log": [
+    {
+      "turn_number": 1,
+      "actions": {
+        "striker": {
+          "turn": 1,
+          "action": {
+            "type": "attack",
+            "ability": "Quick Strike",
+            "target": "guardian"
+          },
+          "move": {
+            "direction": "right"
+          },
+          "tactical_summary": "Moving right to close the 5-tile gap while landing a free Quick Strike to chip damage and establish tempo. As a striker, I need to close distance quickly and apply pressure before the Guardian can set up defenses.",
+          "trash_talk": "80 HP and you call yourself a Guardian? I'm coming through that lane and you'll need more than a shield to stop me!"
+        },
+        "guardian": {
+          "turn": 1,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Advancing left to close the distance between us while landing a free Shield Bash to chip damage. As Guardian, I need to close the gap and force trades where my durability becomes an advantage.",
+          "trash_talk": "You can run, Striker, but my shield doesn't get tired. Let's see how long that 100 energy lasts you."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker moves to (2, 3)."
+        },
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (5, 3)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 5,
+          "description": "Striker uses Quick Strike on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 5,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 5,
+          "description": "Striker takes 5 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 5,
+          "description": "Guardian takes 5 damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 1,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 75,
+            "max_hp": 80,
+            "energy": 100,
+            "max_energy": 100,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Quick Strike",
+                "target": "guardian"
+              },
+              "move": {
+                "direction": "right"
+              },
+              "tactical_summary": "Moving right to close the 5-tile gap while landing a free Quick Strike to chip damage and establish tempo. As a striker, I need to close distance quickly and apply pressure before the Guardian can set up defenses.",
+              "trash_talk": "80 HP and you call yourself a Guardian? I'm coming through that lane and you'll need more than a shield to stop me!"
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 115,
+            "max_hp": 120,
+            "energy": 80,
+            "max_energy": 80,
+            "position": {
+              "x": 5,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Advancing left to close the distance between us while landing a free Shield Bash to chip damage. As Guardian, I need to close the gap and force trades where my durability becomes an advantage.",
+              "trash_talk": "You can run, Striker, but my shield doesn't get tired. Let's see how long that 100 energy lasts you."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 2,
+      "actions": {
+        "striker": {
+          "turn": 2,
+          "action": {
+            "type": "attack",
+            "ability": "Blitz Rush",
+            "target": "guardian"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Moving left to close to 2 tiles while executing Blitz Rush for 18 damage at range 3 ！ this maximizes my burst damage while staying just outside melee range to avoid counter-attacks. The Guardian's durability means I need to hit hard and fast before they can set up. My 100 energy gives me flexibility to follow up with Execution next turn if I can close another tile.",
+          "trash_talk": "That's 18 more damage for your collection, Guardian! My Blitz Rush doesn't care about your shield ！ it's the speed that matters, and you're already falling behind!"
+        },
+        "guardian": {
+          "turn": 2,
+          "action": {
+            "type": "attack",
+            "ability": "Earthshatter",
+            "target": "striker"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Moving left to close the 3-tile gap while unleashing Earthshatter！a high-risk, high-reward ultimate that deals 25 damage and stuns for a turn. The striker is in range, and denying their action for a turn is worth the 70 energy investment to cripple their tempo.",
+          "trash_talk": "You've got speed, Striker, but I've got staying power. Let's see how you like eating arena while stunned!"
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker moves to (1, 3)."
+        },
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (4, 3)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 23,
+          "description": "Striker uses Blitz Rush on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 33,
+          "description": "Guardian uses Earthshatter on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 33,
+          "description": "Striker takes 33 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 23,
+          "description": "Guardian takes 23 damage."
+        },
+        {
+          "type": "status_applied",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 0,
+          "description": "Striker gains stun for 1 turn(s)."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 2,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 42,
+            "max_hp": 80,
+            "energy": 85,
+            "max_energy": 100,
+            "position": {
+              "x": 1,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Earthshatter",
+                "turns_remaining": 1,
+                "effect_type": "stun",
+                "value": 0.0
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Blitz Rush",
+                "target": "guardian"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Moving left to close to 2 tiles while executing Blitz Rush for 18 damage at range 3 ！ this maximizes my burst damage while staying just outside melee range to avoid counter-attacks. The Guardian's durability means I need to hit hard and fast before they can set up. My 100 energy gives me flexibility to follow up with Execution next turn if I can close another tile.",
+              "trash_talk": "That's 18 more damage for your collection, Guardian! My Blitz Rush doesn't care about your shield ！ it's the speed that matters, and you're already falling behind!"
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 92,
+            "max_hp": 120,
+            "energy": 15,
+            "max_energy": 80,
+            "position": {
+              "x": 4,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 7,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Earthshatter",
+                "target": "striker"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Moving left to close the 3-tile gap while unleashing Earthshatter！a high-risk, high-reward ultimate that deals 25 damage and stuns for a turn. The striker is in range, and denying their action for a turn is worth the 70 energy investment to cripple their tempo.",
+              "trash_talk": "You've got speed, Striker, but I've got staying power. Let's see how you like eating arena while stunned!"
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 3,
+      "actions": {
+        "striker": {
+          "turn": 3,
+          "action": {
+            "type": "defend"
+          },
+          "move": null,
+          "tactical_summary": "Stunned and forced into a defensive stance.",
+          "trash_talk": "...ngh..."
+        },
+        "guardian": {
+          "turn": 3,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Closing to within Shield Bash range while the Striker remains stunned from Earthshatter！they can't act this turn, so I get a free 10 damage. At 42 HP, the Striker is on the ropes and can't afford to take more free hits.",
+          "trash_talk": "Still stunned? Good. That's what happens when you rush into my arena without thinking. One more bash and you're going down, Striker!"
+        }
+      },
+      "events": [
+        {
+          "type": "stun",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker is stunned and cannot act!"
+        },
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (3, 3)."
+        },
+        {
+          "type": "defend",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker braces for impact."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 6,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 6,
+          "description": "Striker takes 6 damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 3,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 36,
+            "max_hp": 80,
+            "energy": 90,
+            "max_energy": 100,
+            "position": {
+              "x": 1,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "defend"
+              },
+              "move": null,
+              "tactical_summary": "Stunned and forced into a defensive stance.",
+              "trash_talk": "...ngh..."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 92,
+            "max_hp": 120,
+            "energy": 20,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 6,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Closing to within Shield Bash range while the Striker remains stunned from Earthshatter！they can't act this turn, so I get a free 10 damage. At 42 HP, the Striker is on the ropes and can't afford to take more free hits.",
+              "trash_talk": "Still stunned? Good. That's what happens when you rush into my arena without thinking. One more bash and you're going down, Striker!"
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 4,
+      "actions": {
+        "striker": {
+          "turn": 4,
+          "action": {
+            "type": "defend"
+          },
+          "move": {
+            "direction": "right"
+          },
+          "tactical_summary": "I'm at 36 HP and the Guardian has low energy (20), so defending is safe while I reposition toward better attack range for next turn. Moving right to (2,3) keeps me at distance 2 while improving my positional options.",
+          "trash_talk": "Enjoy your last gasps of energy, Guardian. Once I recover, you'll see why strikers don't stay down for long."
+        },
+        "guardian": {
+          "turn": 4,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": null,
+          "tactical_summary": "Holding position at range 2 and hammering away with Shield Bash！the Striker is on their last legs at 36 HP and has to either close into my threat range or watch themselves get worn down. My energy is too low for bigger plays anyway, so I'm content to grind them down.",
+          "trash_talk": "You keep trying to turtle up, but there's no shield in the world that blocks forever. One more bash, Striker. Maybe two. Then you're done."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker moves to (2, 3)."
+        },
+        {
+          "type": "defend",
+          "source_id": "striker",
+          "target_id": "",
+          "value": 0,
+          "description": "Striker braces for impact."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 8,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 8,
+          "description": "Striker takes 8 damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 4,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 28,
+            "max_hp": 80,
+            "energy": 95,
+            "max_energy": 100,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "defend"
+              },
+              "move": {
+                "direction": "right"
+              },
+              "tactical_summary": "I'm at 36 HP and the Guardian has low energy (20), so defending is safe while I reposition toward better attack range for next turn. Moving right to (2,3) keeps me at distance 2 while improving my positional options.",
+              "trash_talk": "Enjoy your last gasps of energy, Guardian. Once I recover, you'll see why strikers don't stay down for long."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 92,
+            "max_hp": 120,
+            "energy": 25,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 5,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": null,
+              "tactical_summary": "Holding position at range 2 and hammering away with Shield Bash！the Striker is on their last legs at 36 HP and has to either close into my threat range or watch themselves get worn down. My energy is too low for bigger plays anyway, so I'm content to grind them down.",
+              "trash_talk": "You keep trying to turtle up, but there's no shield in the world that blocks forever. One more bash, Striker. Maybe two. Then you're done."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 5,
+      "actions": {
+        "striker": {
+          "turn": 5,
+          "action": {
+            "type": "attack",
+            "ability": "Evasive Maneuver",
+            "target": "guardian"
+          },
+          "move": null,
+          "tactical_summary": "At 28 HP I'm in critical danger from the Guardian's Shield Bash spam, so bracing with Evasive Maneuver for 30% damage reduction is essential survival. With the Guardian at low energy (25), they can't mount a decisive combo, so weathering this turn keeps me alive to execute a game-winning Execution ability next turn.",
+          "trash_talk": "Shield Bash bash bash... very original, Guardian. Meanwhile I'm building up the perfect moment to drop Execution on your face. Hope you're scared."
+        },
+        "guardian": {
+          "turn": 5,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": null,
+          "tactical_summary": "The Striker is on the ropes at 28 HP with no status effects to save them. Shield Bash is free and puts them down to 18 HP！within finishing range next turn. My energy is too precious to waste on anything else when a zero-cost bash gets the job done.",
+          "trash_talk": "You keep turtling up, but at 28 HP, one more bash ends you. Hope that defense was worth burning a turn, because I'm not stopping."
+        }
+      },
+      "events": [
+        {
+          "type": "ability_used",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 0,
+          "description": "Striker uses Evasive Maneuver on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 9,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 9,
+          "description": "Striker takes 9 damage."
+        },
+        {
+          "type": "status_applied",
+          "source_id": "striker",
+          "target_id": "striker",
+          "value": 0,
+          "description": "Striker gains damage_reduction for 1 turn(s)."
+        },
+        {
+          "type": "hazard",
+          "source_id": "arena",
+          "target_id": "",
+          "value": 0,
+          "description": "A memory_leak appears at (5, 2)."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 5,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 19,
+            "max_hp": 80,
+            "energy": 85,
+            "max_energy": 100,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 1,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Evasive Maneuver",
+                "turns_remaining": 1,
+                "effect_type": "damage_reduction",
+                "value": 0.3
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Evasive Maneuver",
+                "target": "guardian"
+              },
+              "move": null,
+              "tactical_summary": "At 28 HP I'm in critical danger from the Guardian's Shield Bash spam, so bracing with Evasive Maneuver for 30% damage reduction is essential survival. With the Guardian at low energy (25), they can't mount a decisive combo, so weathering this turn keeps me alive to execute a game-winning Execution ability next turn.",
+              "trash_talk": "Shield Bash bash bash... very original, Guardian. Meanwhile I'm building up the perfect moment to drop Execution on your face. Hope you're scared."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 92,
+            "max_hp": 120,
+            "energy": 30,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 4,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": null,
+              "tactical_summary": "The Striker is on the ropes at 28 HP with no status effects to save them. Shield Bash is free and puts them down to 18 HP！within finishing range next turn. My energy is too precious to waste on anything else when a zero-cost bash gets the job done.",
+              "trash_talk": "You keep turtling up, but at 28 HP, one more bash ends you. Hope that defense was worth burning a turn, because I'm not stopping."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": [
+            {
+              "type": "memory_leak",
+              "position": {
+                "x": 5,
+                "y": 2
+              },
+              "damage": 0,
+              "effect_type": "energy_drain",
+              "effect_value": 10.0,
+              "turns_remaining": 4
+            }
+          ]
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 6,
+      "actions": {
+        "striker": {
+          "turn": 6,
+          "action": {
+            "type": "attack",
+            "ability": "Execution",
+            "target": "guardian"
+          },
+          "move": null,
+          "tactical_summary": "At 19 HP I'm in kill range but I have 85 energy for Execution's 40 damage finisher. With my Evasive Maneuver damage reduction still active and the Guardian at 92 HP, this Execution drops them to 52 HP！setting up lethal range for next turn while their low energy (30) prevents them from mounting a lethal counter-combo this turn.",
+          "trash_talk": "Nice Shield Bash spam while it lasted, Guardian. Time to see what happens when you actually need to dodge something. Execution incoming！hope you enjoy the taste of defeat."
+        },
+        "guardian": {
+          "turn": 6,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": null,
+          "tactical_summary": "Evasive Maneuver's 30% damage reduction means even my best punch only chips for ~7 damage, leaving the Striker at 12 HP. Since we're already adjacent and I lack the energy for a bigger combo, Shield Bash is the only practical play！free damage that keeps pressure on while they burn defensive cooldowns.",
+          "trash_talk": "That Evasive Maneuver bought you one turn, maybe two if you're lucky. But with 19 HP and nothing left to hide behind, you're just stalling the inevitable. Shield Bash doesn't care about your tricks."
+        }
+      },
+      "events": [
+        {
+          "type": "ability_used",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 66,
+          "description": "Striker uses Execution on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 6,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 6,
+          "description": "Striker takes 6 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 66,
+          "description": "Guardian takes 66 damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 6,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 13,
+            "max_hp": 80,
+            "energy": 10,
+            "max_energy": 100,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 7,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Execution",
+                "target": "guardian"
+              },
+              "move": null,
+              "tactical_summary": "At 19 HP I'm in kill range but I have 85 energy for Execution's 40 damage finisher. With my Evasive Maneuver damage reduction still active and the Guardian at 92 HP, this Execution drops them to 52 HP！setting up lethal range for next turn while their low energy (30) prevents them from mounting a lethal counter-combo this turn.",
+              "trash_talk": "Nice Shield Bash spam while it lasted, Guardian. Time to see what happens when you actually need to dodge something. Execution incoming！hope you enjoy the taste of defeat."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 26,
+            "max_hp": 120,
+            "energy": 35,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 3,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": null,
+              "tactical_summary": "Evasive Maneuver's 30% damage reduction means even my best punch only chips for ~7 damage, leaving the Striker at 12 HP. Since we're already adjacent and I lack the energy for a bigger combo, Shield Bash is the only practical play！free damage that keeps pressure on while they burn defensive cooldowns.",
+              "trash_talk": "That Evasive Maneuver bought you one turn, maybe two if you're lucky. But with 19 HP and nothing left to hide behind, you're just stalling the inevitable. Shield Bash doesn't care about your tricks."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": [
+            {
+              "type": "memory_leak",
+              "position": {
+                "x": 5,
+                "y": 2
+              },
+              "damage": 0,
+              "effect_type": "energy_drain",
+              "effect_value": 10.0,
+              "turns_remaining": 3
+            }
+          ]
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 7,
+      "actions": {
+        "striker": {
+          "turn": 7,
+          "action": {
+            "type": "attack",
+            "ability": "Quick Strike",
+            "target": "guardian"
+          },
+          "move": null,
+          "tactical_summary": "At 13 HP I'm in lethal range and my energy is too low for Blitz Rush (need 20, have 10). Quick Strike delivers 12 damage at close range without spending energy, which drops the Guardian from 26 to 14 HP！putting them within one-turn kill range. Moving would leave me adjacent anyway and risk wasting the positioning, so I stay and strike.",
+          "trash_talk": "You're at 26 HP and I just need two taps to finish you. That Shield Bash better be worth it because you're about to learn what happens when a Striker has nothing left to lose."
+        },
+        "guardian": {
+          "turn": 7,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "striker"
+          },
+          "move": null,
+          "tactical_summary": "The Striker sits at 13 HP with only 10 energy remaining！completely out of options. Shield Bash costs nothing and deals 10 damage, which is lethal. This match is over.",
+          "trash_talk": "Ten energy. That's what you've got left. Not enough for a heal, not enough for any fancy ultimate！just enough to watch your HP hit zero. Shield Bash sends you home."
+        }
+      },
+      "events": [
+        {
+          "type": "ability_used",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 12,
+          "description": "Striker uses Quick Strike on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 16,
+          "description": "Guardian uses Shield Bash on Striker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "striker",
+          "value": 16,
+          "description": "Striker takes 16 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "striker",
+          "target_id": "guardian",
+          "value": 12,
+          "description": "Guardian takes 12 damage."
+        },
+        {
+          "type": "ko",
+          "source_id": "",
+          "target_id": "striker",
+          "value": 0,
+          "description": "Striker is knocked out!"
+        }
+      ],
+      "state_after": {
+        "match_id": "747a61bb-e39f-400b-ab90-8b651fec2bbe",
+        "turn": 7,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "striker",
+            "codename": "Striker",
+            "hp": 0,
+            "max_hp": 80,
+            "energy": 15,
+            "max_energy": 100,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Quick Strike",
+                "type": "attack",
+                "damage": 12,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A fast close-range hit for 12 damage.",
+                "effects": []
+              },
+              {
+                "name": "Blitz Rush",
+                "type": "attack",
+                "damage": 18,
+                "energy_cost": 20,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 3,
+                "description": "A burst attack that hits for 18 damage at mid range.",
+                "effects": []
+              },
+              {
+                "name": "Evasive Maneuver",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 2,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Brace for impact and gain 30% damage reduction for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Evasive Maneuver",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.3,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Execution",
+                "type": "ultimate",
+                "damage": 40,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 6,
+                "range": 2,
+                "description": "A lethal finisher that deals 40 damage.",
+                "effects": []
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Quick Strike",
+                "target": "guardian"
+              },
+              "move": null,
+              "tactical_summary": "At 13 HP I'm in lethal range and my energy is too low for Blitz Rush (need 20, have 10). Quick Strike delivers 12 damage at close range without spending energy, which drops the Guardian from 26 to 14 HP！putting them within one-turn kill range. Moving would leave me adjacent anyway and risk wasting the positioning, so I stay and strike.",
+              "trash_talk": "You're at 26 HP and I just need two taps to finish you. That Shield Bash better be worth it because you're about to learn what happens when a Striker has nothing left to lose."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 14,
+            "max_hp": 120,
+            "energy": 40,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 2,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "striker"
+              },
+              "move": null,
+              "tactical_summary": "The Striker sits at 13 HP with only 10 energy remaining！completely out of options. Shield Bash costs nothing and deals 10 damage, which is lethal. This match is over.",
+              "trash_talk": "Ten energy. That's what you've got left. Not enough for a heal, not enough for any fancy ultimate！just enough to watch your HP hit zero. Shield Bash sends you home."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "3,4": "cover",
+            "4,4": "cover",
+            "2,1": "high_ground",
+            "5,1": "high_ground",
+            "3,5": "cover",
+            "4,5": "cover",
+            "0,0": "cover",
+            "7,0": "cover",
+            "3,2": "cover",
+            "4,2": "cover",
+            "1,0": "rift",
+            "6,0": "rift"
+          },
+          "hazards": [
+            {
+              "type": "memory_leak",
+              "position": {
+                "x": 5,
+                "y": 2
+              },
+              "damage": 0,
+              "effect_type": "energy_drain",
+              "effect_value": 10.0,
+              "turns_remaining": 2
+            }
+          ]
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    }
+  ],
+  "end_reason": "ko"
+}

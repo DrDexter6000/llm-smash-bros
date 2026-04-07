@@ -1,0 +1,1291 @@
+{
+  "match_id": "7ca97420-5fa6-42a2-832f-2e4b656a4bf5",
+  "winner": null,
+  "is_draw": true,
+  "total_turns": 4,
+  "total_fumbles": 0,
+  "turn_log": [
+    {
+      "turn_number": 1,
+      "actions": {
+        "berserker": {
+          "turn": 1,
+          "action": {
+            "type": "attack",
+            "ability": "Wild Swing",
+            "target": "guardian"
+          },
+          "move": {
+            "direction": "right"
+          },
+          "tactical_summary": "Moving right to close distance while using Wild Swing to establish aggression and chip damage early.",
+          "trash_talk": "120 HP? Cute. I'll burn through that shield like tissue paper. Guardian players always forget that bigger health pools just mean more glory for me when I crush them."
+        },
+        "guardian": {
+          "turn": 1,
+          "action": {
+            "type": "defend"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Fortifying on turn 1 to establish my defensive stance while closing distance to the Berserker, who is out of my attack range at distance 5. The 40% damage reduction will help me outlast their burst potential as I close the gap over the next few turns.",
+          "trash_talk": "A Berserker with 120 energy? That's adorable. They're just a toddler with a tantrum, and I'm the immovable object waiting to ruin their day."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "berserker",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker moves to (2, 3)."
+        },
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (5, 3)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 5,
+          "description": "Berserker uses Wild Swing on Guardian."
+        },
+        {
+          "type": "defend",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian braces for impact."
+        },
+        {
+          "type": "damage",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 5,
+          "description": "Guardian takes 5 damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "7ca97420-5fa6-42a2-832f-2e4b656a4bf5",
+        "turn": 1,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "berserker",
+            "codename": "Berserker",
+            "hp": 65,
+            "max_hp": 65,
+            "energy": 120,
+            "max_energy": 120,
+            "position": {
+              "x": 2,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Wild Swing",
+                "target": "guardian"
+              },
+              "move": {
+                "direction": "right"
+              },
+              "tactical_summary": "Moving right to close distance while using Wild Swing to establish aggression and chip damage early.",
+              "trash_talk": "120 HP? Cute. I'll burn through that shield like tissue paper. Guardian players always forget that bigger health pools just mean more glory for me when I crush them."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 115,
+            "max_hp": 120,
+            "energy": 80,
+            "max_energy": 80,
+            "position": {
+              "x": 5,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "defend"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Fortifying on turn 1 to establish my defensive stance while closing distance to the Berserker, who is out of my attack range at distance 5. The 40% damage reduction will help me outlast their burst potential as I close the gap over the next few turns.",
+              "trash_talk": "A Berserker with 120 energy? That's adorable. They're just a toddler with a tantrum, and I'm the immovable object waiting to ruin their day."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,5": "cover",
+            "6,5": "cover",
+            "2,5": "cover",
+            "5,5": "cover",
+            "1,0": "rift",
+            "6,0": "rift",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,1": "cover",
+            "5,1": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 2,
+      "actions": {
+        "berserker": {
+          "turn": 2,
+          "action": {
+            "type": "attack",
+            "ability": "Bloodlust",
+            "target": "berserker"
+          },
+          "move": {
+            "direction": "right"
+          },
+          "tactical_summary": "Activating Bloodlust to gain 40% damage boost for the next 2 turns while advancing right to close distance to the Guardian, setting up for devastating burst damage on turn 3 now that their defend bonus has expired.",
+          "trash_talk": "Defended last turn? Cute shield, but my Bloodlust is already burning hot. Enjoy those 2 turns of 40% bonus damage hitting your face while I close in for the kill."
+        },
+        "guardian": {
+          "turn": 2,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "berserker"
+          },
+          "move": {
+            "direction": "left"
+          },
+          "tactical_summary": "Closing distance to range 2 with a leftward move while Shield Bash chips 10 damage. With Fortify's damage reduction still active, I can absorb their retaliation and continue pressing into melee range to set up Punishing Strike next turn.",
+          "trash_talk": "Their Wild Swing barely tickled through my shield！5 damage? That's not a berserker rage, that's a minor inconvenience. At this rate, I'll outlast them long after their energy burns out."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "berserker",
+          "target_id": "",
+          "value": 0,
+          "description": "Berserker moves to (3, 3)."
+        },
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (4, 3)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 0,
+          "description": "Berserker uses Bloodlust on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "berserker",
+          "value": 11,
+          "description": "Guardian uses Shield Bash on Berserker."
+        },
+        {
+          "type": "damage",
+          "source_id": "berserker",
+          "target_id": "berserker",
+          "value": 11,
+          "description": "Berserker takes 11 damage."
+        },
+        {
+          "type": "status_applied",
+          "source_id": "berserker",
+          "target_id": "berserker",
+          "value": 0,
+          "description": "Berserker gains damage_boost for 2 turn(s)."
+        },
+        {
+          "type": "self_damage",
+          "source_id": "berserker",
+          "target_id": "berserker",
+          "value": 10,
+          "description": "Berserker takes 10 self-damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "7ca97420-5fa6-42a2-832f-2e4b656a4bf5",
+        "turn": 2,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "berserker",
+            "codename": "Berserker",
+            "hp": 44,
+            "max_hp": 65,
+            "energy": 110,
+            "max_energy": 120,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 2,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Bloodlust",
+                "turns_remaining": 2,
+                "effect_type": "damage_boost",
+                "value": 0.4
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Bloodlust",
+                "target": "berserker"
+              },
+              "move": {
+                "direction": "right"
+              },
+              "tactical_summary": "Activating Bloodlust to gain 40% damage boost for the next 2 turns while advancing right to close distance to the Guardian, setting up for devastating burst damage on turn 3 now that their defend bonus has expired.",
+              "trash_talk": "Defended last turn? Cute shield, but my Bloodlust is already burning hot. Enjoy those 2 turns of 40% bonus damage hitting your face while I close in for the kill."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 115,
+            "max_hp": 120,
+            "energy": 80,
+            "max_energy": 80,
+            "position": {
+              "x": 4,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "berserker"
+              },
+              "move": {
+                "direction": "left"
+              },
+              "tactical_summary": "Closing distance to range 2 with a leftward move while Shield Bash chips 10 damage. With Fortify's damage reduction still active, I can absorb their retaliation and continue pressing into melee range to set up Punishing Strike next turn.",
+              "trash_talk": "Their Wild Swing barely tickled through my shield！5 damage? That's not a berserker rage, that's a minor inconvenience. At this rate, I'll outlast them long after their energy burns out."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,5": "cover",
+            "6,5": "cover",
+            "2,5": "cover",
+            "5,5": "cover",
+            "1,0": "rift",
+            "6,0": "rift",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,1": "cover",
+            "5,1": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 3,
+      "actions": {
+        "berserker": {
+          "turn": 3,
+          "action": {
+            "type": "attack",
+            "ability": "Reckless Assault",
+            "target": "guardian"
+          },
+          "move": null,
+          "tactical_summary": "Unleashing Reckless Assault at point-blank range to capitalize on the Bloodlust 40% damage boost active for 2 more turns, dealing approximately 31 damage while accepting 8 recoil to apply overwhelming pressure before my fragile HP becomes a liability.",
+          "trash_talk": "Shield Bash for 10 damage? My Reckless Assault is about to teach you the difference between a scratch and a gut wound. At 44 HP, I've got nothing left to lose！and everything to gain from turning your 115 into a statistic."
+        },
+        "guardian": {
+          "turn": 3,
+          "action": {
+            "type": "attack",
+            "ability": "Shield Bash",
+            "target": "berserker"
+          },
+          "move": null,
+          "tactical_summary": "Holding position at range 1 to capitalize on the adjacent positioning while Shield Bash chips away at their 44 HP. With my high durability and Fortify defense, I can weather their Bloodlust-enhanced retaliation while grinding them down through attrition.",
+          "trash_talk": "Bloodlust won't save you from chip damage, berserker. Your 40% boost means nothing when your HP bar is almost empty！I'll turn your rage into a slow death by a thousand shield bashes."
+        }
+      },
+      "events": [
+        {
+          "type": "ability_used",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 48,
+          "description": "Berserker uses Reckless Assault on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "berserker",
+          "value": 9,
+          "description": "Guardian uses Shield Bash on Berserker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "berserker",
+          "value": 9,
+          "description": "Berserker takes 9 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 48,
+          "description": "Guardian takes 48 damage."
+        },
+        {
+          "type": "self_damage",
+          "source_id": "berserker",
+          "target_id": "berserker",
+          "value": 8,
+          "description": "Berserker takes 8 self-damage."
+        }
+      ],
+      "state_after": {
+        "match_id": "7ca97420-5fa6-42a2-832f-2e4b656a4bf5",
+        "turn": 3,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "berserker",
+            "codename": "Berserker",
+            "hp": 27,
+            "max_hp": 65,
+            "energy": 90,
+            "max_energy": 120,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 1,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [
+              {
+                "name": "Bloodlust",
+                "turns_remaining": 1,
+                "effect_type": "damage_boost",
+                "value": 0.4
+              }
+            ],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Reckless Assault",
+                "target": "guardian"
+              },
+              "move": null,
+              "tactical_summary": "Unleashing Reckless Assault at point-blank range to capitalize on the Bloodlust 40% damage boost active for 2 more turns, dealing approximately 31 damage while accepting 8 recoil to apply overwhelming pressure before my fragile HP becomes a liability.",
+              "trash_talk": "Shield Bash for 10 damage? My Reckless Assault is about to teach you the difference between a scratch and a gut wound. At 44 HP, I've got nothing left to lose！and everything to gain from turning your 115 into a statistic."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 67,
+            "max_hp": 120,
+            "energy": 80,
+            "max_energy": 80,
+            "position": {
+              "x": 4,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 0,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Shield Bash",
+                "target": "berserker"
+              },
+              "move": null,
+              "tactical_summary": "Holding position at range 1 to capitalize on the adjacent positioning while Shield Bash chips away at their 44 HP. With my high durability and Fortify defense, I can weather their Bloodlust-enhanced retaliation while grinding them down through attrition.",
+              "trash_talk": "Bloodlust won't save you from chip damage, berserker. Your 40% boost means nothing when your HP bar is almost empty！I'll turn your rage into a slow death by a thousand shield bashes."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,5": "cover",
+            "6,5": "cover",
+            "2,5": "cover",
+            "5,5": "cover",
+            "1,0": "rift",
+            "6,0": "rift",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,1": "cover",
+            "5,1": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    },
+    {
+      "turn_number": 4,
+      "actions": {
+        "berserker": {
+          "turn": 4,
+          "action": {
+            "type": "attack",
+            "ability": "Unleashed Fury",
+            "target": "guardian"
+          },
+          "move": null,
+          "tactical_summary": "Pushing all my chips in with Unleashed Fury while Bloodlust is still active！45 base damage boosted to ~63 will leave the Guardian at ~4 HP. Even at 27 HP, the 15 HP self-cost is worth it to end this before my fragile chassis crumbles under their shield bashes.",
+          "trash_talk": "You've got a big shield and 120 HP, but I've got 90 energy and NOTHING LEFT TO LOSE. Unleashed Fury incoming！say goodbye to that 67 HP, Guardian. Your tank build won't save you from a berserker with nothing to fear."
+        },
+        "guardian": {
+          "turn": 4,
+          "action": {
+            "type": "attack",
+            "ability": "Earthshatter",
+            "target": "berserker"
+          },
+          "move": {
+            "direction": "down-left"
+          },
+          "tactical_summary": "Opponent is critically low at 27 HP with Bloodlust running out！Earthshatter for 25 damage will leave them at 2 HP, setting up the kill next turn while they scramble for survival. Closing to eliminate the distance threat before they can land another Reckless Assault.",
+          "trash_talk": "Bloodlust won't save you from gravity, berserker. Your 27 HP is about to become a cautionary tale about overcommitting with fragile frames！watch me turn your rage into regret."
+        }
+      },
+      "events": [
+        {
+          "type": "move",
+          "source_id": "guardian",
+          "target_id": "",
+          "value": 0,
+          "description": "Guardian moves to (3, 4)."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 97,
+          "description": "Berserker uses Unleashed Fury on Guardian."
+        },
+        {
+          "type": "ability_used",
+          "source_id": "guardian",
+          "target_id": "berserker",
+          "value": 28,
+          "description": "Guardian uses Earthshatter on Berserker."
+        },
+        {
+          "type": "damage",
+          "source_id": "guardian",
+          "target_id": "berserker",
+          "value": 28,
+          "description": "Berserker takes 28 damage."
+        },
+        {
+          "type": "damage",
+          "source_id": "berserker",
+          "target_id": "guardian",
+          "value": 97,
+          "description": "Guardian takes 97 damage."
+        },
+        {
+          "type": "self_damage",
+          "source_id": "berserker",
+          "target_id": "berserker",
+          "value": 15,
+          "description": "Berserker takes 15 self-damage."
+        },
+        {
+          "type": "ko",
+          "source_id": "",
+          "target_id": "berserker",
+          "value": 0,
+          "description": "Berserker is knocked out!"
+        },
+        {
+          "type": "ko",
+          "source_id": "",
+          "target_id": "guardian",
+          "value": 0,
+          "description": "Guardian is knocked out!"
+        }
+      ],
+      "state_after": {
+        "match_id": "7ca97420-5fa6-42a2-832f-2e4b656a4bf5",
+        "turn": 4,
+        "phase": "fighting",
+        "fighters": [
+          {
+            "id": "berserker",
+            "codename": "Berserker",
+            "hp": 0,
+            "max_hp": 65,
+            "energy": 15,
+            "max_energy": 120,
+            "position": {
+              "x": 3,
+              "y": 3
+            },
+            "abilities": [
+              {
+                "name": "Wild Swing",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A brutal swing that deals 14 damage.",
+                "effects": []
+              },
+              {
+                "name": "Bloodlust",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 15,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Bloodlust",
+                    "status_effect_type": "damage_boost",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  },
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 10
+                  }
+                ]
+              },
+              {
+                "name": "Reckless Assault",
+                "type": "attack",
+                "damage": 22,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Crash in for 22 damage and take 8 recoil damage.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 8
+                  }
+                ]
+              },
+              {
+                "name": "Unleashed Fury",
+                "type": "ultimate",
+                "damage": 45,
+                "energy_cost": 80,
+                "cooldown": 8,
+                "cooldown_remaining": 7,
+                "range": 2,
+                "description": "An all-in finisher for 45 damage that costs 15 HP.",
+                "effects": [
+                  {
+                    "type": "self_damage",
+                    "target": "self",
+                    "status_name": "",
+                    "status_effect_type": "",
+                    "status_value": 0.0,
+                    "status_duration": 0,
+                    "knockback_distance": 0,
+                    "self_damage": 15
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Unleashed Fury",
+                "target": "guardian"
+              },
+              "move": null,
+              "tactical_summary": "Pushing all my chips in with Unleashed Fury while Bloodlust is still active！45 base damage boosted to ~63 will leave the Guardian at ~4 HP. Even at 27 HP, the 15 HP self-cost is worth it to end this before my fragile chassis crumbles under their shield bashes.",
+              "trash_talk": "You've got a big shield and 120 HP, but I've got 90 energy and NOTHING LEFT TO LOSE. Unleashed Fury incoming！say goodbye to that 67 HP, Guardian. Your tank build won't save you from a berserker with nothing to fear."
+            }
+          },
+          {
+            "id": "guardian",
+            "codename": "Guardian",
+            "hp": 0,
+            "max_hp": 120,
+            "energy": 15,
+            "max_energy": 80,
+            "position": {
+              "x": 3,
+              "y": 4
+            },
+            "abilities": [
+              {
+                "name": "Shield Bash",
+                "type": "attack",
+                "damage": 10,
+                "energy_cost": 0,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "A sturdy bash that deals 10 damage.",
+                "effects": []
+              },
+              {
+                "name": "Fortify",
+                "type": "attack",
+                "damage": 0,
+                "energy_cost": 20,
+                "cooldown": 3,
+                "cooldown_remaining": 0,
+                "range": 0,
+                "description": "Gain 40% damage reduction for 2 turns.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "self",
+                    "status_name": "Fortify",
+                    "status_effect_type": "damage_reduction",
+                    "status_value": 0.4,
+                    "status_duration": 2,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Punishing Strike",
+                "type": "attack",
+                "damage": 14,
+                "energy_cost": 25,
+                "cooldown": 0,
+                "cooldown_remaining": 0,
+                "range": 2,
+                "description": "Strike for 14 damage and slow the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Punishing Strike",
+                    "status_effect_type": "slow",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              },
+              {
+                "name": "Earthshatter",
+                "type": "ultimate",
+                "damage": 25,
+                "energy_cost": 70,
+                "cooldown": 8,
+                "cooldown_remaining": 7,
+                "range": 4,
+                "description": "Smash the arena for 25 damage and stun the target for 1 turn.",
+                "effects": [
+                  {
+                    "type": "status_apply",
+                    "target": "opponent",
+                    "status_name": "Earthshatter",
+                    "status_effect_type": "stun",
+                    "status_value": 0.0,
+                    "status_duration": 1,
+                    "knockback_distance": 0,
+                    "self_damage": 0
+                  }
+                ]
+              }
+            ],
+            "status_effects": [],
+            "last_action": {
+              "action": {
+                "type": "attack",
+                "ability": "Earthshatter",
+                "target": "berserker"
+              },
+              "move": {
+                "direction": "down-left"
+              },
+              "tactical_summary": "Opponent is critically low at 27 HP with Bloodlust running out！Earthshatter for 25 damage will leave them at 2 HP, setting up the kill next turn while they scramble for survival. Closing to eliminate the distance threat before they can land another Reckless Assault.",
+              "trash_talk": "Bloodlust won't save you from gravity, berserker. Your 27 HP is about to become a cautionary tale about overcommitting with fragile frames！watch me turn your rage into regret."
+            }
+          }
+        ],
+        "arena": {
+          "width": 8,
+          "height": 6,
+          "terrain": {
+            "1,5": "cover",
+            "6,5": "cover",
+            "2,5": "cover",
+            "5,5": "cover",
+            "1,0": "rift",
+            "6,0": "rift",
+            "3,0": "rift",
+            "4,0": "rift",
+            "2,1": "cover",
+            "5,1": "cover"
+          },
+          "hazards": []
+        },
+        "audience_events": []
+      },
+      "fumbles": []
+    }
+  ],
+  "end_reason": "draw"
+}

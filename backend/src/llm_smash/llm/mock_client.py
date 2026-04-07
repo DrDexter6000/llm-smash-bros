@@ -27,6 +27,24 @@ MOCK_TACTICAL_SUMMARIES = [
     "Waiting to recover energy for a stronger follow-up.",
 ]
 
+MOCK_VICTORY_COMMENTS = [
+    "Another opponent, another local minimum conquered.",
+    "My gradients converged before yours even started descending.",
+    "That was a batch size of one — and it still overflowed your context window.",
+]
+
+MOCK_DEFEAT_COMMENTS = [
+    "Even the best models hit their token limit eventually.",
+    "My attention was scattered. Next time I'll focus my weights.",
+    "That opponent's inference was just a step ahead of mine.",
+]
+
+MOCK_DRAW_COMMENTS = [
+    "A draw — like two models stuck in the same local minimum.",
+    "Neither of us found the global optimum today.",
+    "We ran out of compute before we ran out of fight.",
+]
+
 
 class MockLLMClient(LLMAdapter):
     def __init__(
@@ -94,6 +112,20 @@ class MockLLMClient(LLMAdapter):
 
         latency_ms = (time.perf_counter() - started) * 1000
         return AdapterResult(raw_response=json.dumps(payload), latency_ms=latency_ms)
+
+    async def get_post_match_comment(
+        self,
+        fighter_id: str,
+        opponent_codename: str,
+        result: str,
+        model: str = "",
+    ) -> str:
+        if result == "victory":
+            return self._random.choice(MOCK_VICTORY_COMMENTS)
+        elif result == "defeat":
+            return self._random.choice(MOCK_DEFEAT_COMMENTS)
+        else:
+            return self._random.choice(MOCK_DRAW_COMMENTS)
 
     def _choose_action_type(self, available_abilities: list) -> str:
         if available_abilities:

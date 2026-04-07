@@ -15,16 +15,28 @@ from rich.table import Table
 from rich.text import Text
 
 from llm_smash.engine.game import GameEngine, MatchConfig
-from llm_smash.engine.state import ActionType, Fighter, MatchResult, TurnEvent, TurnLog
+from llm_smash.engine.state import (
+    ActionType,
+    Arena,
+    BattleState,
+    Fighter,
+    MatchPhase,
+    MatchResult,
+    Position,
+    TurnEvent,
+    TurnLog,
+)
+from llm_smash.engine.terrain import TerrainGenerator
 from llm_smash.fighters.roster import get_archetype, get_fighter
 from llm_smash.llm.adapter import LLMAdapter
 from llm_smash.llm.anthropic_client import AnthropicClient
 from llm_smash.llm.mock_client import MockLLMClient
 from llm_smash.llm.openai_client import OpenAIClient
 
-if hasattr(sys.stdout, "reconfigure"):
+_stdout_reconfigure = getattr(sys.stdout, "reconfigure", None)
+if callable(_stdout_reconfigure):
     try:
-        sys.stdout.reconfigure(encoding="utf-8")
+        _stdout_reconfigure(encoding="utf-8")
     except Exception:
         pass
 
@@ -209,7 +221,7 @@ def display_match_result(
         stats_table.add_row("Winner:", "[yellow bold]DRAW![/yellow bold]")
     else:
         winner = fighters_map.get(result.winner or "")
-        winner_name = winner.codename if winner else result.winner
+        winner_name = winner.codename if winner else (result.winner or "Unknown")
         winner_model = model_labels.get(result.winner or "", "")
         if winner_model:
             winner_name += f" ({winner_model})"
@@ -306,6 +318,37 @@ def _build_live_clients(fighter_ids: list[str]) -> dict[str, LLMAdapter]:
             )
 
     return clients
+
+
+def _build_cli_fighters(slot_ids: list[str], archetype_ids: list[str]) -> list[Fighter]:
+    fighters: list[Fighter] = []
+    is_mirror = archetype_ids[0] == archetype_ids[1]
+
+    for index, (slot_id, archetype_id) in enumerate(
+        zip(slot_ids, archetype_ids, strict=True)
+    ):
+        fighter = get_fighter(archetype_id)
+        fighter.id = slot_id
+        if is_mirror:
+            suffix = "A" if index == 0 else "B"
+            fighter.codename = f"{fighter.codename} {suffix}"
+        fighters.append(fighter)
+
+    fighters[0].position = Position(x=1, y=3)
+    fighters[1].position = Position(x=6, y=3)
+    return fighters
+
+
+def _build_cli_state(
+    slot_ids: list[str], archetype_ids: list[str], seed: int | None
+) -> BattleState:
+    fighters = _build_cli_fighters(slot_ids, archetype_ids)
+    arena = Arena()
+    TerrainGenerator(seed=seed).generate(
+        arena,
+        start_positions=[fighter.position for fighter in fighters],
+    )
+    return BattleState(fighters=fighters, arena=arena, phase=MatchPhase.READY)
 
 
 async def _preflight_check_openai(
@@ -420,9 +463,12 @@ async def run_cli_match(
     elif isinstance(replay_dir, str):
         replay_dir = Path(replay_dir)
 
+    archetype_ids = list(fighter_ids)
+    slot_ids = ["fighter_a", "fighter_b"]
+
     effective_timeout = timeout if timeout is not None else (8.0 if use_mock else 30.0)
     config = MatchConfig(
-        fighter_ids=fighter_ids,
+        fighter_ids=slot_ids,
         max_turns=max_turns,
         seed=seed,
         timeout_per_turn=effective_timeout,
@@ -433,12 +479,12 @@ async def run_cli_match(
             dict[str, LLMAdapter],
             {
                 fighter_id: MockLLMClient(fighter_id=fighter_id, seed=seed)
-                for fighter_id in fighter_ids
+                for fighter_id in slot_ids
             },
         )
     else:
         if not skip_preflight:
-            preflight_ok = await run_preflight(fighter_ids)
+            preflight_ok = await run_preflight(archetype_ids)
             if not preflight_ok:
                 raise RuntimeError(
                     "Pre-flight check failed. Fix your .env and try again, "
@@ -446,28 +492,32 @@ async def run_cli_match(
                 )
         llm_clients = cast(
             dict[str, LLMAdapter],
-            _build_live_clients(fighter_ids),
+            _build_live_clients(slot_ids),
         )
 
-    fighter_a = get_archetype(fighter_ids[0])
-    fighter_b = get_archetype(fighter_ids[1])
+    fighter_a = get_archetype(archetype_ids[0])
+    fighter_b = get_archetype(archetype_ids[1])
 
     # Build model labels for display
     model_labels: dict[str, str] = {}
     if use_mock:
-        model_labels = {fid: "Mock" for fid in fighter_ids}
+        model_labels = {slot_id: "Mock" for slot_id in slot_ids}
     else:
         from dotenv import load_dotenv
 
         load_dotenv()
-        for idx, fid in enumerate(fighter_ids, start=1):
+        for idx, fid in enumerate(slot_ids, start=1):
             cfg = _read_fighter_env(idx)
             model_labels[fid] = cfg["model"] or "Unknown"
 
     a_display = fighter_a.codename
     b_display = fighter_b.codename
-    a_model = model_labels.get(fighter_ids[0], "")
-    b_model = model_labels.get(fighter_ids[1], "")
+    if archetype_ids[0] == archetype_ids[1]:
+        a_display += " A"
+        b_display += " B"
+
+    a_model = model_labels.get(slot_ids[0], "")
+    b_model = model_labels.get(slot_ids[1], "")
     if a_model:
         a_display += f" ({a_model})"
     if b_model:
@@ -483,7 +533,7 @@ async def run_cli_match(
     console.rule()
 
     engine = GameEngine(config=config, llm_clients=llm_clients)
-    engine._ensure_state()
+    engine.state = _build_cli_state(slot_ids, archetype_ids, seed)
     assert engine.state is not None
     fighters_map = {fighter.id: fighter for fighter in engine.state.fighters}
 
@@ -494,6 +544,51 @@ async def run_cli_match(
     result = await engine.run_match()
 
     display_match_result(result, fighters_map, model_labels=model_labels)
+
+    # Post-match comments from fighters
+    from llm_smash.engine.state import Position
+
+    if not result.is_draw and result.winner:
+        winner_client = llm_clients.get(result.winner)
+        loser_slots = [sid for sid in slot_ids if sid != result.winner]
+        loser_codename = (
+            fighters_map.get(loser_slots[0]).codename
+            if loser_slots and fighters_map.get(loser_slots[0])
+            else "Unknown"
+        )
+        if winner_client:
+            comment = await winner_client.get_post_match_comment(
+                result.winner, loser_codename, "victory"
+            )
+            if comment:
+                winner_obj = fighters_map.get(result.winner)
+                display_name = winner_obj.codename if winner_obj else result.winner
+                winner_model = model_labels.get(result.winner, "")
+                if winner_model:
+                    display_name += f" ({winner_model})"
+                console.print(
+                    f'  [green bold]🏆 {display_name}:[/green bold] [white italic]"{comment}"[/white italic]'
+                )
+    elif result.is_draw:
+        for sid in slot_ids:
+            client = llm_clients.get(sid)
+            if client:
+                opponent_slots = [s for s in slot_ids if s != sid]
+                opp_codename = (
+                    fighters_map.get(opponent_slots[0]).codename
+                    if opponent_slots and fighters_map.get(opponent_slots[0])
+                    else "Unknown"
+                )
+                comment = await client.get_post_match_comment(sid, opp_codename, "draw")
+                if comment:
+                    fighter_obj = fighters_map.get(sid)
+                    display_name = fighter_obj.codename if fighter_obj else sid
+                    fighter_model = model_labels.get(sid, "")
+                    if fighter_model:
+                        display_name += f" ({fighter_model})"
+                    console.print(
+                        f'  [yellow bold]🤝 {display_name}:[/yellow bold] [white italic]"{comment}"[/white italic]'
+                    )
 
     # Save Replay
     saved_path = save_replay(result, replay_dir)
