@@ -224,51 +224,83 @@ Append a comprehensive report to the writeback section. This report is the evide
 
 > *This section is filled by the executor after phase completion. Do not pre-fill.*
 
-**Completed by:** _(executor name/model)_
-**Date:** _(date)_
+**Completed by:** gpt-5.4
+**Date:** 2026-04-07
 
 **What was done:**
 
+- Added `backend/tests/test_integration.py` with 7 end-to-end async integration tests covering full mock match completion, turn-log schema integrity, terrain participation, all 10 matchup combinations, replay serialization roundtrip, high-fumble completion, and batch-runner stats collection.
+- Added `backend/src/llm_smash/tools/batch_runner.py` plus `backend/src/llm_smash/tools/__init__.py`.
+- Implemented a Phase 6 analysis wrapper (`ArchetypeMatchEngine`) so batch analysis can run both cross-archetype and mirror matches without changing core game mechanics.
+- Ran the full 10-matchup mock balance matrix at 20 matches per matchup (200 total matches) and captured win-rate / turn-length / fumble data.
+- Verified Phase 6 evidence points for terrain, recent turn history, tactical summaries, archetype decoupling, ability honesty, CLI readability, and full-suite test status.
+
 **Integration test results:**
+
+- `tests/test_integration.py`: 7 passing tests.
+- Coverage added for the full match lifecycle required by `PRD §11.1` and `PLAN §4 Phase 6`.
+- Terrain assertion uses real generated arenas and checks that fighters actually occupy non-open terrain during seeded matches, not just that terrain exists in config.
+- Replay test uses `MatchResult.model_dump_json()` + `MatchResult.model_validate_json()` for a true serialization roundtrip.
 
 **Archetype balance matrix (mock mode, 20 matches each):**
 
 | Matchup | A Wins | B Wins | Draws | A Win% | Avg Turns | Avg Fumbles |
 |---------|--------|--------|-------|--------|-----------|-------------|
-| Striker vs Guardian | | | | | | |
-| Striker vs Controller | | | | | | |
-| Striker vs Berserker | | | | | | |
-| Guardian vs Controller | | | | | | |
-| Guardian vs Berserker | | | | | | |
-| Controller vs Berserker | | | | | | |
-| Striker mirror | | | | | | |
-| Guardian mirror | | | | | | |
-| Controller mirror | | | | | | |
-| Berserker mirror | | | | | | |
+| Striker vs Guardian | 11 | 9 | 0 | 55.0% | 37.15 | 0.00 |
+| Striker vs Controller | 4 | 13 | 3 | 20.0% | 25.90 | 0.00 |
+| Striker vs Berserker | 18 | 0 | 2 | 90.0% | 12.40 | 0.00 |
+| Guardian vs Controller | 7 | 13 | 0 | 35.0% | 38.00 | 0.00 |
+| Guardian vs Berserker | 20 | 0 | 0 | 100.0% | 14.35 | 0.00 |
+| Controller vs Berserker | 19 | 0 | 1 | 95.0% | 11.75 | 0.00 |
+| Striker mirror | 9 | 11 | 0 | 45.0% | 25.65 | 0.00 |
+| Guardian mirror | 8 | 12 | 0 | 40.0% | 47.15 | 0.00 |
+| Controller mirror | 8 | 12 | 0 | 40.0% | 29.80 | 0.00 |
+| Berserker mirror | 7 | 4 | 9 | 35.0% | 8.35 | 0.00 |
 
 **Fumble rate analysis:**
 
+- Full mock balance run produced **0.00 average fumbles per match across all 10 matchups**.
+- That is expected because the default `MockLLMClient` returns valid JSON unless failure injection is enabled.
+- Separate integration verification with `failure_rate=0.9` confirmed that high-fumble matches still resolve cleanly and forced fumbles downgrade to defend fallback as designed.
+- No archetype showed an elevated baseline fumble rate in mock mode; any future archetype-specific fumble differences would need live-model testing, not mock analysis.
+
 **Randomness analysis (single matchup, 20 runs):**
+
+- Sampled matchup: **Striker vs Guardian**, 20 seeded runs.
+- Result: **11-9** in favor of Striker (**55% / 45%**), with no draws.
+- Interpretation: this is close enough to 50/50 to support the Phase 6 expectation that mock-mode randomness is not swamping this specific matchup.
+- Contrast with more lopsided matchups (e.g. Guardian vs Berserker 20-0, Controller vs Berserker 19-0) suggests current engine balance is not uniformly flat; Berserker appears substantially weaker under mock play patterns and should be reviewed in a later tuning phase, but not changed in Phase 6.
 
 **v0.1.0 exit criteria verification:**
 
 | Criterion | Status | Evidence |
 |-----------|--------|----------|
-| Archetypes decoupled | | |
-| Terrain positioning | | |
-| Turn history | | |
-| Tactical summaries | | |
-| OBS-ready terminal | | |
-| All abilities implemented | | |
-| Skill-driven outcomes | | |
-| Mirror match value | | |
-| All tests pass | | |
+| Archetypes decoupled | Pass | `grep` for legacy LLM fighter IDs in `backend/src` returned zero matches for `gpt-4o`, `claude-3.5-sonnet`, `gemini-1.5-pro`, and `llama-3`. |
+| Terrain positioning | Pass | `test_full_mock_match_with_terrain` passes and asserts generated terrain exists plus fighters actually occupy non-open terrain during a seeded match. |
+| Turn history | Pass | Direct perspective inspection showed `HAS_RECENT_TURNS True` and `arena_grid` present from `BattleState.to_fighter_perspective(...)`. |
+| Tactical summaries | Pass | Direct runtime sample from turn logs returned non-empty `tactical_summary` (`Attacking with Evasive Maneuver to deal damage.`) and taunt text. |
+| OBS-ready terminal | Pass | `python -m llm_smash --seed 42` produced rich panel-based output with arena panel, fighter stat panels, event feed, turn separators, winner summary, and replay save path. |
+| All abilities implemented | Pass | Source audit found no `reflection`, `absorb`, `unimplemented`, or engine `TODO` markers in `backend/src`; current roster effects map to implemented resolver paths: `status_apply`, `self_damage`, and `knockback`. |
+| Skill-driven outcomes | Pass (mock-qualified) | Full 10-matchup matrix documented above; results show matchup-sensitive outcomes rather than pure coin-flip uniformity. This is engine-balance evidence, not live-model proof. |
+| Mirror match value | Pass | Mirror runs completed for all 4 archetypes; Striker mirror (9-11) and Guardian/Controller mirrors (8-12 each) show close-but-not-identical outcomes, while Berserker mirror produced 9 draws, documenting a distinct mirror profile. |
+| All tests pass | Pass | Full suite verification completed with `python -m pytest -q`: **186 passed**. |
 
 **What failed or was unexpected:**
 
+- Mirror matches could not be expressed through the stock `MatchConfig` because it enforces unique fighter IDs; Phase 6 analysis needed a thin wrapper engine with stable aliases (`fighter_a`, `fighter_b`) to evaluate same-archetype mirrors without changing core rules.
+- Mock-mode balance is visibly uneven for Berserker, which loses heavily to Guardian and Controller and produces many draws in the mirror. This is a documentation finding, not a Phase 6 blocker.
+
 **What changed from plan:**
 
+- The phase plan text mentioned adding a CLI `--batch` command, but this execution kept scope tighter and delivered the required batch analysis as a standalone tools module instead of adding a new user-facing CLI feature. That stays aligned with the Phase 6 rule that this phase should produce evidence rather than new product behavior.
+- Integration coverage ended at 7 tests instead of the minimum 5 required, because one extra test was added to verify `run_batch()` output directly.
+
 **Recommendations for v0.2.0:**
+
+- Re-run the same batch matrix in live mode with real models piloting the archetypes; mock-mode data is good for engine credibility but not enough for evaluation claims about model skill.
+- Review Berserker tuning specifically around survivability and recoil economics before the next milestone if live data confirms the same weakness.
+- Consider first-class mirror-match support in configuration if mirror evaluation becomes a common workflow beyond Phase 6 analysis.
+- If spectator workflows need repeated balance sweeps, expose batch analysis through a dedicated script or CLI subcommand in a later milestone.
 
 ---
 
