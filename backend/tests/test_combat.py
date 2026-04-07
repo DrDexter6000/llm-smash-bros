@@ -1,6 +1,12 @@
 """Tests for the combat resolution engine."""
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
 import pytest
+
 from llm_smash.engine.combat import (
     CombatResolver,
     ENERGY_REGEN_PER_TURN,
@@ -125,6 +131,56 @@ class TestCalculateDamage:
             for _ in range(50)
         ]
         assert all(d >= 1 for d in damages)
+
+    def test_damage_boost_increases_damage(self, attacker, defender, basic_ability):
+        normal = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+        )
+
+        attacker.status_effects = [
+            StatusEffect(
+                name="Bloodlust",
+                turns_remaining=2,
+                effect_type="damage_boost",
+                value=0.4,
+            )
+        ]
+
+        boosted = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+        )
+        assert boosted > normal
+
+    def test_damage_reduction_decreases_damage(self, attacker, defender, basic_ability):
+        normal = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+        )
+
+        defender.status_effects = [
+            StatusEffect(
+                name="Fortified",
+                turns_remaining=2,
+                effect_type="damage_reduction",
+                value=0.4,
+            )
+        ]
+
+        reduced = CombatResolver(seed=42).calculate_damage(
+            attacker,
+            defender,
+            basic_ability,
+            is_defending=False,
+        )
+        assert reduced < normal
 
 
 class TestResolveMovement:
@@ -327,6 +383,30 @@ class TestStatusEffects:
         resolver.tick_status_effects(attacker)
         assert len(attacker.status_effects) == 1
         assert attacker.status_effects[0].name == "Boosted"
+
+    def test_apply_status_effect_replaces_existing_type(self, resolver, attacker):
+        attacker.status_effects = [
+            StatusEffect(
+                name="Old Buff",
+                turns_remaining=1,
+                effect_type="damage_boost",
+                value=0.2,
+            )
+        ]
+
+        resolver.apply_status_effect(
+            attacker,
+            StatusEffect(
+                name="New Buff",
+                turns_remaining=2,
+                effect_type="damage_boost",
+                value=0.4,
+            ),
+        )
+
+        assert len(attacker.status_effects) == 1
+        assert attacker.status_effects[0].name == "New Buff"
+        assert attacker.status_effects[0].value == 0.4
 
 
 class TestHazardSpawnTiming:

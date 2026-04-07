@@ -1,8 +1,12 @@
 """Tests for LLM response validation."""
 
 import json
+import sys
+from pathlib import Path
 
 import pytest
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from llm_smash.engine.state import (
     Ability,
@@ -23,50 +27,50 @@ def validator() -> ResponseValidator:
 
 @pytest.fixture
 def sample_state() -> BattleState:
-    oracle = Fighter(
-        id="gpt-4o",
-        codename="The Oracle",
-        hp=100,
-        max_hp=100,
+    striker = Fighter(
+        id="striker",
+        codename="Striker",
+        hp=80,
+        max_hp=80,
         energy=100,
         max_energy=100,
         position=Position(x=0, y=0),
         abilities=[
             Ability(
-                name="Logic Missile",
+                name="Quick Strike",
                 type="attack",
                 damage=12,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
-                range=4,
+                range=2,
             ),
             Ability(
-                name="System Override",
+                name="Execution",
                 type="ultimate",
-                damage=0,
+                damage=40,
                 energy_cost=80,
                 cooldown=8,
                 cooldown_remaining=0,
-                range=6,
-                description="Hijacks the opponent's system prompt.",
+                range=2,
+                description="A lethal finisher that deals 40 damage.",
             ),
         ],
         status_effects=[],
     )
-    artisan = Fighter(
-        id="claude-3.5-sonnet",
-        codename="The Artisan",
-        hp=85,
-        max_hp=85,
-        energy=100,
-        max_energy=100,
+    guardian = Fighter(
+        id="guardian",
+        codename="Guardian",
+        hp=120,
+        max_hp=120,
+        energy=80,
+        max_energy=80,
         position=Position(x=6, y=3),
         abilities=[
             Ability(
-                name="Code Slice",
+                name="Shield Bash",
                 type="attack",
-                damage=14,
+                damage=10,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
@@ -80,7 +84,7 @@ def sample_state() -> BattleState:
         match_id="test-match",
         turn=5,
         phase=MatchPhase.FIGHTING,
-        fighters=[oracle, artisan],
+        fighters=[striker, guardian],
         arena=arena,
     )
 
@@ -91,7 +95,7 @@ def make_raw_response(
     action: dict,
     move: dict | None = None,
     inner_monologue: str = "Time to strike.",
-    trash_talk: str = "Your parameters are showing.",
+    trash_talk: str = "Your guard is slipping.",
 ) -> str:
     payload = {
         "turn": turn,
@@ -110,21 +114,21 @@ class TestResponseValidator:
         raw = make_raw_response(
             action={
                 "type": "attack",
-                "ability": "Logic Missile",
-                "target": "claude-3.5-sonnet",
+                "ability": "Quick Strike",
+                "target": "guardian",
             },
             move={"direction": "right"},
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
         assert isinstance(result.response, ActionResponse)
         assert result.response.action["type"] == "attack"
-        assert result.response.action["ability"] == "Logic Missile"
-        assert result.response.action["target"] == "claude-3.5-sonnet"
+        assert result.response.action["ability"] == "Quick Strike"
+        assert result.response.action["target"] == "guardian"
         assert result.error is None
 
     def test_valid_json_defend_action_is_valid(
@@ -133,7 +137,7 @@ class TestResponseValidator:
         raw = make_raw_response(action={"type": "defend"}, move=None)
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -146,7 +150,7 @@ class TestResponseValidator:
         raw = make_raw_response(action={"type": "wait"}, move=None)
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -159,7 +163,7 @@ class TestResponseValidator:
         result = validator.validate(
             '{"turn": 5, "action": ',
             turn=5,
-            fighter_id="gpt-4o",
+            fighter_id="striker",
             state=sample_state,
         )
 
@@ -181,7 +185,7 @@ class TestResponseValidator:
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -194,7 +198,7 @@ class TestResponseValidator:
         raw = make_raw_response(action={"type": "wait"}, turn=4)
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -204,19 +208,19 @@ class TestResponseValidator:
     def test_ability_on_cooldown_fails_validation(
         self, validator: ResponseValidator, sample_state: BattleState
     ):
-        fighter = sample_state.get_fighter("gpt-4o")
+        fighter = sample_state.get_fighter("striker")
         assert fighter is not None
-        fighter.get_ability("System Override").cooldown_remaining = 3
+        fighter.get_ability("Execution").cooldown_remaining = 3
         raw = make_raw_response(
             action={
                 "type": "attack",
-                "ability": "System Override",
-                "target": "claude-3.5-sonnet",
+                "ability": "Execution",
+                "target": "guardian",
             }
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -226,19 +230,19 @@ class TestResponseValidator:
     def test_not_enough_energy_for_ability_fails_validation(
         self, validator: ResponseValidator, sample_state: BattleState
     ):
-        fighter = sample_state.get_fighter("gpt-4o")
+        fighter = sample_state.get_fighter("striker")
         assert fighter is not None
         fighter.energy = 20
         raw = make_raw_response(
             action={
                 "type": "attack",
-                "ability": "System Override",
-                "target": "claude-3.5-sonnet",
+                "ability": "Execution",
+                "target": "guardian",
             }
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -252,12 +256,12 @@ class TestResponseValidator:
             action={
                 "type": "attack",
                 "ability": "Imaginary Technique",
-                "target": "claude-3.5-sonnet",
+                "target": "guardian",
             }
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -273,7 +277,7 @@ class TestResponseValidator:
         )
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -283,12 +287,10 @@ class TestResponseValidator:
     def test_attack_without_ability_field_fails_validation(
         self, validator: ResponseValidator, sample_state: BattleState
     ):
-        raw = make_raw_response(
-            action={"type": "attack", "target": "claude-3.5-sonnet"}
-        )
+        raw = make_raw_response(action={"type": "attack", "target": "guardian"})
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -298,10 +300,10 @@ class TestResponseValidator:
     def test_attack_without_target_field_fails_validation(
         self, validator: ResponseValidator, sample_state: BattleState
     ):
-        raw = make_raw_response(action={"type": "attack", "ability": "Logic Missile"})
+        raw = make_raw_response(action={"type": "attack", "ability": "Quick Strike"})
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -314,7 +316,7 @@ class TestResponseValidator:
         raw = make_raw_response(action={"type": "dance"})
 
         result = validator.validate(
-            raw, turn=5, fighter_id="gpt-4o", state=sample_state
+            raw, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False
@@ -327,7 +329,7 @@ class TestResponseValidator:
         fenced = "```json\n" + make_raw_response(action={"type": "wait"}) + "\n```"
 
         result = validator.validate(
-            fenced, turn=5, fighter_id="gpt-4o", state=sample_state
+            fenced, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -337,7 +339,9 @@ class TestResponseValidator:
     def test_empty_string_is_invalid(
         self, validator: ResponseValidator, sample_state: BattleState
     ):
-        result = validator.validate("", turn=5, fighter_id="gpt-4o", state=sample_state)
+        result = validator.validate(
+            "", turn=5, fighter_id="striker", state=sample_state
+        )
 
         assert result.is_valid is False
         assert result.response is None
@@ -363,7 +367,7 @@ class TestResponseValidator:
         wrapped = f"<think>\nLet me analyze the state...\n</think>\n{inner_json}"
 
         result = validator.validate(
-            wrapped, turn=5, fighter_id="gpt-4o", state=sample_state
+            wrapped, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -379,7 +383,7 @@ class TestResponseValidator:
         )
 
         result = validator.validate(
-            wrapped, turn=5, fighter_id="gpt-4o", state=sample_state
+            wrapped, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is True
@@ -392,7 +396,7 @@ class TestResponseValidator:
         wrapped = "<think>\nJust thinking, no action.\n</think>"
 
         result = validator.validate(
-            wrapped, turn=5, fighter_id="gpt-4o", state=sample_state
+            wrapped, turn=5, fighter_id="striker", state=sample_state
         )
 
         assert result.is_valid is False

@@ -19,7 +19,7 @@ class OpenAIClient(LLMAdapter):
 
     def __init__(
         self,
-        model: str = "gpt-4o",
+        model: str = "gpt-4.1-mini",
         api_key: str | None = None,
         base_url: str | None = None,
         timeout: float = 30.0,

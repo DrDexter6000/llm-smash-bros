@@ -50,38 +50,38 @@ def get_create_kwargs(create: AsyncMock) -> dict[str, Any]:
 @pytest.fixture
 def sample_state() -> BattleState:
     f1 = Fighter(
-        id="gpt-4o",
-        codename="The Oracle",
-        hp=100,
-        max_hp=100,
+        id="striker",
+        codename="Striker",
+        hp=80,
+        max_hp=80,
         energy=100,
         max_energy=100,
         position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Logic Missile",
+                name="Quick Strike",
                 type="attack",
                 damage=12,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
-                range=4,
+                range=2,
             )
         ],
     )
     f2 = Fighter(
-        id="claude-3.5-sonnet",
-        codename="The Artisan",
-        hp=85,
-        max_hp=85,
-        energy=100,
-        max_energy=100,
+        id="guardian",
+        codename="Guardian",
+        hp=120,
+        max_hp=120,
+        energy=80,
+        max_energy=80,
         position=Position(x=6, y=3),
         abilities=[
             Ability(
-                name="Code Slice",
+                name="Shield Bash",
                 type="attack",
-                damage=14,
+                damage=10,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
@@ -118,14 +118,14 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+            await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         kwargs = get_create_kwargs(create)
         assert kwargs["messages"] == [
-            {"role": "system", "content": get_system_prompt("gpt-4o")},
+            {"role": "system", "content": get_system_prompt("striker")},
             {
                 "role": "user",
-                "content": json.dumps(sample_state.to_fighter_perspective("gpt-4o")),
+                "content": json.dumps(sample_state.to_fighter_perspective("striker")),
             },
         ]
 
@@ -140,7 +140,7 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            await client.get_action(sample_state, turn=5, fighter_id="gpt-4o")
+            await client.get_action(sample_state, turn=5, fighter_id="striker")
 
         assert get_create_kwargs(create)["response_format"] == {"type": "json_object"}
 
@@ -155,7 +155,7 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            result = await client.get_action(sample_state, turn=2, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=2, fighter_id="striker")
 
         assert result.raw_response == '{"trash_talk":"hi"}'
         assert result.error is None
@@ -172,7 +172,7 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            result = await client.get_action(sample_state, turn=1, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=1, fighter_id="striker")
 
         assert result.latency_ms > 0
 
@@ -191,7 +191,7 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            result = await client.get_action(sample_state, turn=4, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=4, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == "boom"
@@ -208,7 +208,7 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            result = await client.get_action(sample_state, turn=4, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=4, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == "Request timed out."
@@ -229,14 +229,14 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            result = await client.get_action(sample_state, turn=4, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=4, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == "Connection error."
         assert result.timed_out is False
 
     @pytest.mark.asyncio
-    async def test_default_model_is_gpt_4o(self, sample_state: BattleState):
+    async def test_default_model_is_gpt_4_1_mini(self, sample_state: BattleState):
         create = AsyncMock(return_value=make_completion('{"turn":3}'))
         async_openai = SimpleNamespace(
             chat=SimpleNamespace(completions=SimpleNamespace(create=create))
@@ -246,9 +246,9 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient()
-            await client.get_action(sample_state, turn=3, fighter_id="gpt-4o")
+            await client.get_action(sample_state, turn=3, fighter_id="striker")
 
-        assert get_create_kwargs(create)["model"] == "gpt-4o"
+        assert get_create_kwargs(create)["model"] == "gpt-4.1-mini"
 
     @pytest.mark.asyncio
     async def test_custom_model_passed_to_api(self, sample_state: BattleState):
@@ -261,6 +261,6 @@ class TestOpenAIClient:
             "llm_smash.llm.openai_client.openai.AsyncOpenAI", return_value=async_openai
         ):
             client = OpenAIClient(model="gpt-4.1-mini")
-            await client.get_action(sample_state, turn=3, fighter_id="gpt-4o")
+            await client.get_action(sample_state, turn=3, fighter_id="striker")
 
         assert get_create_kwargs(create)["model"] == "gpt-4.1-mini"

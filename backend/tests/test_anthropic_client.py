@@ -37,38 +37,38 @@ get_system_prompt = roster_module.get_system_prompt
 @pytest.fixture
 def sample_state() -> BattleState:
     f1 = Fighter(
-        id="gpt-4o",
-        codename="The Oracle",
-        hp=100,
-        max_hp=100,
+        id="striker",
+        codename="Striker",
+        hp=80,
+        max_hp=80,
         energy=100,
         max_energy=100,
         position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Logic Missile",
+                name="Quick Strike",
                 type="attack",
                 damage=12,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
-                range=4,
+                range=2,
             )
         ],
     )
     f2 = Fighter(
-        id="claude-3.5-sonnet",
-        codename="The Artisan",
-        hp=85,
-        max_hp=85,
-        energy=100,
-        max_energy=100,
+        id="guardian",
+        codename="Guardian",
+        hp=120,
+        max_hp=120,
+        energy=80,
+        max_energy=80,
         position=Position(x=6, y=3),
         abilities=[
             Ability(
-                name="Code Slice",
+                name="Shield Bash",
                 type="attack",
-                damage=14,
+                damage=10,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
@@ -120,14 +120,14 @@ class TestAnthropicClient:
     ):
         client = AnthropicClient()
 
-        await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         kwargs = _await_kwargs(mock_messages_create)
-        assert kwargs["system"] == get_system_prompt("gpt-4o")
+        assert kwargs["system"] == get_system_prompt("striker")
         assert kwargs["messages"] == [
             {"role": "user", "content": kwargs["messages"][0]["content"]}
         ]
-        assert get_system_prompt("gpt-4o") not in kwargs["messages"][0]["content"]
+        assert get_system_prompt("striker") not in kwargs["messages"][0]["content"]
 
     @pytest.mark.asyncio
     async def test_sends_battle_state_as_user_message(
@@ -135,10 +135,10 @@ class TestAnthropicClient:
     ):
         client = AnthropicClient()
 
-        await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         user_content = _await_kwargs(mock_messages_create)["messages"][0]["content"]
-        expected_json = json.dumps(sample_state.to_fighter_perspective("gpt-4o"))
+        expected_json = json.dumps(sample_state.to_fighter_perspective("striker"))
         assert expected_json in user_content
 
     @pytest.mark.asyncio
@@ -147,7 +147,7 @@ class TestAnthropicClient:
     ):
         client = AnthropicClient()
 
-        await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         user_content = _await_kwargs(mock_messages_create)["messages"][0]["content"]
         assert user_content.endswith(JSON_ONLY_SUFFIX)
@@ -160,7 +160,7 @@ class TestAnthropicClient:
         mock_messages_create.return_value = _make_response(raw_text)
         client = AnthropicClient()
 
-        result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result == AdapterResult(
             raw_response=raw_text,
@@ -173,7 +173,7 @@ class TestAnthropicClient:
     ):
         client = AnthropicClient()
 
-        result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result.latency_ms > 0
 
@@ -184,7 +184,7 @@ class TestAnthropicClient:
             mock_client_cls.return_value.messages.create = AsyncMock(side_effect=error)
             client = AnthropicClient()
 
-            result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == str(error)
@@ -197,7 +197,7 @@ class TestAnthropicClient:
             mock_client_cls.return_value.messages.create = AsyncMock(side_effect=error)
             client = AnthropicClient()
 
-            result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == str(error)
@@ -212,7 +212,7 @@ class TestAnthropicClient:
             mock_client_cls.return_value.messages.create = AsyncMock(side_effect=error)
             client = AnthropicClient()
 
-            result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+            result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result.raw_response is None
         assert result.error == str(error)
@@ -229,7 +229,7 @@ class TestAnthropicClient:
     ):
         client = AnthropicClient()
 
-        await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert _await_kwargs(mock_messages_create)["max_tokens"] == 1024
 
@@ -242,6 +242,6 @@ class TestAnthropicClient:
         )
         client = AnthropicClient()
 
-        result = await client.get_action(sample_state, turn=7, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=7, fighter_id="striker")
 
         assert result.raw_response == '{"source": "content-block"}'

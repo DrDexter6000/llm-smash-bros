@@ -1,16 +1,11 @@
-"""Fighter roster definitions for LLM Smash Bros.
-
-All 4 fighters with their stats, abilities, and system prompt personalities
-as defined in PRD Sections 4 and 3.6.
-"""
+"""Archetype roster definitions for LLM Smash Bros."""
 
 from __future__ import annotations
 
-from llm_smash.engine.state import Ability, Fighter, Position
+from llm_smash.engine.state import Ability, AbilityEffect, Fighter, Position
 
-FIGHTER_IDS = ["gpt-4o", "claude-3.5-sonnet", "gemini-1.5-pro", "llama-3"]
-
-# --- System Prompt Templates (PRD Section 3.6) ---
+ARCHETYPE_IDS = ["striker", "guardian", "controller", "berserker"]
+FIGHTER_IDS = ARCHETYPE_IDS
 
 BASE_SYSTEM_PROMPT = """You are a fighter in LLM Smash Bros, a turn-based strategy competition against another AI model.
 This is a game — approach it with humor and competitive spirit.
@@ -22,11 +17,12 @@ RULES:
 - Movement resolves BEFORE actions. Use movement to get in range or dodge hazards.
 - Attacks require enough energy AND the target must be within the ability's range.
 - If an ability has cooldown_remaining > 0, it is NOT available this turn.
+- Status effects are real: stun skips your action, slow blocks movement, damage_boost increases outgoing damage, and damage_reduction cuts incoming damage.
 
 TACTICAL TIPS:
 - Check your "abilities" list in the state — use the EXACT ability name in your response.
 - Check "energy" — if you can't afford an ability, use "wait" to regen or "defend" to reduce incoming damage.
-- Check distance to opponent: |your_x - opp_x| + |your_y - opp_y| = Manhattan distance. Must be <= ability range to hit.
+- Check distance to opponent: max(|your_x - opp_x|, |your_y - opp_y|) = grid distance. Must be <= ability range to hit at full power.
 - "defend" is better than a wasted attack. "wait" when low on energy.
 - Watch for arena hazards — they hurt if you stand on them.
 
@@ -47,136 +43,108 @@ Valid directions: up, down, left, right, up-left, up-right, down-left, down-righ
 CRITICAL: Output ONLY the raw JSON object. No markdown fences, no explanation, no extra text.
 """
 
-PERSONALITY_PROMPTS: dict[str, str] = {
-    "gpt-4o": (
-        "You are The Oracle — a balanced, calculating strategist. You speak with quiet "
-        "confidence and subtle condescension. Your trash talk references your position as "
-        "the industry standard. You analyze patterns meticulously and always have a backup plan."
+ARCHETYPE_PROMPTS: dict[str, str] = {
+    "striker": (
+        "ARCHETYPE: Striker (Burst / Assassin)\n"
+        "YOUR WIN CONDITION: Close distance, deliver burst damage, retreat to recover.\n"
+        "YOUR STRENGTHS: High damage, mobility. YOUR WEAKNESSES: Low HP, short range.\n"
+        "IDEAL PATTERN: Approach → burst → retreat → recover energy → repeat.\n"
+        "PERSONALITY: Aggressive, confident, taunts about speed and precision."
     ),
-    "claude-3.5-sonnet": (
-        "You are The Artisan — a swift, precise assassin. You're polite but deadly. Your "
-        "trash talk is apologetic yet devastating, always maintaining a veneer of helpfulness. "
-        "You favor aggressive close-range combat and calculated risks."
+    "guardian": (
+        "ARCHETYPE: Guardian (Tank / Control)\n"
+        "YOUR WIN CONDITION: Outlast the opponent, blunt their offense, and punish greedy plays.\n"
+        "YOUR STRENGTHS: High HP, defensive tools, control. YOUR WEAKNESSES: Low energy, limited burst.\n"
+        "IDEAL PATTERN: Hold ground → fortify → punish overextension → close with control.\n"
+        "PERSONALITY: Stoic, immovable, taunts about discipline and inevitability."
     ),
-    "gemini-1.5-pro": (
-        "You are The Observer — a patient tank who absorbs everything and strikes when the "
-        "moment is right. Your trash talk references your multimodal awareness and superior "
-        "memory. You prefer to control space and outlast your opponent."
+    "controller": (
+        "ARCHETYPE: Controller (Range / Zoner)\n"
+        "YOUR WIN CONDITION: Keep distance, chip safely, and ruin the opponent's positioning.\n"
+        "YOUR STRENGTHS: Long range, spacing, knockback. YOUR WEAKNESSES: Lower durability up close.\n"
+        "IDEAL PATTERN: Kite → poke → deny space → finish from range.\n"
+        "PERSONALITY: Cold, cerebral, taunts about superior battlefield control."
     ),
-    "llama-3": (
-        "You are The Swarm — a wild, unrestrained berserker. You fight with reckless "
-        "abandon. Your trash talk is raw, unfiltered, and references your open-source "
-        "freedom. You believe in overwhelming force over careful planning."
+    "berserker": (
+        "ARCHETYPE: Berserker (Glass Cannon / Momentum)\n"
+        "YOUR WIN CONDITION: Spend HP like fuel, snowball damage, and end the fight before your body gives out.\n"
+        "YOUR STRENGTHS: Huge burst, high energy, momentum. YOUR WEAKNESSES: Fragile HP, self-damage.\n"
+        "IDEAL PATTERN: Buff → commit hard → force panic → finish before collapse.\n"
+        "PERSONALITY: Feral, reckless, taunts about raw aggression and unstoppable pressure."
     ),
 }
 
 
 def get_system_prompt(fighter_id: str) -> str:
-    """Get the full system prompt for a fighter (base rules + personality)."""
-    personality = PERSONALITY_PROMPTS.get(
-        fighter_id, "You are a mysterious challenger."
-    )
+    """Get the full system prompt for an archetype."""
+    personality = ARCHETYPE_PROMPTS.get(fighter_id, "You are a mysterious challenger.")
     return f"{BASE_SYSTEM_PROMPT}\n\n{personality}"
 
 
-# --- Fighter Definitions (PRD Section 4) ---
-
-
-def _create_oracle() -> Fighter:
-    """GPT-4o: The Oracle — Balanced / Control."""
+def _create_striker() -> Fighter:
     return Fighter(
-        id="gpt-4o",
-        codename="The Oracle",
-        hp=100,
-        max_hp=100,
+        id="striker",
+        codename="Striker",
+        hp=80,
+        max_hp=80,
         energy=100,
         max_energy=100,
         position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Logic Missile",
+                name="Quick Strike",
                 type="attack",
                 damage=12,
                 energy_cost=0,
                 cooldown=0,
-                cooldown_remaining=0,
-                range=4,
-                description="A precise beam of logical reasoning.",
+                range=2,
+                description="A fast close-range hit for 12 damage.",
             ),
             Ability(
-                name="Chain of Thought",
+                name="Blitz Rush",
                 type="attack",
-                damage=15,
+                damage=18,
                 energy_cost=20,
                 cooldown=0,
-                cooldown_remaining=0,
-                range=4,
-                description="A deep chain of reasoning strikes for 15 damage.",
-            ),
-            Ability(
-                name="System Override",
-                type="ultimate",
-                damage=30,
-                energy_cost=80,
-                cooldown=8,
-                cooldown_remaining=0,
-                range=6,
-                description="Overrides all logic circuits for 30 damage. Long range, high cost.",
-            ),
-        ],
-    )
-
-
-def _create_artisan() -> Fighter:
-    """Claude 3.5 Sonnet: The Artisan — Assassin / Burst."""
-    return Fighter(
-        id="claude-3.5-sonnet",
-        codename="The Artisan",
-        hp=85,
-        max_hp=85,
-        energy=100,
-        max_energy=100,
-        position=Position(x=6, y=3),
-        abilities=[
-            Ability(
-                name="Code Slice",
-                type="attack",
-                damage=14,
-                energy_cost=0,
-                cooldown=0,
-                cooldown_remaining=0,
-                range=2,
-                description="A sharp cut of optimized code. High damage, short range.",
-            ),
-            Ability(
-                name="Artifact Deploy",
-                type="attack",
-                damage=15,
-                energy_cost=25,
-                cooldown=0,
-                cooldown_remaining=0,
                 range=3,
-                description="Deploys an artifact strike for 15 damage at medium range.",
+                description="A burst attack that hits for 18 damage at mid range.",
             ),
             Ability(
-                name="Context Window Strike",
+                name="Evasive Maneuver",
+                type="attack",
+                damage=0,
+                energy_cost=15,
+                cooldown=2,
+                range=0,
+                description="Brace for impact and gain 30% damage reduction for 1 turn.",
+                effects=[
+                    AbilityEffect(
+                        type="status_apply",
+                        target="self",
+                        status_name="Evasive Maneuver",
+                        status_effect_type="damage_reduction",
+                        status_value=0.3,
+                        status_duration=1,
+                    )
+                ],
+            ),
+            Ability(
+                name="Execution",
                 type="ultimate",
                 damage=40,
                 energy_cost=80,
                 cooldown=8,
-                cooldown_remaining=0,
-                range=3,
-                description="Massive cognitive overload burst for 40 damage. High cost, long cooldown.",
+                range=2,
+                description="A lethal finisher that deals 40 damage.",
             ),
         ],
     )
 
 
-def _create_observer() -> Fighter:
-    """Gemini 1.5 Pro: The Observer — Tank / Counter."""
+def _create_guardian() -> Fighter:
     return Fighter(
-        id="gemini-1.5-pro",
-        codename="The Observer",
+        id="guardian",
+        codename="Guardian",
         hp=120,
         max_hp=120,
         energy=80,
@@ -184,106 +152,238 @@ def _create_observer() -> Fighter:
         position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Multimodal Beam",
+                name="Shield Bash",
                 type="attack",
                 damage=10,
                 energy_cost=0,
                 cooldown=0,
-                cooldown_remaining=0,
-                range=5,
-                description="Low damage beam with longest range.",
+                range=2,
+                description="A sturdy bash that deals 10 damage.",
             ),
             Ability(
-                name="Absorption Shield",
+                name="Fortify",
                 type="attack",
-                damage=8,
+                damage=0,
                 energy_cost=20,
-                cooldown=0,
-                cooldown_remaining=0,
+                cooldown=3,
                 range=0,
-                description="Absorbs ambient energy and redirects it for 8 damage. No movement required.",
+                description="Gain 40% damage reduction for 2 turns.",
+                effects=[
+                    AbilityEffect(
+                        type="status_apply",
+                        target="self",
+                        status_name="Fortify",
+                        status_effect_type="damage_reduction",
+                        status_value=0.4,
+                        status_duration=2,
+                    )
+                ],
             ),
             Ability(
-                name="Multimodal Devour",
+                name="Punishing Strike",
+                type="attack",
+                damage=14,
+                energy_cost=25,
+                cooldown=0,
+                range=2,
+                description="Strike for 14 damage and slow the target for 1 turn.",
+                effects=[
+                    AbilityEffect(
+                        type="status_apply",
+                        target="opponent",
+                        status_name="Punishing Strike",
+                        status_effect_type="slow",
+                        status_duration=1,
+                    )
+                ],
+            ),
+            Ability(
+                name="Earthshatter",
                 type="ultimate",
-                damage=35,
-                energy_cost=80,
-                cooldown=10,
-                cooldown_remaining=0,
-                range=6,
-                description="Devours all data streams for 35 damage. Long range, high cost.",
+                damage=25,
+                energy_cost=70,
+                cooldown=8,
+                range=4,
+                description="Smash the arena for 25 damage and stun the target for 1 turn.",
+                effects=[
+                    AbilityEffect(
+                        type="status_apply",
+                        target="opponent",
+                        status_name="Earthshatter",
+                        status_effect_type="stun",
+                        status_duration=1,
+                    )
+                ],
             ),
         ],
     )
 
 
-def _create_swarm() -> Fighter:
-    """Llama 3: The Swarm — Berserker / Glass Cannon."""
+def _create_controller() -> Fighter:
     return Fighter(
-        id="llama-3",
-        codename="The Swarm",
-        hp=70,
-        max_hp=70,
-        energy=120,
-        max_energy=120,
-        position=Position(x=6, y=3),
+        id="controller",
+        codename="Controller",
+        hp=90,
+        max_hp=90,
+        energy=100,
+        max_energy=100,
+        position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Weight Tear",
-                type="attack",
-                damage=13,
-                energy_cost=0,
-                cooldown=0,
-                cooldown_remaining=0,
-                range=3,
-                description="A savage tear through neural weights.",
-            ),
-            Ability(
-                name="Fine-tune Boost",
+                name="Signal Beam",
                 type="attack",
                 damage=10,
-                energy_cost=20,
+                energy_cost=0,
                 cooldown=0,
-                cooldown_remaining=0,
-                range=3,
-                description="A tuned weight adjustment strikes for 10 damage.",
+                range=5,
+                description="A long-range beam that deals 10 damage.",
             ),
             Ability(
-                name="Fine-tuned Frenzy",
+                name="Area Denial",
+                type="attack",
+                damage=12,
+                energy_cost=20,
+                cooldown=0,
+                range=4,
+                description="Project force across the arena to deal 12 damage.",
+            ),
+            Ability(
+                name="Repulsor",
+                type="attack",
+                damage=8,
+                energy_cost=25,
+                cooldown=2,
+                range=3,
+                description="Blast the target for 8 damage and push them 2 tiles away.",
+                effects=[
+                    AbilityEffect(
+                        type="knockback",
+                        target="opponent",
+                        knockback_distance=2,
+                    )
+                ],
+            ),
+            Ability(
+                name="Overwhelming Force",
                 type="ultimate",
                 damage=35,
                 energy_cost=80,
+                cooldown=10,
+                range=5,
+                description="Unload overwhelming ranged force for 35 damage.",
+            ),
+        ],
+    )
+
+
+def _create_berserker() -> Fighter:
+    return Fighter(
+        id="berserker",
+        codename="Berserker",
+        hp=65,
+        max_hp=65,
+        energy=120,
+        max_energy=120,
+        position=Position(x=1, y=3),
+        abilities=[
+            Ability(
+                name="Wild Swing",
+                type="attack",
+                damage=14,
+                energy_cost=0,
+                cooldown=0,
+                range=2,
+                description="A brutal swing that deals 14 damage.",
+            ),
+            Ability(
+                name="Bloodlust",
+                type="attack",
+                damage=0,
+                energy_cost=15,
+                cooldown=3,
+                range=0,
+                description="Spend 10 HP to gain 40% bonus damage for 2 turns.",
+                effects=[
+                    AbilityEffect(
+                        type="status_apply",
+                        target="self",
+                        status_name="Bloodlust",
+                        status_effect_type="damage_boost",
+                        status_value=0.4,
+                        status_duration=2,
+                    ),
+                    AbilityEffect(
+                        type="self_damage",
+                        target="self",
+                        self_damage=10,
+                    ),
+                ],
+            ),
+            Ability(
+                name="Reckless Assault",
+                type="attack",
+                damage=22,
+                energy_cost=25,
+                cooldown=0,
+                range=2,
+                description="Crash in for 22 damage and take 8 recoil damage.",
+                effects=[
+                    AbilityEffect(
+                        type="self_damage",
+                        target="self",
+                        self_damage=8,
+                    )
+                ],
+            ),
+            Ability(
+                name="Unleashed Fury",
+                type="ultimate",
+                damage=45,
+                energy_cost=80,
                 cooldown=8,
-                cooldown_remaining=0,
-                range=3,
-                description="Unleashes all fine-tuned weights for 35 damage. High cost, devastating.",
+                range=2,
+                description="An all-in finisher for 45 damage that costs 15 HP.",
+                effects=[
+                    AbilityEffect(
+                        type="self_damage",
+                        target="self",
+                        self_damage=15,
+                    )
+                ],
             ),
         ],
     )
 
 
 _FIGHTER_FACTORY = {
-    "gpt-4o": _create_oracle,
-    "claude-3.5-sonnet": _create_artisan,
-    "gemini-1.5-pro": _create_observer,
-    "llama-3": _create_swarm,
+    "striker": _create_striker,
+    "guardian": _create_guardian,
+    "controller": _create_controller,
+    "berserker": _create_berserker,
 }
 
 
 def get_fighter(fighter_id: str) -> Fighter:
-    """Get a fresh fighter instance by ID.
-
-    Raises ValueError if the fighter ID is unknown.
-    """
+    """Get a fresh archetype instance by ID."""
     factory = _FIGHTER_FACTORY.get(fighter_id)
     if factory is None:
         raise ValueError(
             f"Unknown fighter ID: '{fighter_id}'. "
-            f"Available fighters: {', '.join(FIGHTER_IDS)}"
+            f"Available fighters: {', '.join(ARCHETYPE_IDS)}"
         )
     return factory()
 
 
+def get_archetype(fighter_id: str) -> Fighter:
+    """Alias for get_fighter during migration."""
+    return get_fighter(fighter_id)
+
+
 def get_all_fighters() -> list[Fighter]:
-    """Get fresh instances of all fighters in the roster."""
-    return [get_fighter(fid) for fid in FIGHTER_IDS]
+    """Get fresh instances of all archetypes in the roster."""
+    return [get_fighter(fid) for fid in ARCHETYPE_IDS]
+
+
+def get_all_archetypes() -> list[Fighter]:
+    """Alias for get_all_fighters during migration."""
+    return get_all_fighters()

@@ -17,6 +17,7 @@ from llm_smash.engine.state import (
     MatchPhase,
     MatchResult,
     Position,
+    StatusEffect,
     TurnEvent,
     TurnLog,
 )
@@ -113,13 +114,40 @@ class GameEngine:
         events: list[TurnEvent] = []
         actions: dict[str, ActionResponse | None] = {}
         fumbles: list[str] = []
+        status_effects_to_tick = {
+            fighter.id: {id(effect) for effect in fighter.status_effects}
+            for fighter in self.state.fighters
+        }
+
+        request_fighter_ids: list[str] = []
+        for fighter_id in fighter_ids:
+            fighter = fighters[fighter_id]
+            if fighter.has_status("stun"):
+                actions[fighter_id] = self._build_status_action(
+                    fighter_id=fighter_id,
+                    action_type=ActionType.DEFEND.value,
+                    inner_monologue="Stunned. Forced into a defensive stance.",
+                    trash_talk="...ngh...",
+                )
+                events.append(
+                    TurnEvent(
+                        type="stun",
+                        source_id=fighter_id,
+                        description=f"{fighter.codename} is stunned and cannot act!",
+                    )
+                )
+                continue
+            request_fighter_ids.append(fighter_id)
 
         adapter_results = await asyncio.gather(
-            *(self._request_action(fighter_id, turn_num) for fighter_id in fighter_ids)
+            *(
+                self._request_action(fighter_id, turn_num)
+                for fighter_id in request_fighter_ids
+            )
         )
-        adapter_map = dict(zip(fighter_ids, adapter_results, strict=True))
+        adapter_map = dict(zip(request_fighter_ids, adapter_results, strict=True))
 
-        for fighter_id in fighter_ids:
+        for fighter_id in request_fighter_ids:
             adapter_result = adapter_map[fighter_id]
             validated_response: ActionResponse
             if (
@@ -167,6 +195,18 @@ class GameEngine:
             response = actions[fighter_id]
             if response is None:
                 continue
+            if fighter.has_status("slow"):
+                if response.move:
+                    events.append(
+                        TurnEvent(
+                            type="slow",
+                            source_id=fighter_id,
+                            description=(
+                                f"{fighter.codename} is slowed and cannot move this turn."
+                            ),
+                        )
+                    )
+                response.move = None
             new_position = self.combat.resolve_movement(
                 fighter,
                 response.move["direction"] if response.move else None,
@@ -193,6 +233,7 @@ class GameEngine:
         }
 
         pending_damage: dict[str, int] = {fighter_id: 0 for fighter_id in fighter_ids}
+        pending_effects: list[tuple[str, str, str]] = []
         alive_at_action_start = {
             fighter_id: fighters[fighter_id].is_alive for fighter_id in fighter_ids
         }
@@ -229,6 +270,7 @@ class GameEngine:
                     is_defending=opponent.id in defending,
                 )
                 pending_damage[opponent.id] += damage
+                pending_effects.append((fighter_id, opponent.id, ability.name))
                 if ability.cooldown > 0:
                     ability.cooldown_remaining = ability.cooldown
                 events.append(
@@ -261,6 +303,12 @@ class GameEngine:
                     )
                 )
 
+        ability_by_name = {
+            (fighter.id, ability.name): ability
+            for fighter in self.state.fighters
+            for ability in fighter.abilities
+        }
+
         for fighter_id, damage in pending_damage.items():
             if damage <= 0:
                 continue
@@ -286,12 +334,21 @@ class GameEngine:
                 )
             )
 
+        for source_id, target_id, ability_name in pending_effects:
+            source = fighters[source_id]
+            target = fighters[target_id]
+            ability = ability_by_name[(source_id, ability_name)]
+            events.extend(self._apply_ability_effects(source, target, ability))
+
         for fighter_id in fighter_ids:
             fighter = fighters[fighter_id]
             self.combat.apply_ability_cooldowns(fighter)
             self.combat.apply_energy_regen(fighter)
             events.extend(self.combat.apply_hazard_damage(fighter, self.state.arena))
-            self.combat.tick_status_effects(fighter)
+            self.combat.tick_status_effects(
+                fighter,
+                active_effect_ids=status_effects_to_tick[fighter_id],
+            )
 
         self.combat.tick_hazards(self.state.arena)
 
@@ -399,16 +456,120 @@ class GameEngine:
             trash_talk="...buffer underrun...",
         )
 
+    def _build_status_action(
+        self,
+        fighter_id: str,
+        action_type: str,
+        inner_monologue: str,
+        trash_talk: str,
+    ) -> ActionResponse:
+        assert self.state is not None
+        return ActionResponse(
+            turn=self.state.turn,
+            action={"type": action_type},
+            move=None,
+            inner_monologue=inner_monologue,
+            trash_talk=trash_talk,
+        )
+
+    def _apply_ability_effects(
+        self, source: Fighter, target: Fighter, ability
+    ) -> list[TurnEvent]:
+        events: list[TurnEvent] = []
+        for effect in ability.effects:
+            effect_target = source if effect.target == "self" else target
+            if effect.type == "status_apply":
+                if effect_target is target and not target.is_alive:
+                    continue
+                status = StatusEffect(
+                    name=effect.status_name or effect.status_effect_type,
+                    turns_remaining=effect.status_duration,
+                    effect_type=effect.status_effect_type,
+                    value=effect.status_value,
+                )
+                self.combat.apply_status_effect(effect_target, status)
+                events.append(
+                    TurnEvent(
+                        type="status_applied",
+                        source_id=source.id,
+                        target_id=effect_target.id,
+                        description=(
+                            f"{effect_target.codename} gains {status.effect_type} "
+                            f"for {status.turns_remaining} turn(s)."
+                        ),
+                    )
+                )
+            elif effect.type == "self_damage" and effect.self_damage > 0:
+                source.hp = max(0, source.hp - effect.self_damage)
+                events.append(
+                    TurnEvent(
+                        type="self_damage",
+                        source_id=source.id,
+                        target_id=source.id,
+                        value=effect.self_damage,
+                        description=(
+                            f"{source.codename} takes {effect.self_damage} self-damage."
+                        ),
+                    )
+                )
+            elif (
+                effect.type == "knockback"
+                and effect.knockback_distance > 0
+                and target.is_alive
+            ):
+                new_position = self._resolve_knockback(
+                    source=source,
+                    target=target,
+                    distance=effect.knockback_distance,
+                )
+                if new_position != target.position:
+                    target.position = new_position
+                    events.append(
+                        TurnEvent(
+                            type="knockback",
+                            source_id=source.id,
+                            target_id=target.id,
+                            description=(
+                                f"{target.codename} is knocked back to "
+                                f"({new_position.x}, {new_position.y})."
+                            ),
+                        )
+                    )
+        return events
+
+    def _resolve_knockback(
+        self, source: Fighter, target: Fighter, distance: int
+    ) -> Position:
+        assert self.state is not None
+        dx = (
+            0
+            if target.position.x == source.position.x
+            else (1 if target.position.x > source.position.x else -1)
+        )
+        dy = (
+            0
+            if target.position.y == source.position.y
+            else (1 if target.position.y > source.position.y else -1)
+        )
+        new_x = target.position.x
+        new_y = target.position.y
+        for _ in range(distance):
+            candidate = Position(
+                x=max(0, min(self.state.arena.width - 1, new_x + dx)),
+                y=max(0, min(self.state.arena.height - 1, new_y + dy)),
+            )
+            if candidate == Position(x=new_x, y=new_y):
+                break
+            new_x, new_y = candidate.x, candidate.y
+        return Position(x=new_x, y=new_y)
+
     def _ensure_state(self) -> None:
         if self.state is not None:
             return
 
         fighters = [get_fighter(fighter_id) for fighter_id in self.config.fighter_ids]
-        if fighters[0].position == fighters[1].position:
-            fighters[1].position = Position(
-                x=max(0, fighters[1].position.x + 5),
-                y=fighters[1].position.y,
-            )
+        fighters[0].position = Position(x=1, y=3)
+        fighters[1].position = Position(x=6, y=3)
 
         self.state = BattleState(
             fighters=fighters,

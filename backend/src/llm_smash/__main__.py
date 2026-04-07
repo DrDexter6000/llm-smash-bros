@@ -6,7 +6,7 @@ import argparse
 import asyncio
 
 from llm_smash.cli import run_cli_match
-from llm_smash.fighters.roster import FIGHTER_IDS
+from llm_smash.fighters.roster import ARCHETYPE_IDS, FIGHTER_IDS
 
 
 def main() -> None:
@@ -28,12 +28,12 @@ def main() -> None:
     parser.add_argument(
         "--fighters",
         nargs=2,
-        default=["gpt-4o", "claude-3.5-sonnet"],
-        choices=FIGHTER_IDS,
+        default=["striker", "guardian"],
+        choices=ARCHETYPE_IDS,
         metavar="FIGHTER",
         help=(
             "Two fighter IDs to pit against each other. Available: "
-            f"{', '.join(FIGHTER_IDS)}"
+            f"{', '.join(ARCHETYPE_IDS)}"
         ),
     )
     parser.add_argument(

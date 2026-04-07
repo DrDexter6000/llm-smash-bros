@@ -30,47 +30,47 @@ MockLLMClient = mock_client_module.MockLLMClient
 @pytest.fixture
 def sample_state() -> BattleState:
     f1 = Fighter(
-        id="gpt-4o",
-        codename="The Oracle",
-        hp=100,
-        max_hp=100,
+        id="striker",
+        codename="Striker",
+        hp=80,
+        max_hp=80,
         energy=100,
         max_energy=100,
         position=Position(x=1, y=3),
         abilities=[
             Ability(
-                name="Logic Missile",
+                name="Quick Strike",
                 type="attack",
                 damage=12,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
-                range=4,
+                range=2,
             ),
             Ability(
-                name="System Override",
+                name="Execution",
                 type="ultimate",
-                damage=0,
+                damage=40,
                 energy_cost=80,
                 cooldown=8,
                 cooldown_remaining=0,
-                range=6,
+                range=2,
             ),
         ],
     )
     f2 = Fighter(
-        id="claude-3.5-sonnet",
-        codename="The Artisan",
-        hp=85,
-        max_hp=85,
-        energy=100,
-        max_energy=100,
+        id="guardian",
+        codename="Guardian",
+        hp=120,
+        max_hp=120,
+        energy=80,
+        max_energy=80,
         position=Position(x=6, y=3),
         abilities=[
             Ability(
-                name="Code Slice",
+                name="Shield Bash",
                 type="attack",
-                damage=14,
+                damage=10,
                 energy_cost=0,
                 cooldown=0,
                 cooldown_remaining=0,
@@ -103,7 +103,7 @@ class TestAdapterContract:
         assert result.error is None
 
     def test_mock_client_implements_adapter_interface(self):
-        client = MockLLMClient(fighter_id="gpt-4o")
+        client = MockLLMClient(fighter_id="striker")
 
         assert isinstance(client, LLMAdapter)
 
@@ -111,9 +111,9 @@ class TestAdapterContract:
 class TestMockLLMClient:
     @pytest.mark.asyncio
     async def test_returns_valid_json_string(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=7)
+        client = MockLLMClient(fighter_id="striker", seed=7)
 
-        result = await client.get_action(sample_state, turn=5, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=5, fighter_id="striker")
         payload = parse_response(result)
 
         assert payload["turn"] == 5
@@ -123,31 +123,31 @@ class TestMockLLMClient:
 
     @pytest.mark.asyncio
     async def test_response_contains_correct_turn(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=3)
+        client = MockLLMClient(fighter_id="striker", seed=3)
 
-        result = await client.get_action(sample_state, turn=9, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=9, fighter_id="striker")
         payload = parse_response(result)
 
         assert payload["turn"] == 9
 
     @pytest.mark.asyncio
     async def test_response_contains_valid_action_type(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=11)
+        client = MockLLMClient(fighter_id="striker", seed=11)
 
-        result = await client.get_action(sample_state, turn=2, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=2, fighter_id="striker")
         payload = parse_response(result)
 
         assert payload["action"]["type"] in {"attack", "defend", "wait"}
 
     @pytest.mark.asyncio
     async def test_chosen_ability_is_available(self, sample_state: BattleState):
-        fighter = sample_state.get_fighter("gpt-4o")
+        fighter = sample_state.get_fighter("striker")
         assert fighter is not None
-        fighter.get_ability("System Override").cooldown_remaining = 2
+        fighter.get_ability("Execution").cooldown_remaining = 2
         fighter.energy = 10
-        client = MockLLMClient(fighter_id="gpt-4o", seed=5)
+        client = MockLLMClient(fighter_id="striker", seed=5)
 
-        result = await client.get_action(sample_state, turn=4, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=4, fighter_id="striker")
         payload = parse_response(result)
 
         if payload["action"]["type"] == "attack":
@@ -158,10 +158,10 @@ class TestMockLLMClient:
 
     @pytest.mark.asyncio
     async def test_simulated_latency(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", latency_ms=200, seed=1)
+        client = MockLLMClient(fighter_id="striker", latency_ms=200, seed=1)
 
         started = time.perf_counter()
-        result = await client.get_action(sample_state, turn=3, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=3, fighter_id="striker")
         elapsed_ms = (time.perf_counter() - started) * 1000
 
         assert result.latency_ms >= 150
@@ -170,32 +170,32 @@ class TestMockLLMClient:
 
     @pytest.mark.asyncio
     async def test_failure_rate_produces_invalid_json(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", failure_rate=1.0, seed=2)
+        client = MockLLMClient(fighter_id="striker", failure_rate=1.0, seed=2)
 
-        result = await client.get_action(sample_state, turn=6, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=6, fighter_id="striker")
 
         with pytest.raises(json.JSONDecodeError):
             parse_response(result)
 
     @pytest.mark.asyncio
     async def test_seed_produces_deterministic_results(self, sample_state: BattleState):
-        client_one = MockLLMClient(fighter_id="gpt-4o", seed=42)
-        client_two = MockLLMClient(fighter_id="gpt-4o", seed=42)
+        client_one = MockLLMClient(fighter_id="striker", seed=42)
+        client_two = MockLLMClient(fighter_id="striker", seed=42)
 
         result_one = await client_one.get_action(
-            sample_state, turn=7, fighter_id="gpt-4o"
+            sample_state, turn=7, fighter_id="striker"
         )
         result_two = await client_two.get_action(
-            sample_state, turn=7, fighter_id="gpt-4o"
+            sample_state, turn=7, fighter_id="striker"
         )
 
         assert result_one.raw_response == result_two.raw_response
 
     @pytest.mark.asyncio
     async def test_adapter_result_has_latency_ms(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=9)
+        client = MockLLMClient(fighter_id="striker", seed=9)
 
-        result = await client.get_action(sample_state, turn=1, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=1, fighter_id="striker")
 
         assert result.latency_ms > 0
         assert result.timed_out is False
@@ -203,11 +203,11 @@ class TestMockLLMClient:
 
     @pytest.mark.asyncio
     async def test_zero_failure_rate_always_valid(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", failure_rate=0.0, seed=21)
+        client = MockLLMClient(fighter_id="striker", failure_rate=0.0, seed=21)
 
         for turn in range(1, 21):
             result = await client.get_action(
-                sample_state, turn=turn, fighter_id="gpt-4o"
+                sample_state, turn=turn, fighter_id="striker"
             )
             payload = parse_response(result)
             assert payload["turn"] == turn
@@ -216,37 +216,37 @@ class TestMockLLMClient:
     async def test_mock_handles_fighter_with_all_abilities_on_cooldown(
         self, sample_state: BattleState
     ):
-        fighter = sample_state.get_fighter("gpt-4o")
+        fighter = sample_state.get_fighter("striker")
         assert fighter is not None
         for ability in fighter.abilities:
             ability.cooldown_remaining = 3
-        client = MockLLMClient(fighter_id="gpt-4o", seed=12)
+        client = MockLLMClient(fighter_id="striker", seed=12)
 
-        result = await client.get_action(sample_state, turn=8, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=8, fighter_id="striker")
         payload = parse_response(result)
 
         assert payload["action"]["type"] in {"defend", "wait"}
 
     @pytest.mark.asyncio
     async def test_attack_action_targets_opponent(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=7)
+        client = MockLLMClient(fighter_id="striker", seed=7)
 
         for turn in range(1, 30):
             result = await client.get_action(
-                sample_state, turn=turn, fighter_id="gpt-4o"
+                sample_state, turn=turn, fighter_id="striker"
             )
             payload = parse_response(result)
             if payload["action"]["type"] == "attack":
-                assert payload["action"]["target"] == "claude-3.5-sonnet"
+                assert payload["action"]["target"] == "guardian"
                 return
 
         pytest.fail("Expected at least one attack action in sampled turns")
 
     @pytest.mark.asyncio
     async def test_move_direction_is_valid_or_absent(self, sample_state: BattleState):
-        client = MockLLMClient(fighter_id="gpt-4o", seed=8)
+        client = MockLLMClient(fighter_id="striker", seed=8)
 
-        result = await client.get_action(sample_state, turn=10, fighter_id="gpt-4o")
+        result = await client.get_action(sample_state, turn=10, fighter_id="striker")
         payload = parse_response(result)
         move = payload.get("move")
 

@@ -10,7 +10,7 @@ from typing import Any, cast
 
 from llm_smash.engine.game import GameEngine, MatchConfig
 from llm_smash.engine.state import ActionType, Fighter, MatchResult, TurnEvent, TurnLog
-from llm_smash.fighters.roster import get_fighter
+from llm_smash.fighters.roster import get_archetype, get_fighter
 from llm_smash.llm.adapter import LLMAdapter
 from llm_smash.llm.anthropic_client import AnthropicClient
 from llm_smash.llm.mock_client import MockLLMClient
@@ -155,7 +155,7 @@ def _build_live_clients(fighter_ids: list[str]) -> dict[str, LLMAdapter]:
         if not cfg["model"]:
             raise RuntimeError(
                 f"{label}_MODEL not set. "
-                "Specify a model ID (e.g. gpt-4o, claude-sonnet-4-5-20250929) "
+                "Specify a model ID (e.g. gpt-4.1-mini, claude-sonnet-4-5-20250929) "
                 "in backend/.env."
             )
 
@@ -319,8 +319,8 @@ async def run_cli_match(
             _build_live_clients(fighter_ids),
         )
 
-    fighter_a = get_fighter(fighter_ids[0])
-    fighter_b = get_fighter(fighter_ids[1])
+    fighter_a = get_archetype(fighter_ids[0])
+    fighter_b = get_archetype(fighter_ids[1])
 
     safe_print(f"\n{BOLD}{'═' * 50}{RESET}")
     safe_print(f"{BOLD}  LLM SMASH BROS — 大模型大乱斗{RESET}")

@@ -91,6 +91,7 @@ class Ability(BaseModel):
     cooldown_remaining: int = 0  # Current cooldown counter
     range: int = 1
     description: str = ""
+    effects: list[AbilityEffect] = Field(default_factory=list)
 
     @property
     def is_available(self) -> bool:
@@ -105,6 +106,19 @@ class StatusEffect(BaseModel):
     turns_remaining: int
     effect_type: str  # "slow", "stun", "damage_boost", "damage_reduction", "confused"
     value: float = 0.0  # Magnitude of the effect
+
+
+class AbilityEffect(BaseModel):
+    """A non-damage effect attached to an ability."""
+
+    type: str  # "status_apply", "self_damage", "knockback"
+    target: str  # "self", "opponent"
+    status_name: str = ""
+    status_effect_type: str = ""
+    status_value: float = 0.0
+    status_duration: int = 0
+    knockback_distance: int = 0
+    self_damage: int = 0
 
 
 class Fighter(BaseModel):

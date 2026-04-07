@@ -73,6 +73,9 @@ class CombatResolver:
             return 0
 
         base = ability.damage
+        damage_boost = self._get_status_value(attacker, "damage_boost")
+        if damage_boost > 0:
+            base *= 1 + damage_boost
 
         # Variance: ±15%
         variance = self._rng.uniform(-DAMAGE_VARIANCE, DAMAGE_VARIANCE)
@@ -91,7 +94,20 @@ class CombatResolver:
         if is_defending:
             damage *= DEFEND_REDUCTION
 
+        damage_reduction = self._get_status_value(defender, "damage_reduction")
+        if damage_reduction > 0:
+            damage *= 1 - damage_reduction
+
         return max(1, int(damage))  # Minimum 1 damage
+
+    def apply_status_effect(self, fighter: Fighter, status: StatusEffect) -> None:
+        """Apply or refresh a status effect on a fighter."""
+        fighter.status_effects = [
+            effect
+            for effect in fighter.status_effects
+            if effect.effect_type != status.effect_type
+        ]
+        fighter.status_effects.append(status)
 
     def resolve_movement(
         self,
@@ -172,14 +188,25 @@ class CombatResolver:
                 remaining.append(hazard)
         arena.hazards = remaining
 
-    def tick_status_effects(self, fighter: Fighter) -> None:
+    def tick_status_effects(
+        self, fighter: Fighter, active_effect_ids: set[int] | None = None
+    ) -> None:
         """Tick down status effect durations and remove expired ones."""
         remaining: list[StatusEffect] = []
         for effect in fighter.status_effects:
+            if active_effect_ids is not None and id(effect) not in active_effect_ids:
+                remaining.append(effect)
+                continue
             effect.turns_remaining -= 1
             if effect.turns_remaining > 0:
                 remaining.append(effect)
         fighter.status_effects = remaining
+
+    def _get_status_value(self, fighter: Fighter, effect_type: str) -> float:
+        for effect in fighter.status_effects:
+            if effect.effect_type == effect_type:
+                return effect.value
+        return 0.0
 
     def spawn_hazard(
         self, arena: Arena, occupied_positions: list[Position]

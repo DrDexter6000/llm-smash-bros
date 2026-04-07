@@ -23,7 +23,7 @@ class TestCLI:
     async def test_cli_match_completes(self, capsys):
         """A mock match runs and prints turn output."""
         result = await run_cli_match(
-            fighter_ids=["gpt-4o", "claude-3.5-sonnet"],
+            fighter_ids=["striker", "guardian"],
             use_mock=True,
             max_turns=10,
             seed=42,
@@ -39,7 +39,7 @@ class TestCLI:
     async def test_cli_outputs_winner_or_draw(self, capsys):
         """Match output includes winner or draw announcement."""
         result = await run_cli_match(
-            fighter_ids=["gpt-4o", "claude-3.5-sonnet"],
+            fighter_ids=["striker", "guardian"],
             use_mock=True,
             max_turns=10,
             seed=42,
@@ -54,7 +54,7 @@ class TestCLI:
     async def test_cli_match_returns_match_result(self):
         """Function returns a MatchResult object."""
         result = await run_cli_match(
-            fighter_ids=["gpt-4o", "claude-3.5-sonnet"],
+            fighter_ids=["striker", "guardian"],
             use_mock=True,
             max_turns=5,
             seed=42,
@@ -70,7 +70,7 @@ class TestCLI:
         monkeypatch.setattr(sys, "stdout", stream)
 
         result = await run_cli_match(
-            fighter_ids=["gpt-4o", "claude-3.5-sonnet"],
+            fighter_ids=["striker", "guardian"],
             use_mock=True,
             max_turns=5,
             seed=42,

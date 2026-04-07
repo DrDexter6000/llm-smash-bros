@@ -1,19 +1,25 @@
 """Tests for core state models."""
 
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
+
 import pytest
+
 from llm_smash.engine.state import (
-    Position,
-    Ability,
-    StatusEffect,
-    Fighter,
-    Hazard,
+    AbilityEffect,
+    ActionResponse,
     Arena,
     BattleState,
-    ActionResponse,
-    ActionType,
-    MoveDirection,
-    MatchPhase,
     DIRECTION_VECTORS,
+    Fighter,
+    Hazard,
+    MatchPhase,
+    MoveDirection,
+    Ability,
+    Position,
+    StatusEffect,
 )
 
 
@@ -56,6 +62,29 @@ class TestAbility:
         assert ability.name == "Fireball"
         assert ability.damage == 20
 
+    def test_ability_effects_default_to_empty_list(self):
+        ability = Ability(name="Fortify", type="buff")
+        assert ability.effects == []
+
+
+class TestAbilityEffect:
+    def test_create_status_apply_effect(self):
+        effect = AbilityEffect(
+            type="status_apply",
+            target="self",
+            status_name="Fortified",
+            status_effect_type="damage_reduction",
+            status_value=0.4,
+            status_duration=2,
+        )
+
+        assert effect.type == "status_apply"
+        assert effect.target == "self"
+        assert effect.status_effect_type == "damage_reduction"
+        assert effect.status_value == 0.4
+
+
+class TestAbilityAvailability:
     def test_is_available_when_off_cooldown(self):
         ability = Ability(
             name="Nuke", type="ultimate", cooldown=8, cooldown_remaining=0
@@ -72,8 +101,8 @@ class TestAbility:
 class TestFighter:
     def test_create_fighter(self):
         fighter = Fighter(
-            id="gpt-4o",
-            codename="The Oracle",
+            id="striker",
+            codename="Striker",
             hp=100,
             max_hp=100,
             energy=100,
@@ -87,8 +116,8 @@ class TestFighter:
 
     def test_fighter_dead_at_zero_hp(self):
         fighter = Fighter(
-            id="gpt-4o",
-            codename="The Oracle",
+            id="striker",
+            codename="Striker",
             hp=0,
             max_hp=100,
             energy=100,
@@ -101,8 +130,8 @@ class TestFighter:
 
     def test_hp_clamped_to_max(self):
         fighter = Fighter(
-            id="gpt-4o",
-            codename="The Oracle",
+            id="striker",
+            codename="Striker",
             hp=150,
             max_hp=100,
             energy=100,
@@ -115,8 +144,8 @@ class TestFighter:
 
     def test_hp_clamped_to_zero(self):
         fighter = Fighter(
-            id="gpt-4o",
-            codename="The Oracle",
+            id="striker",
+            codename="Striker",
             hp=-10,
             max_hp=100,
             energy=100,
@@ -129,8 +158,8 @@ class TestFighter:
 
     def test_energy_clamped_to_max(self):
         fighter = Fighter(
-            id="gpt-4o",
-            codename="The Oracle",
+            id="striker",
+            codename="Striker",
             hp=100,
             max_hp=100,
             energy=200,
@@ -219,35 +248,35 @@ class TestArena:
 
 
 class TestBattleState:
-    def test_create_battle_state(self, oracle_fighter, artisan_fighter, basic_arena):
+    def test_create_battle_state(self, striker_fighter, guardian_fighter, basic_arena):
         state = BattleState(
             match_id="test-001",
             turn=1,
             phase=MatchPhase.FIGHTING,
-            fighters=[oracle_fighter, artisan_fighter],
+            fighters=[striker_fighter, guardian_fighter],
             arena=basic_arena,
         )
         assert state.turn == 1
         assert len(state.fighters) == 2
 
     def test_get_fighter(self, sample_battle_state):
-        fighter = sample_battle_state.get_fighter("gpt-4o")
+        fighter = sample_battle_state.get_fighter("striker")
         assert fighter is not None
-        assert fighter.codename == "The Oracle"
+        assert fighter.codename == "Striker"
 
     def test_get_fighter_not_found(self, sample_battle_state):
         assert sample_battle_state.get_fighter("nonexistent") is None
 
     def test_get_opponent(self, sample_battle_state):
-        opponent = sample_battle_state.get_opponent("gpt-4o")
+        opponent = sample_battle_state.get_opponent("striker")
         assert opponent is not None
-        assert opponent.id == "claude-3.5-sonnet"
+        assert opponent.id == "guardian"
 
     def test_to_fighter_perspective(self, sample_battle_state):
-        perspective = sample_battle_state.to_fighter_perspective("gpt-4o")
+        perspective = sample_battle_state.to_fighter_perspective("striker")
         assert perspective["turn"] == 1
-        assert perspective["you"]["id"] == "gpt-4o"
-        assert perspective["opponent"]["id"] == "claude-3.5-sonnet"
+        assert perspective["you"]["id"] == "striker"
+        assert perspective["opponent"]["id"] == "guardian"
         assert "rules_reminder" in perspective
         assert "arena" in perspective
 
@@ -260,7 +289,7 @@ class TestActionResponse:
     def test_valid_attack_response(self):
         resp = ActionResponse(
             turn=5,
-            action={"type": "attack", "ability": "Code Slice", "target": "gpt-4o"},
+            action={"type": "attack", "ability": "Quick Strike", "target": "guardian"},
             move={"direction": "left"},
             inner_monologue="Going in for the kill.",
             trash_talk="GG no re.",

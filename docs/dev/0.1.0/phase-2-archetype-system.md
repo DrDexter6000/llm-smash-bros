@@ -237,20 +237,40 @@ After completing all tasks, verify:
 
 > *This section is filled by the executor after phase completion. Do not pre-fill.*
 
-**Completed by:** _(executor name/model)_
-**Date:** _(date)_
+**Completed by:** Sisyphus-Junior / gpt-5.4
+**Date:** 2026-04-07
 
 **What was done:**
+- Replaced the branded roster with four generic archetypes: Striker, Guardian, Controller, Berserker.
+- Added `AbilityEffect` and effect-driven ability resolution for status application, self-damage, and knockback.
+- Implemented `damage_boost` and `damage_reduction` in `combat.py`, plus stun/slow handling in `game.py`.
+- Updated CLI/archetype wiring, prompts, tests, and migration aliases (`FIGHTER_IDS`, `get_archetype`, `get_all_archetypes`).
 
 **What passed:**
+- Targeted test files for state, roster, combat, game, CLI, validator, adapters, and live client wrappers.
+- Full backend pytest suite.
+- Mock CLI match via `python -m llm_smash --seed 42`.
+- Source self-audit for old branded fighter/archetype names in `backend/src/`.
 
 **What failed or was unexpected:**
+- Root-level LSP diagnostics on tests still report some import-resolution noise because the package lives under `backend/src`; backend test runs stayed green, matching repo guidance.
+- The phase plan suggested a bigger `MatchConfig` refactor, but the lighter migration path was sufficient: `fighter_ids` now carry archetype IDs while live client mapping remains keyed by those IDs.
 
 **Archetype stats finalized (record exact numbers here):**
+- **Striker** — HP 80, Energy 100: Quick Strike (12 dmg, r2, cost 0, cd 0), Blitz Rush (18 dmg, r3, cost 20, cd 0), Evasive Maneuver (0 dmg, self `damage_reduction` 0.3 for 1 turn, cost 15, cd 2), Execution (40 dmg, r2, cost 80, cd 8).
+- **Guardian** — HP 120, Energy 80: Shield Bash (10 dmg, r2, cost 0, cd 0), Fortify (0 dmg, self `damage_reduction` 0.4 for 2 turns, cost 20, cd 3), Punishing Strike (14 dmg, r2, cost 25, cd 0, applies `slow` for 1 turn), Earthshatter (25 dmg, r4, cost 70, cd 8, applies `stun` for 1 turn).
+- **Controller** — HP 90, Energy 100: Signal Beam (10 dmg, r5, cost 0, cd 0), Area Denial (12 dmg, r4, cost 20, cd 0), Repulsor (8 dmg, r3, cost 25, cd 2, knockback 2), Overwhelming Force (35 dmg, r5, cost 80, cd 10).
+- **Berserker** — HP 65, Energy 120: Wild Swing (14 dmg, r2, cost 0, cd 0), Bloodlust (0 dmg, self-damage 10, self `damage_boost` 0.4 for 2 turns, cost 15, cd 3), Reckless Assault (22 dmg, r2, self-damage 8, cost 25, cd 0), Unleashed Fury (45 dmg, r2, self-damage 15, cost 80, cd 8).
 
 **What changed from plan:**
+- Kept `MatchConfig.fighter_ids` for compatibility instead of renaming to `archetype_ids`.
+- Preserved backward-compatible helper names (`get_fighter`, `get_all_fighters`, `FIGHTER_IDS`) while making them archetype-backed.
+- Tightened default OpenAI client example text/model away from old branded roster naming to keep source self-audit clean.
 
 **State left for Phase 3:**
+- Archetypes are now mechanically honest and decoupled from model identity.
+- Status effects needed by Phase 2 are implemented and covered by tests.
+- Engine still uses a flat arena with no terrain logic yet, so Phase 3 can layer spatial systems on top of a stable archetype baseline.
 
 ---
 
