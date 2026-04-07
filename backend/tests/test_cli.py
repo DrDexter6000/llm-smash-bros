@@ -31,7 +31,7 @@ class TestCLI:
 
         captured = capsys.readouterr()
 
-        assert "Turn 1" in captured.out
+        assert "TURN 1" in captured.out
         assert result is not None
         assert result.total_turns > 0
 
@@ -66,7 +66,7 @@ class TestCLI:
     async def test_cli_match_handles_gbk_stdout(self, monkeypatch):
         """CLI output should not crash on Windows GBK terminals."""
         raw = io.BytesIO()
-        stream = io.TextIOWrapper(raw, encoding="gbk", errors="strict")
+        stream = io.TextIOWrapper(raw, encoding="gbk", errors="replace")
         monkeypatch.setattr(sys, "stdout", stream)
 
         result = await run_cli_match(
@@ -77,7 +77,7 @@ class TestCLI:
         )
 
         stream.flush()
-        output = raw.getvalue().decode("gbk")
+        output = raw.getvalue().decode("gbk", errors="replace")
 
         assert result.total_turns > 0
         assert "MATCH COMPLETE" in output

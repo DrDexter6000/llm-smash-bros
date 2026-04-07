@@ -60,6 +60,12 @@ def main() -> None:
         default=False,
         help="Skip API connection check before live matches",
     )
+    parser.add_argument(
+        "--replay-dir",
+        type=str,
+        default=None,
+        help="Directory to save match replay JSONs (default: replays/)",
+    )
     args = parser.parse_args()
 
     # Default to mock when neither flag is specified
@@ -78,6 +84,7 @@ def main() -> None:
             seed=args.seed,
             timeout=timeout,
             skip_preflight=args.no_preflight,
+            replay_dir=args.replay_dir,
         )
     )
 
