@@ -13,123 +13,129 @@ When documents conflict, the higher-authority document wins.
 1. **`STRATEGY.md`** — highest authority for current priorities, decision filters, and what matters now.
 2. **`PRD.md`** — highest authority for product definition, scope, and long-lived requirements.
 3. **`PLAN.md`** — highest authority for roadmap sequencing, current execution focus, and phase ordering.
+4. **`0.1.0/*.md`** — phase-level TDD plans; subordinate to all three above. Owns execution detail for each phase.
 
 ### Locking Rule
 
 - Lower documents must not contradict higher documents.
 - If a higher document changes in a way that invalidates a lower document, update the lower document in the **same change**.
 - `PLAN.md` may add implementation detail, but it may not redefine product intent.
+- Phase TDD plans may add task-level detail, but they may not redefine phase scope set by `PLAN.md`.
 
 ---
 
 ## 2. Reading Order (Macro → Detail)
 
-New contributors should read in this order:
+New contributors (human or AI) should read in this order:
 
 1. **Repo `README.md`** — what the project is, quick orientation
-2. **`docs/dev/STRATEGY.md`** — what matters right now and how to make tradeoffs
-3. **`docs/dev/PRD.md`** — what the product is supposed to become
-4. **`docs/dev/PLAN.md`** — what is done, what is next, and what should not be prioritized yet
-5. **`docs/dev/README.md`** — how the SSOT system itself works
+2. **`AGENTS.md`** — repo-level instructions, commands, known traps
+3. **`docs/dev/STRATEGY.md`** — what matters right now and how to make tradeoffs
+4. **`docs/dev/PRD.md`** — what the product is supposed to become
+5. **`docs/dev/PLAN.md`** — what is done, what is next, phase overview
+6. **`docs/dev/0.1.0/phase-N-*.md`** — detailed TDD plan for the specific phase you are executing
+7. **`docs/dev/README.md`** — how the SSOT system itself works (this file)
 
 This order is mandatory for non-trivial work. Think top-down: **why now → what → how**.
 
 ---
 
-## 3. Document Responsibilities
+## 3. Directory Structure
 
-### `STRATEGY.md`
+```
+docs/dev/
+├── README.md          ← this file (SSOT guide)
+├── STRATEGY.md        ← strategic priorities and decision filters
+├── PRD.md             ← product requirements
+├── PLAN.md            ← roadmap and milestone overview
+└── 0.1.0/             ← v0.1.0 milestone phase plans
+    ├── phase-1-foundation-cleanup.md
+    ├── phase-2-archetype-system.md
+    ├── phase-3-terrain-spatial.md
+    ├── phase-4-battle-memory-prompt.md
+    ├── phase-5-rich-cli.md
+    └── phase-6-integration-balance.md
+```
 
-Owns:
+### Milestone Directory Convention
 
-- current strategic truth
-- current priority order
-- decision filters for tradeoffs
-- explicit non-goals for the near term
-
-Does **not** own:
-
-- full product spec
-- detailed roadmap phases
-- implementation checklists
-
-### `PRD.md`
-
-Owns:
-
-- durable product intent
-- experience requirements
-- scope boundaries
-- success criteria
-- product risks and open product questions
-
-Does **not** own:
-
-- weekly priority shuffles
-- detailed task sequencing
-- transient implementation notes
-
-### `PLAN.md`
-
-Owns:
-
-- roadmap phases
-- what is complete / active / deferred
-- near-term delivery framing
-- phase-level execution direction
-
-Does **not** own:
-
-- product redefinition
-- conflicting scope changes
-- strategy overrides
+Each milestone version gets its own directory (e.g., `0.1.0/`, `0.2.0/`). Phase plans within a milestone are named `phase-N-short-name.md`. Completed milestones may be archived by renaming the directory (e.g., `0.1.0-archived/`).
 
 ---
 
-## 4. Reference Discipline
+## 4. Document Responsibilities
+
+### `STRATEGY.md`
+
+Owns: current strategic truth, priority order, decision filters, explicit non-goals.
+Does not own: full product spec, detailed roadmap phases, implementation checklists.
+
+### `PRD.md`
+
+Owns: durable product intent, experience requirements, scope boundaries, success criteria, product risks.
+Does not own: weekly priority shuffles, detailed task sequencing, transient implementation notes.
+
+### `PLAN.md`
+
+Owns: roadmap phases, what is complete / active / deferred, near-term delivery framing.
+Does not own: product redefinition, conflicting scope changes, strategy overrides.
+
+### Phase TDD Plans (`0.1.0/*.md`)
+
+Owns: phase goal, task breakdown, acceptance criteria, execution rules, self-audit protocol, writeback.
+Does not own: cross-phase scope changes, product meaning shifts, strategy overrides.
+
+---
+
+## 5. Phase TDD Plan Structure
+
+Every phase plan follows this closed-loop structure (per `AGENTS.md` TDD discipline):
+
+```
+§1 Phase Goal & Purpose
+§2 Prerequisites & Dependencies
+§3 Execution Rules (MUST DO / MUST NOT DO)
+§4 Task Breakdown
+§5 Acceptance Criteria (red/green conditions)
+§6 Self-Audit Checklist
+§7 Self-Optimization & Retry Guidance
+§8 Execution Writeback (filled after completion)
+§9 Next Phase Pointer
+```
+
+The writeback section (§8) is **mandatory**. After completing a phase, the executor must append a brief covering: what was done, what passed, what failed, what changed from plan, and what the next phase should know.
+
+---
+
+## 6. Reference Discipline
 
 ### Stable Reference Format
 
 Use **document + section number** as the authoritative reference.
 
 Examples:
-
 - `STRATEGY §3`
 - `PRD §5.2`
-- `PLAN §5 Phase C`
+- `PLAN §4 Phase 2`
+- `Phase 2 TDD §5` (within `docs/dev/0.1.0/phase-2-archetype-system.md`)
 
-This is the canonical cross-reference format because line numbers drift.
-
-### Line Numbers Policy
-
-The user asked for references down to line numbers. We support that with a **line snapshot registry** in this file, but those line numbers are **informational, not authoritative**.
-
-- **Authority anchor:** document + section number
-- **Audit anchor:** line snapshot captured on a specific date
-
-If line numbers drift after edits, section-number references remain valid.
-
----
-
-## 5. Key Cross-Reference Registry
-
-Use this table to lock the most important relationships between docs.
+### Cross-Reference Registry
 
 | From | To | Relationship |
 |---|---|---|
-| `STRATEGY §3 Priority 1` | `PRD §5` | strategy requires a structured public reasoning layer |
-| `STRATEGY §3 Priority 2` | `PRD §6` | strategy requires deeper tactical gameplay |
-| `STRATEGY §3 Priority 3` | `PRD §4` | strategy requires a spectator-readable match loop |
-| `PRD §5` | `PLAN §5 Phase C` | PRD target is implemented through public reasoning work |
-| `PRD §6` | `PLAN §5 Phase D` | gameplay requirements are implemented through state/mechanics enrichment |
-| `PRD §4` | `PLAN §5 Phase E` | core experience requirements drive spectator UI work |
-| `PRD §10` | `PLAN §7` | roadmap exit criteria should satisfy milestone success criteria |
-
-Only register **dependency-grade** links here. Do not bloat this table with casual “see also” references.
+| `STRATEGY §3 Priority 2` | `PRD §5` | strategy requires fair archetype system |
+| `STRATEGY §3 Priority 3` | `PRD §6` | strategy requires terrain/spatial strategy |
+| `STRATEGY §3 Priority 4` | `PRD §7` | strategy requires battle memory and prompt contract |
+| `STRATEGY §3 Priority 5` | `PRD §4` | strategy requires spectator-readable match loop |
+| `PRD §5` | `PLAN §4 Phase 2` | archetype requirements → archetype phase |
+| `PRD §6` | `PLAN §4 Phase 3` | terrain requirements → terrain phase |
+| `PRD §7` | `PLAN §4 Phase 4` | prompt contract requirements → prompt phase |
+| `PRD §4` | `PLAN §4 Phase 5` | match loop requirements → rich CLI phase |
+| `PRD §10` | `PLAN §6` | success criteria → exit criteria |
 
 ---
 
-## 6. Change Protocol
+## 7. Change Protocol
 
 Before changing any development SSOT doc:
 
@@ -139,61 +145,25 @@ Before changing any development SSOT doc:
 4. If you change section numbering, search for old `§` references and update them.
 5. Re-read the docs in macro → detail order if the change is strategic rather than cosmetic.
 
-### Typical Ownership Examples
+---
 
-- “We should prioritize GUI over balancing this month.” → `STRATEGY.md`
-- “The product should not expose raw chain-of-thought.” → `PRD.md`
-- “Phase C must happen before Phase E.” → `PLAN.md`
+## 8. For AI Executors
+
+If you are an LLM executing a phase:
+
+1. Read `AGENTS.md` first for repo-level instructions and commands.
+2. Read the full doc chain: `STRATEGY.md` → `PRD.md` → `PLAN.md` → your phase TDD plan.
+3. Do not deviate from the phase plan's scope. If you discover that the plan is wrong or incomplete, document the issue in the writeback — do not silently expand scope.
+4. Run tests after every significant change. The test command is in `AGENTS.md`.
+5. When the phase is complete, write the execution writeback into your phase plan before stopping.
+6. Do not start the next phase. Leave that to the next invocation.
 
 ---
 
-## 7. Lean Docs Rule
+## 9. Lean Docs Rule
 
 This project should not carry enterprise-grade documentation overhead.
 
-- Prefer 3–4 strong SSOT docs over 20 weak ones.
+- Prefer 3–4 strong SSOT docs + focused phase plans over 20 weak docs.
 - Add a new doc only when an existing one can no longer stay readable.
-- For a codebase of this size, the current baseline should stay “just enough to build correctly.”
-
----
-
-## 8. Future Growth Rules
-
-Do **not** pre-create these unless needed:
-
-- `docs/dev/phases/` for large phase execution plans
-- `docs/dev/research/` for balancing notes, UX experiments, or evaluation studies
-- `docs/dev/adr/` for architecture decisions that deserve permanent records
-
-Only add them when the active SSOT set stops being enough.
-
----
-
-## 9. TDD Planning Discipline
-
-When `PLAN.md` or any future phase-specific TDD plan is expanded into executable work, the plan should scale to the real workload instead of using fixed ceremony.
-
-- Split into phases, batches, and tasks only when the work size justifies it.
-- Each phase should define: goal, execution rules, red/green acceptance, self-audit, self-check/self-optimization, and a writeback section.
-- Phase writeback is mandatory: once a phase finishes, append a short execution brief at the end of that phase so the plan remains a living record instead of a stale checklist.
-- The end of one phase should make the next step obvious. Plans should preserve a self-looping execution chain rather than stopping at “tasks completed.”
-
-`AGENTS.md` is the repo-level enforcement point for this rule; use this file to understand how it fits into the broader docs system.
-
----
-
-## 10. Line Snapshot Registry (Informational Only)
-
-These line ranges are a snapshot for auditability as of **2026-04-07**. They are not the source of truth.
-
-| Anchor | File | Line Snapshot |
-|---|---|---|
-| `STRATEGY §1` | `docs/dev/STRATEGY.md` | lines 10–19 |
-| `STRATEGY §3` | `docs/dev/STRATEGY.md` | lines 46–70 |
-| `PRD §4` | `docs/dev/PRD.md` | lines 99–137 |
-| `PRD §5` | `docs/dev/PRD.md` | lines 141–160 |
-| `PRD §6` | `docs/dev/PRD.md` | lines 164–191 |
-| `PLAN §5 Phase C` | `docs/dev/PLAN.md` | lines 88–103 |
-| `PLAN §5 Phase D` | `docs/dev/PLAN.md` | lines 105–120 |
-| `PLAN §5 Phase E` | `docs/dev/PLAN.md` | lines 122–137 |
-| `PLAN §7` | `docs/dev/PLAN.md` | lines 174–181 |
+- Phase plans are temporary execution artifacts. They are useful during v0.1.0 and may be archived after.

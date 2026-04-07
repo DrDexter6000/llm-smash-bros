@@ -1,9 +1,9 @@
 # LLM Smash Bros — Product Requirements Document (PRD)
 
-**Version:** 0.3.0  
-**Last Updated:** 2026-04-07  
-**Authority:** Product-definition document; subordinate to `STRATEGY.md`, superior to `PLAN.md`  
-**Read after:** `STRATEGY.md`  
+**Version:** 0.4.0
+**Last Updated:** 2026-04-07
+**Authority:** Product-definition document; subordinate to `STRATEGY.md`, superior to `PLAN.md`
+**Read after:** `STRATEGY.md`
 **Read before:** `PLAN.md`
 
 ---
@@ -12,87 +12,77 @@
 
 ### 1.1 The Problem
 
-AI leaderboards are informative but emotionally flat. They tell people which model scores higher, but not how different models behave under pressure, how they express style, or whether they make readable tactical decisions in a dynamic environment.
+AI leaderboards are informative but emotionally flat. They tell people which model scores higher, but not how different models behave under pressure, how they express tactical style, or whether they make readable strategic decisions in a dynamic environment.
 
 ### 1.2 The Product Promise
 
-**LLM Smash Bros** is a spectator-first turn-based battle game where real LLMs act as the brains of fighters.
+**LLM Smash Bros** is a spectator-first turn-based battle game where real LLMs pilot generic fighter archetypes on a fair, terrain-rich arena.
 
-Per `STRATEGY §1`, the product goal is not to expose raw chain-of-thought or obsess over provider plumbing. The goal is to make three things visible and entertaining:
+Per `STRATEGY §1`, the product goal is to make three things visible and entertaining:
 
-1. **Tactical reasoning** — does the model understand range, energy, cooldowns, hazards, and timing?
-2. **Persona** — does each model feel distinct in tone and play style?
+1. **Tactical reasoning** — does the model understand terrain, range, energy, cooldowns, hazards, and timing?
+2. **Strategic identity** — does each model develop a distinct play style even when given the same toolkit?
 3. **Readable strategy** — can a viewer quickly understand why the model made a move?
 
 ### 1.3 What This Product Is Not
 
 - Not a benchmark replacement.
-- Not a pure combat simulator where fixed rules fully determine the fun.
+- Not a combat simulator where fixed rules fully determine the fun.
 - Not a raw chain-of-thought viewer.
-- Not a model configuration playground.
+- Not a model marketing exercise where fighter abilities mirror LLM brand positioning.
 
-The product succeeds when a viewer can watch a match and say: **“I can tell how these models differ.”**
+The product succeeds when a viewer can watch a match and say: **"I can tell how these models think differently, even with the same fighter."**
 
 ---
 
 ## 2. Product Principles
 
-### 2.1 Authenticity Over Illusion
+### 2.1 Fair Playground
+
+Per `STRATEGY §2.1`, fighter archetypes are game characters independent of LLM identity. Any model can pilot any archetype. The arena tests decision quality, not brand flavor.
+
+- Fighter identity comes from archetype design (stats, abilities, role).
+- Model identity comes from the LLM piloting the fighter.
+- A mirror match (same archetype, different models) is the purest evaluation.
+- Cross-archetype matches test whether models can adapt to different toolkits.
+
+### 2.2 Authenticity Over Illusion
 
 - **Live mode** must use real LLM-generated battle decisions and taunts.
 - **Mock mode** exists only for development, testing, and demo safety.
-- The product must clearly preserve this distinction in documentation and UX.
-
-### 2.2 Spectator Readability Over Raw Verbosity
-
-- The public-facing reasoning layer should be short, structured, and readable.
-- Raw private reasoning should not be the UX goal.
-- If the system keeps richer internal reasoning, the user should see only a curated tactical summary.
+- The engine must never describe mechanics in prompts that are not implemented. Every ability and terrain effect the model reads about must work exactly as described.
 
 ### 2.3 Strategy Should Matter
 
 - Match outcomes should reflect meaningful decisions, not just flavor text.
-- The game state must reward planning around positioning, energy, cooldowns, and hazards.
+- Terrain, positioning, energy, cooldowns, and hazards must create real tradeoffs.
 - Randomness may add drama, but it must not dominate perceived skill.
 
-### 2.4 Entertainment Must Stay Legible
+### 2.4 Spectator Readability
 
-- Persona and trash talk matter, but they should reinforce strategy rather than distract from it.
 - Every turn should communicate: **what happened, why it happened, and what might happen next.**
+- Persona and trash talk reinforce strategy rather than distract from it.
+- Model reasoning is presented as short tactical summaries, not raw verbose transcripts.
 
 ---
 
 ## 3. Current Product Reality
 
-This section keeps the PRD grounded in current truth instead of drifting into fantasy.
-
 ### 3.1 Authentic Output Modes
 
 - **Live mode:** real model output is sent by LLM adapters and parsed into game actions.
 - **Mock mode:** uses scripted/randomized development text and actions for local testing.
-- **Fumble fallback:** if a model times out or returns invalid output, the engine substitutes a hardcoded defensive fallback.
+- **Fumble fallback:** if a model times out or returns invalid output, the engine substitutes a hardcoded defensive fallback with an HP penalty.
 
-### 3.2 Current Strategy Surface
+### 3.2 Current Weaknesses (to be addressed in v0.1.0)
 
-The current engine already allows meaningful tactical choices around:
-
-- attack / defend / wait
-- one-tile movement each turn
-- energy management
-- cooldown timing
-- hazard avoidance
-- range-aware decision-making
-
-However, the current product still under-expresses:
-
-- multi-turn planning
-- opponent modeling
-- readable strategic storytelling
-- distinction between private reasoning and public explanation
-
-### 3.3 Current Viewer Experience
-
-The CLI proves the game loop works, but it is still primarily an engineering-facing surface. It does not yet deliver the intended spectator-grade presentation of model strategy.
+- Fighter roster is branded to specific LLMs instead of being generic archetypes.
+- Several abilities describe effects (stun, slow, reflection, absorb) that are not implemented in the engine — the prompts lie to the models.
+- Arena is a flat grid; movement has almost no tactical value.
+- No turn history is provided to models; they cannot do multi-turn reasoning.
+- `inner_monologue` field is debug-flavored, not spectator-readable.
+- CLI uses raw ANSI codes with Windows compatibility issues.
+- `__main__.py` has a duplicate code bug.
 
 ---
 
@@ -102,183 +92,261 @@ The CLI proves the game loop works, but it is still primarily an engineering-fac
 
 Each turn should feel like a mini drama beat:
 
-1. Viewer sees the current battlefield.
-2. Viewer understands each fighter’s pressure and options.
-3. Fighters “think” briefly.
-4. Each fighter reveals a readable strategic intent.
-5. Movement and action resolve.
+1. Viewer sees the current battlefield with terrain.
+2. Viewer understands each fighter's pressure and options.
+3. Fighters "think" briefly.
+4. Each fighter reveals a readable tactical intent.
+5. Movement and action resolve, terrain effects apply.
 6. Damage, status, and hazards update.
 7. Viewer sees the new tactical situation.
 
-**Implemented by:** `PLAN §5 Phase E`
-
 ### 4.2 What the Model Must Decide
 
-For each turn, the model must decide:
+For each turn, the model receives a structured battle state and must decide:
 
 - whether to attack, defend, or wait
-- which ability to use
-- whether and where to move
-- how to express short-form public strategy
-- how to express persona through trash talk
+- which ability to use (considering energy, cooldowns, range)
+- whether and where to move (considering terrain advantages)
+- a short public tactical summary (1-2 sentences for spectator display)
+- a trash talk line (in-character for the archetype)
 
 ### 4.3 What the Engine Must Resolve
 
-The engine is responsible for deterministic and semi-random rule enforcement, including:
+The engine is responsible for deterministic and semi-random rule enforcement:
 
 - action validation
-- movement legality
-- damage calculation
+- movement legality and terrain interaction
+- damage calculation with terrain modifiers
 - cooldown updates
 - energy regeneration
-- hazard spawning and hazard effects
+- hazard spawning and effects
+- status effect application and tick-down
 - KO / timeout / draw rules
 
 The viewer should understand that **models choose intent; the engine resolves consequences.**
 
 ---
 
-## 5. Public Reasoning Requirement
+## 5. Fighter Archetype Requirements
 
-### 5.1 Current State
+Per `STRATEGY §2.1`, fighter archetypes are generic game characters.
 
-The current output contract includes an `inner_monologue` text field. This is useful for debugging and early flavor, but it is not yet the right long-term spectator-facing format.
+### 5.1 Archetype Design Rules
 
-### 5.2 Target State
+- Each archetype has a distinct combat role with real mechanical tradeoffs.
+- Each archetype has exactly **4 abilities**: 1 basic (free), 2 tactical (medium cost, combo potential), 1 ultimate (high cost, long CD, high impact).
+- Ability descriptions in prompts must exactly match engine behavior. No flavor-only effects.
+- Archetype stats (HP, energy, move speed) must create meaningful asymmetry.
 
-Per `STRATEGY §3 Priority 1`, the public reasoning layer should evolve into a short, structured explanation that is easy to animate and display. It should answer:
+### 5.2 Target Archetypes (v0.1.0)
 
-- **Situation:** what does the fighter believe is happening?
-- **Intent:** what is it trying to do this turn?
-- **Key factor:** what tactical factor mattered most?
-- **Risk:** what could go wrong?
+| Archetype | Role | HP | Energy | Design Intent |
+|-----------|------|-----|--------|---------------|
+| **Striker** | Burst / Assassin | Low | Medium | High risk, high reward. Close range burst. Rewards aggressive positioning. |
+| **Guardian** | Tank / Control | High | Low | Absorbs damage, controls space. Rewards patience and positioning. |
+| **Controller** | Range / Zoner | Medium | Medium | Maintains distance, area denial. Rewards terrain awareness and spacing. |
+| **Berserker** | Glass Cannon / Momentum | Very Low | High | Self-damage for power. Rewards commitment and energy management. |
 
-**Implemented by:** `PLAN §5 Phase C`
+### 5.3 Archetype Balance Target
 
-### 5.3 UX Requirement
-
-This reasoning should be readable in 1–3 seconds by a spectator. It should feel like tactical commentary, not a raw transcript dump.
-
----
-
-## 6. Gameplay Requirements
-
-### 6.1 Tactical Depth Requirements
-
-The game should reward:
-
-- range management
-- positioning
-- cooldown timing
-- energy conservation and spending
-- hazard awareness
-- opportunistic aggression vs defensive patience
-
-**Implemented by:** `PLAN §5 Phase D`
-
-### 6.2 Balance Requirements
-
-- Randomness can create drama, but should not overwhelm decision quality.
-- Fighter kits should create real tradeoffs rather than superficial flavor differences.
-- Distinct model personas should correspond to distinct tactical incentives where possible.
-
-### 6.3 Match Interpretability
-
-After a match, a viewer should be able to explain:
-
-- why the winner won
-- which tactical choices mattered most
-- whether the match felt skill-driven, luck-driven, or failure-driven
+- No archetype should have a >60% win rate against any other in mirror-model matches.
+- Each archetype should have at least one natural counter and one natural weakness.
+- Win rate should correlate more with model decision quality than with archetype pick.
 
 ---
 
-## 7. Fighter Identity Requirements
+## 6. Terrain & Spatial Requirements
 
-Each fighter must have a recognizable combination of:
+### 6.1 Terrain Types (v0.1.0)
 
-- role in combat
-- ability profile
-- personality and voice
-- strategic tendency
+The arena supports static terrain tiles generated at match start:
 
-The roster should not just be different names pasted onto similar kits. Identity must show up in both **battle decisions** and **presentation layer**.
+| Terrain | Mechanical Effect | Strategic Purpose |
+|---------|-------------------|-------------------|
+| **High Ground** | Occupant gets +1 range on all abilities | Rewards proactive positioning, creates contestable objectives |
+| **Cover** | Occupant takes -30% ranged damage (not melee) | Creates defensive positions, encourages flanking |
+| **Rift** | Impassable tile, blocks movement | Forces routing decisions, creates chokepoints |
+
+### 6.2 Terrain Generation Rules
+
+- Terrain layout is generated randomly at match start with a fixed seed (reproducible).
+- Layout must be **symmetrically mirrored** across the arena centerline (fair for both sides).
+- Terrain density: 15-25% of tiles are non-empty (enough to matter, not enough to clog).
+- Both fighters start on plain tiles.
+
+### 6.3 Arena Representation in Prompts
+
+Terrain is communicated to models via an **ASCII grid** for token efficiency and spatial clarity:
+
+```
+Arena (8x6):
+  01234567
+0 ........
+1 ..H..C..
+2 .##..##.
+3 ........
+4 ..C..H..
+5 ........
+
+You[A]: (1,3)  Opponent[B]: (6,3)
+Legend: H=High Ground  C=Cover  #=Rift  .=Open
+Hazards: firewall@(3,1) [2 turns left]
+```
+
+This format costs ~60-80 tokens and provides direct spatial reasoning input.
 
 ---
 
-## 8. User Types
+## 7. Battle Memory & Prompt Contract
+
+### 7.1 Turn History
+
+Per `STRATEGY §3 Priority 4`, models receive a **structured summary of the last 3 turns** to enable multi-turn reasoning:
+
+```json
+"recent_turns": [
+  {"turn": 10, "you": "attacked with Precision Cut -> 14 dmg", "opponent": "defended", "terrain": null},
+  {"turn": 11, "you": "moved left, waited (+5 energy)", "opponent": "used Beam Strike -> 11 dmg to you", "terrain": "firewall spawned at (3,2)"},
+  {"turn": 12, "you": "defended (-20% dmg)", "opponent": "moved right, missed (out of range)", "terrain": null}
+]
+```
+
+Each turn summary is one-line per side. Total cost: ~100-150 tokens for 3 turns.
+
+### 7.2 Public Reasoning Schema
+
+Replace the current `inner_monologue` field with a structured `tactical_summary`:
+
+```json
+{
+  "turn": 12,
+  "action": {"type": "attack", "ability": "Precision Cut", "target": "opponent"},
+  "move": {"direction": "up-left"},
+  "tactical_summary": "Opponent is low HP and out of cover. Closing distance for the kill.",
+  "trash_talk": "Your context window can't hold this L."
+}
+```
+
+- `tactical_summary`: 1-2 sentences. What the fighter is trying to do and why. Designed for spectator display.
+- `trash_talk`: in-character taunt. Humor layer.
+
+### 7.3 Prompt Budget
+
+Per `STRATEGY §4`, total prompt size must stay under **2000 tokens**:
+
+| Component | Token Budget |
+|-----------|-------------|
+| System prompt (rules + archetype identity) | ~500 |
+| Battle state JSON (current frame) | ~400 |
+| ASCII arena grid | ~80 |
+| Recent turns (3 turns) | ~150 |
+| Rules reminder | ~80 |
+| **Total** | **~1210** |
+
+This leaves ~800 tokens of headroom for future expansion.
+
+### 7.4 System Prompt Structure
+
+The system prompt has three layers:
+
+1. **Base Rules** (~300 tokens): game mechanics, action types, JSON format, critical constraints.
+2. **Archetype Identity** (~150 tokens): role description, strategic philosophy, win condition, ideal patterns. This replaces the old LLM-branded personality prompts.
+3. **Output Contract** (~50 tokens): exact JSON schema with field descriptions.
+
+---
+
+## 8. Fumble & Error Handling
+
+### 8.1 Fumble Mechanics
+
+When a model times out or produces invalid JSON:
+
+- The fighter defaults to defend.
+- The fighter takes an HP penalty: `max(1, max_hp // 10)`.
+- A fumble event is logged with description.
+
+### 8.2 Fumble as Content
+
+Per community feedback, fumble presentation should be comedic:
+
+- The raw invalid output (truncated to 100 chars) may be displayed as "cognitive breakdown gibberish" in the spectator UI.
+- Fumble events should have entertaining descriptions (e.g., "The Striker's neural pathways short-circuit! Forced into defensive stance!").
+
+---
+
+## 9. User Types
 
 | User Type | Need | Product Value |
-|---|---|---|
-| AI enthusiasts | Want to see models behave, not just rank | Tactical and stylistic contrast between fighters |
-| creators / streamers | Need entertaining autonomous content | Watchable battles with readable dramatic beats |
-| developers | Want insight into model behavior under constraints | Structured reasoning and turn-by-turn tactical evidence |
-| general audience | Want spectacle and personality | Clear visuals, taunts, and easy-to-follow strategy |
+|-----------|------|---------------|
+| AI enthusiasts | Want to see models behave, not just rank | Tactical and stylistic contrast on a fair arena |
+| Creators / streamers | Need entertaining autonomous content | Watchable battles with terminal aesthetic, OBS-ready |
+| Developers | Want insight into model behavior under constraints | Structured reasoning, per-model fumble rates, replay data |
+| General audience | Want spectacle and personality | Clear visuals, taunts, easy-to-follow strategy |
 
 ---
 
-## 9. Scope
+## 10. Success Criteria (v0.1.0)
 
-### 9.1 In Scope Now
+The v0.1.0 milestone is complete when:
 
-- Real LLM-driven turn selection in live mode
-- Mock mode for development and testing
-- Turn-based combat with positioning, abilities, energy, cooldowns, and hazards
-- CLI proof of concept
-- Structured output validation and fumble handling
+1. Fighter archetypes are generic and decoupled from LLM identity.
+2. Terrain exists and creates meaningful positioning decisions.
+3. Models receive turn history and produce spectator-readable tactical summaries.
+4. A live match clearly uses real model-generated actions, not scripts.
+5. The terminal output is polished enough to record/stream via OBS.
+6. Every ability described in prompts has a working engine implementation.
+7. Match outcomes feel driven more by tactical quality than by random variance or formatting failures.
+8. Mirror matches (same archetype, different models) visibly showcase model differences.
 
-### 9.2 Next In Scope
+---
 
-- spectator-grade public reasoning format
-- richer battle-state that rewards deeper strategy
-- GUI/animation layer that exposes strategy as a dynamic experience
-- balancing work to reduce randomness-vs-skill ambiguity
+## 11. Scope
 
-### 9.3 Out of Scope for Near Term
+### 11.1 In Scope for v0.1.0
 
-- raw chain-of-thought display as a core feature
-- broad audience interaction systems
+- Generic archetype system with 4 balanced archetypes
+- Terrain types (high ground, cover, rift) with symmetric generation
+- Turn history injection (last 3 turns)
+- Public reasoning schema (tactical_summary)
+- Rich terminal CLI (OBS-streamable)
+- Match replay serialization (JSON export)
+- Status effect implementation (for abilities that reference them)
+- Integration tests covering full match simulation
+
+### 11.2 Out of Scope for v0.1.0
+
+- Web GUI / animation layer
+- API / WebSocket streaming
+- Audience interaction
 - AI commentator / TTS
-- tournament ecosystem / leaderboard meta
-- deployment polish before spectator experience is convincing
+- Tournament systems
+- More than 4 archetypes
+- More than 2 fighters per match
 
 ---
 
-## 10. Success Criteria
+## 12. Risks
 
-The next meaningful product milestone is reached when:
-
-1. A live match clearly uses real model-generated actions and flavor.
-2. A viewer can understand each turn’s tactical intention without reading raw verbose reasoning.
-3. Different fighters feel meaningfully distinct in both play style and voice.
-4. Match outcomes feel driven more by tactical quality than by random variance or formatting failures.
-5. The project is interesting as a spectator product, not just as an engineering demo.
-
-**Driven by:** `PLAN §7`
+| Risk | Why It Matters | Mitigation |
+|------|----------------|------------|
+| Invalid model output dominates matches | Makes battles feel fake or broken | Strong validation, fumble comedy, prompt contract discipline |
+| Prompt too complex for weak models | Excludes interesting contenders | Keep under 2000 token budget, test with small models |
+| Terrain adds complexity without fun | Wasted effort | Start with 3 simple terrain types, validate before expanding |
+| Archetype balance is off | One archetype dominates | Balance target in §5.3, batch-match analysis in Phase 6 |
+| Mirror matches are boring | Reduces evaluation value | Ensure terrain randomness and hazard dynamics create variety |
 
 ---
 
-## 11. Risks
+## 13. Open Product Questions
 
-| Risk | Why It Matters | Mitigation Direction |
-|---|---|---|
-| Invalid model output dominates matches | Makes battles feel fake or broken | Strong validation, recovery, and better prompt contracts |
-| Raw reasoning is too long or messy | Hurts UX and readability | Structured public reasoning layer |
-| Randomness obscures skill | Weakens the core promise | Rebalance combat math and analyze match outcomes |
-| Fighters feel cosmetically different only | Low replay value | Align kits, prompts, and display with strategic identity |
-| Product focus drifts back to plumbing | Slows actual product progress | Use strategy snapshot and roadmap discipline |
+1. What is the optimal number of recent turns to include (2? 3? 5?) for reasoning vs token cost?
+2. Should terrain be fully visible to both players or include fog-of-war?
+3. How should the CLI display terrain — pure ASCII or rich-formatted panels?
+4. Should fumble gibberish display be opt-in or default?
+5. What is the right balance between archetype asymmetry and mirror-match fairness?
 
 ---
 
-## 12. Open Product Questions
-
-1. What exact public reasoning schema is most watchable?
-2. How much randomness is enough for drama without burying skill?
-3. Which battle-state additions best encourage multi-turn planning?
-4. What is the minimum GUI needed to make the product feel spectator-ready?
-5. How should we communicate live-vs-mock authenticity in the UI?
-
----
-
-## 13. Documentation Responsibility
+## 14. Documentation Responsibility
 
 If this file changes scope, product meaning, or success criteria, `PLAN.md` must be checked for contradictions in the same change.

@@ -1,199 +1,211 @@
 # LLM Smash Bros — Roadmap & Implementation Plan
 
-**Version:** 0.3.0  
-**Last Updated:** 2026-04-07  
-**Authority:** Roadmap/execution document; subordinate to `STRATEGY.md` and `PRD.md`  
+**Version:** 0.4.0
+**Last Updated:** 2026-04-07
+**Authority:** Roadmap/execution document; subordinate to `STRATEGY.md` and `PRD.md`
 **Read after:** `STRATEGY.md`, `PRD.md`
 
 ---
 
 ## 1. Strategic Rationale
 
-The project has passed the “can this technically work?” stage. The backend can already run real LLM matches, and the main product risk is no longer provider configuration.
+The project has passed the "can this technically work?" stage. The backend can run real LLM matches. The next milestone transforms the project from an engineering proof into a **fair, watchable evaluation arena**.
 
-Per `STRATEGY §3`, the next phase of work should optimize for **spectator value**, specifically:
+Per `STRATEGY §3`, the v0.1.0 milestone prioritizes:
 
-1. making model strategy more visible and readable,
-2. making the game reward deeper tactical behavior,
-3. making the presentation layer feel intentionally designed rather than debug-oriented.
-
----
-
-## 2. Current Status Snapshot
-
-### 2.1 Implemented Foundations
-
-- backend Python project and state models
-- combat engine with movement, damage, energy, cooldowns, and hazards
-- fighter roster and personality prompts
-- response validator and fumble handling
-- mock LLM adapter
-- live OpenAI-compatible and Anthropic-compatible adapters
-- CLI battle runner
-- first successful live match execution
-
-### 2.2 Current Product Truths
-
-- **Live mode** uses genuine LLM-generated actions and flavor text.
-- **Mock mode** is a development/testing substitute and is intentionally scripted/randomized.
-- Current UX proves the loop, but does not yet deliver spectator-grade strategy presentation.
-- Current mechanics allow tactical play, but deeper planning and match interpretability still need work.
+1. Foundation integrity (fix bugs, remove lying prompts),
+2. Fair archetype system (decouple fighters from LLM brands),
+3. Spatial strategy (terrain gives positioning real meaning),
+4. Battle memory and prompt contract (enable multi-turn reasoning, spectator-readable output),
+5. Spectator-ready CLI (terminal-first, OBS-streamable),
+6. Balance and credibility (evidence that matches reflect model quality).
 
 ---
 
-## 3. Planning Rules
-
-Use this file as the high-level roadmap, not as a dump of every implementation detail.
-
-When a roadmap phase becomes active:
-
-1. keep this file updated at the phase/status level,
-2. create or update a more detailed execution plan only if needed,
-3. mark completed phases here so the project narrative stays current.
-
----
-
-## 4. Completed Phases
+## 2. Pre-0.1.0 Completed Work
 
 ### Phase A — Core Engine Foundations ✅
 
-Delivered:
-
-- battle state models
-- combat resolution
-- roster definitions
-- response validation
-- mock adapter
-- game loop
+Delivered: battle state models, combat resolution, roster definitions, response validation, mock adapter, game loop.
 
 Exit condition met: the project can simulate complete matches locally.
 
 ### Phase B — Live LLM Backend ✅
 
-Delivered:
-
-- OpenAI-compatible client
-- Anthropic-compatible client
-- live environment wiring
-- preflight checks
-- configurable timeouts
-- validator hardening for markdown and `<think>` wrappers
+Delivered: OpenAI-compatible client, Anthropic-compatible client, live environment wiring, preflight checks, configurable timeouts, validator hardening for markdown and `<think>` wrappers.
 
 Exit condition met: the project can complete a real live match with external LLMs.
 
 ---
 
-## 5. Next Active Roadmap
+## 3. Planning Rules
 
-### Phase C — Public Reasoning Contract
+### 3.1 Milestone Structure
 
-**Goal:** replace the current debug-flavored `inner_monologue` experience with a spectator-friendly reasoning layer.
+v0.1.0 is organized into 6 phases with detailed TDD plans in `docs/dev/0.1.0/`. This file tracks phase-level status. Execution details live in the phase plans.
 
-**Authority Source:** `STRATEGY §3 Priority 1`, `PRD §5`
+### 3.2 Phase Execution Protocol
 
-#### Outcomes
+Each phase plan in `docs/dev/0.1.0/` follows a closed-loop structure:
 
-- define a structured public reasoning schema
-- update prompts to request short, readable tactical summaries
-- update validation to support the new schema
-- update CLI output to present reasoning more clearly
+1. **Goal** — what the phase delivers and why.
+2. **Execution Rules** — what to do and what not to do.
+3. **Tasks** — specific implementation work.
+4. **Acceptance Criteria** — red/green pass conditions.
+5. **Self-Audit** — what to check after implementation.
+6. **Self-Optimization** — what to retry or improve if the first pass is weak.
+7. **Execution Writeback** — mandatory post-completion summary appended to the plan.
+8. **Next Phase Pointer** — what comes next and what it depends on from this phase.
 
-#### Why This Matters
+### 3.3 Dependency Chain
 
-This phase directly addresses the biggest product gap: the game currently proves model output, but does not yet package strategy in a watchable way.
+```
+Phase 1 (Cleanup) → Phase 2 (Archetypes) → Phase 3 (Terrain) → Phase 4 (Prompt Contract)
+                                                                         ↓
+                                                              Phase 5 (Rich CLI)
+                                                                         ↓
+                                                              Phase 6 (Balance)
+```
 
-### Phase D — Strategy Depth & State Enrichment
-
-**Goal:** make better tactical models visibly outperform weaker ones more often.
-
-**Authority Source:** `STRATEGY §3 Priority 2`, `PRD §6`
-
-#### Outcomes
-
-- enrich battle-state with more strategically useful context
-- improve how fighter kits express real tactical tradeoffs
-- review whether current randomness is too dominant
-- add better post-turn or post-match explainability signals
-
-#### Why This Matters
-
-If the game does not reward planning beyond one-turn reactions, it cannot convincingly showcase meaningful model differences.
-
-### Phase E — Spectator UI / Animation Layer
-
-**Goal:** turn the current CLI proof into a coherent viewer experience.
-
-**Authority Source:** `STRATEGY §3 Priority 3`, `PRD §4`
-
-#### Outcomes
-
-- GUI battle presentation with clear event timing
-- animated “thinking / decision / resolve” turn rhythm
-- fighter identity presentation through motion, layout, and copy
-- readable surfacing of public reasoning and trash talk
-
-#### Why This Matters
-
-The product is supposed to be watched. The UI should make the strategy easier to consume, not just mirror backend events.
-
-### Phase F — Balance, Evaluation & Trustworthiness
-
-**Goal:** make match outcomes more credible and easier to interpret.
-
-**Authority Source:** `STRATEGY §3 Priority 4`, `PRD §10`
-
-#### Outcomes
-
-- evaluate randomness vs skill contribution
-- measure fumble rate, invalid output rate, and timeout rate per model
-- identify whether certain fighters are strong because of kit design rather than model quality
-- produce a repeatable evaluation harness for many matches
-
-#### Why This Matters
-
-Without this phase, viewers may enjoy the spectacle but still not trust what the battles say about the models.
+Phases 1→2→3→4 are strictly sequential (each builds on the prior). Phase 5 depends on Phase 4 (needs new prompt contract for display). Phase 6 depends on Phase 5 (needs the full system running to measure balance).
 
 ---
 
-## 6. Later Phases
+## 4. v0.1.0 Phase Overview
 
-### Phase G — API / Streaming Surfaces
+### Phase 1 — Foundation Cleanup
 
-Build network-facing APIs and streaming hooks once the spectator contract is clear.
+**Goal:** Fix known bugs and mechanical debt so the codebase is honest and stable.
 
-### Phase H — Audience Interaction
+**Key Deliverables:**
+- Fix `__main__.py` duplicate code bug
+- Remove or rewrite ability descriptions that reference unimplemented effects
+- Add `.gitignore` rules for `.env` files
+- Green test suite
 
-Add viewer-triggered chaos only after the core match experience is readable and trustworthy.
+**TDD Plan:** `docs/dev/0.1.0/phase-1-foundation-cleanup.md`
 
-### Phase I — Commentator / TTS / Content Packaging
+### Phase 2 — Archetype System
 
-Only add meta-commentary once the base product already explains itself well.
+**Goal:** Replace the LLM-branded fighter roster with generic, balanced archetypes.
+
+**Key Deliverables:**
+- 4 archetype definitions (Striker, Guardian, Controller, Berserker)
+- Each with 4 abilities (basic + 2 tactical + ultimate)
+- All ability effects implemented in the combat engine
+- Updated system prompts with archetype identity layer
+- Match config supports any model → any archetype mapping
+
+**TDD Plan:** `docs/dev/0.1.0/phase-2-archetype-system.md`
+
+### Phase 3 — Terrain & Spatial Strategy
+
+**Goal:** Add terrain types so positioning creates real tactical decisions.
+
+**Key Deliverables:**
+- 3 terrain types (High Ground, Cover, Rift)
+- Symmetric random terrain generation
+- Combat resolver terrain modifiers
+- ASCII grid representation for LLM prompts
+
+**TDD Plan:** `docs/dev/0.1.0/phase-3-terrain-spatial.md`
+
+### Phase 4 — Battle Memory & Prompt Contract
+
+**Goal:** Enable multi-turn reasoning and produce spectator-readable output.
+
+**Key Deliverables:**
+- Recent turns history (last 3 turns) injected into battle state
+- New output schema: `tactical_summary` replaces `inner_monologue`
+- Archetype-specific strategic identity in system prompts
+- Updated validator for new schema
+- Total prompt under 2000 tokens
+
+**TDD Plan:** `docs/dev/0.1.0/phase-4-battle-memory-prompt.md`
+
+### Phase 5 — Rich CLI & Spectator Layer
+
+**Goal:** Terminal output polished enough to record/stream via OBS.
+
+**Key Deliverables:**
+- Migrate from raw ANSI to `rich` library
+- Panel-based battle display with terrain grid
+- Fumble comedy display (raw gibberish as content)
+- Match replay serialization (full match → JSON file)
+
+**TDD Plan:** `docs/dev/0.1.0/phase-5-rich-cli.md`
+
+### Phase 6 — Integration, Balance & Verification
+
+**Goal:** Evidence that the system works end-to-end and that matches are credible.
+
+**Key Deliverables:**
+- Integration tests (full mock match simulation)
+- Batch match runner (N matches for statistical analysis)
+- Per-archetype and per-model fumble rate measurement
+- Randomness-vs-skill analysis
+- v0.1.0 exit criteria verification
+
+**TDD Plan:** `docs/dev/0.1.0/phase-6-integration-balance.md`
 
 ---
 
-## 7. Near-Term Exit Criteria
+## 5. Later Milestones (Post v0.1.0)
 
-Per `PRD §10`, the next roadmap milestone is complete when all of the following are true:
+These are directional only. Do not plan or execute until v0.1.0 is complete.
 
-- the product no longer relies on raw-style `inner_monologue` as the primary spectator explanation,
-- a viewer can understand turn intent at a glance,
-- live battles feel more like strategy showcases than formatting demos,
-- the roadmap clearly distinguishes current reality from later ambitions.
+### v0.2.0 — Web Spectator Layer
+
+- FastAPI backend with WebSocket match streaming
+- Browser-based spectator UI with animated turn rhythm
+- Match history and replay browser
+
+### v0.3.0 — Expanded Arena
+
+- Additional archetypes
+- Audience interaction (viewer-triggered chaos)
+- AI commentator / TTS integration
+
+### v0.4.0 — Tournament & Meta
+
+- Tournament bracket system
+- ELO tracking across matches
+- Content packaging for streaming platforms
 
 ---
 
-## 8. Deferred / Deprioritized Work
+## 6. v0.1.0 Exit Criteria
 
-The following should not take priority over Phases C–F:
+Per `PRD §10`, the milestone is complete when all of the following are true:
 
-- more provider/model plumbing unless it blocks live matches
-- broad deployment polish
-- tournament systems
-- audience chaos features
-- raw chain-of-thought visualization
+- [ ] Fighter archetypes are generic and decoupled from LLM identity
+- [ ] Terrain exists and creates meaningful positioning decisions
+- [ ] Models receive turn history and produce spectator-readable tactical summaries
+- [ ] A live match clearly uses real model-generated actions
+- [ ] Terminal output is polished enough to record/stream via OBS
+- [ ] Every ability described in prompts has a working engine implementation
+- [ ] Match outcomes correlate more with tactical quality than random variance
+- [ ] Mirror matches visibly showcase model differences
+- [ ] All tests pass, including integration tests
 
 ---
 
-## 9. Documentation Responsibility
+## 7. Deferred / Deprioritized Work
+
+The following must not take priority over v0.1.0 phases:
+
+- More provider/model plumbing unless it blocks live matches
+- Web GUI / animation layer
+- Broad deployment polish
+- Tournament systems
+- Audience chaos features
+- Raw chain-of-thought visualization
+- Additional archetypes beyond the initial 4
+
+---
+
+## 8. Documentation Responsibility
 
 If this file proposes work that changes product meaning or conflicts with strategy, the higher document must be updated or this file must be corrected.
+
+Phase-level execution details belong in `docs/dev/0.1.0/` plans, not in this file. This file tracks status and provides navigation.

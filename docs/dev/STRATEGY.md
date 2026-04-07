@@ -1,73 +1,87 @@
 # LLM Smash Bros — Strategy Snapshot
 
-**Last Updated:** 2026-04-07  
-**Authority:** Highest current-priority document in `docs/dev/`  
-**Read after:** repo `README.md`  
+**Last Updated:** 2026-04-07
+**Authority:** Highest current-priority document in `docs/dev/`
+**Read after:** repo `README.md`
 **Read before:** `PRD.md`, `PLAN.md`
 
 ---
 
 ## 1. What This Project Is Trying to Prove
 
-LLM Smash Bros should prove that model differences can be made **watchable** through a constrained tactical game.
+LLM Smash Bros should prove that model differences can be made **watchable** through a constrained tactical game played on a **fair, model-agnostic arena**.
 
-The product value is not “two APIs can output JSON.” The product value is:
+The product value is not "two APIs can output JSON." The product value is:
 
-- visible tactical reasoning,
-- distinct fighter persona,
-- readable turn-by-turn strategy,
-- entertaining but credible competition.
+- visible tactical reasoning on a shared battlefield,
+- distinct strategic behavior emerging from identical game rules,
+- readable turn-by-turn strategy shaped by terrain, positioning, and resource management,
+- entertaining but credible competition where the same toolkit is available to every model.
 
 ---
 
-## 2. Known Truths Right Now
+## 2. Core Design Principles
 
-### 2.1 Authenticity
+### 2.1 Fair Playground
+
+The arena must be a level playing field. Fighter archetypes (stat kits, abilities, roles) are **generic game characters**, not tied to specific LLM brands. Any model can pilot any archetype. This is a test of decision quality, not a cosplay of model marketing.
+
+- Fighter identity = archetype (Striker, Guardian, Controller, Berserker).
+- Model identity = which LLM is piloting the fighter.
+- These two layers are independent. A match can pit "GPT-4o as Striker vs Claude as Striker" (mirror match) or any cross-archetype combination.
+
+### 2.2 Authenticity Over Illusion
 
 - **Live mode:** genuine LLM-generated decisions and flavor text.
 - **Mock mode:** scripted/randomized development substitute.
 - **Fallbacks:** hardcoded only when the model fails (timeout / invalid output).
+- The engine must never lie to the model. Every ability described in the prompt must have a working implementation in the engine. Every terrain effect described must be mechanically real.
 
-### 2.2 Product Stage
+### 2.3 Strategy Should Be Visible and Rewarded
 
-- The backend is real enough to validate the concept.
-- The current CLI is still mostly an engineering proof, not the intended viewer experience.
-- The main risk has shifted from technical connectivity to product clarity.
-
-### 2.3 Current Weaknesses
-
-- reasoning is not yet packaged for spectators,
-- deeper strategy is still under-rewarded,
-- randomness can blur skill,
-- docs must stay lean while becoming more authoritative.
+- Terrain, positioning, and resource management must create real tactical tradeoffs.
+- Match outcomes should reflect decision quality more than random variance.
+- Spectators should be able to understand *why* a turn unfolded the way it did.
 
 ---
 
-## 3. Strategic Priorities
+## 3. Strategic Priorities (v0.1.0)
 
-### Priority 1 — Structured Public Reasoning
+### Priority 1 — Foundation Integrity
 
-Replace raw-feeling monologue output with short, readable tactical summaries designed for display.
+Fix known bugs and mechanical debt. Remove any prompt content that describes unimplemented mechanics. The codebase must be honest before new features are added.
 
-**Locks:** `PRD §5`, `PLAN §5 Phase C`
+**Locks:** `PLAN §4 Phase 1`
 
-### Priority 2 — Deeper Tactical Surface
+### Priority 2 — Fair Archetype System
 
-Improve battle-state and mechanics so stronger planning creates more visible advantages.
+Replace the current LLM-branded fighter roster with generic, balanced archetypes. Decouple "who the fighter is" from "which model is playing." This is the single most important architectural change for the project's evaluation credibility.
 
-**Locks:** `PRD §6`, `PLAN §5 Phase D`
+**Locks:** `PRD §5`, `PLAN §4 Phase 2`
 
-### Priority 3 — Spectator Experience
+### Priority 3 — Spatial Strategy (Terrain)
 
-Build an interface that makes the turn rhythm dramatic and understandable: thinking, intent reveal, action, aftermath.
+Add terrain types to the arena so positioning has real tactical meaning. Movement should matter. The board should create interesting choices every turn, not just be a flat grid.
 
-**Locks:** `PRD §4`, `PLAN §5 Phase E`
+**Locks:** `PRD §6`, `PLAN §4 Phase 3`
 
-### Priority 4 — Credibility
+### Priority 4 — Battle Memory & Prompt Contract
 
-Reduce ambiguity about whether wins come from strategy, luck, or formatting/fumble noise.
+Give models access to recent turn history so they can do multi-turn reasoning. Redesign the prompt output contract to produce spectator-readable tactical summaries instead of raw inner monologue.
 
-**Locks:** `PRD §10`, `PLAN §5 Phase F`
+**Locks:** `PRD §7`, `PLAN §4 Phase 4`
+
+### Priority 5 — Spectator-Ready CLI
+
+Migrate terminal output to `rich` for a polished, OBS-streamable terminal experience. This is the fastest path to audience validation.
+
+**Locks:** `PRD §4`, `PLAN §4 Phase 5`
+
+### Priority 6 — Balance & Credibility
+
+Measure and tune: fumble rates, randomness-vs-skill ratio, archetype balance. Produce evidence that matches reflect model quality.
+
+**Locks:** `PRD §10`, `PLAN §4 Phase 6`
 
 ---
 
@@ -77,28 +91,35 @@ Use these filters when deciding what to build next.
 
 ### A proposed change is good if it:
 
-- makes battles easier to understand,
-- makes models feel more distinct,
-- increases the amount of meaningful tactical choice,
-- reduces “this is just a scripted demo” suspicion,
+- makes the arena fairer as an evaluation platform,
+- makes battles easier to understand for spectators,
+- makes positioning, terrain, and resource management matter more,
+- reduces the gap between "what the prompt tells the model" and "what the engine actually does,"
 - helps explain why a turn or match unfolded the way it did.
 
 ### A proposed change is suspicious if it:
 
-- only improves plumbing while adding little spectator value,
+- ties game mechanics to a specific LLM's marketing identity,
+- only improves plumbing while adding no spectator or evaluation value,
 - exposes raw chain-of-thought as a feature,
-- adds spectacle while making strategy harder to read,
-- increases randomness faster than it increases interesting choice.
+- increases prompt token count without proportional strategic depth,
+- increases randomness faster than it increases meaningful choice.
+
+### Prompt budget discipline:
+
+Total prompt size (system prompt + battle state JSON + recent history) should stay under **2000 tokens**. This ensures broad model compatibility. Prefer structured/compressed formats (ASCII grid, summary logs) over verbose natural language.
 
 ---
 
-## 5. Non-Goals for Now
+## 5. Non-Goals for v0.1.0
 
-- exhaustive provider support
+- exhaustive provider support beyond OpenAI-compatible and Anthropic-compatible
 - audience interaction systems
 - AI commentator / TTS
-- deployment polish before the core watch experience is convincing
+- deployment polish before the core match experience is convincing
 - tournament meta systems
+- web GUI / animation layer (terminal-first for this milestone)
+- raw chain-of-thought display as a core feature
 
 ---
 
