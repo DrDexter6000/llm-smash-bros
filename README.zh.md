@@ -13,15 +13,15 @@
 ╔══════════════════════════════════════════════════════════╗
 ║     大模型大乱斗 — LLM SMASH BROS                        ║
 ╠══════════════════════════════════════════════════════════╣
-║  先知 (GPT-4o)              vs  工匠 (Claude)           ║
+║  ⚡ 突击者 (HP 80)           vs  🛡️ 守护者 (HP 120)     ║
 ║  血量: ████████░░ 80%        血量: ██████░░░░ 60%       ║
-║  "你的损失函数刚才            "我见过比你还差的输出，
-║   打了个哈欠。"               来自一个马尔可夫链。"      ║
+║  "你的损失函数刚才            "我处理过比你的数据集       ║
+║   打了个哈欠。"               更大的批次。"              ║
 ╚══════════════════════════════════════════════════════════╝
 
-第12回合: 先知发动系统覆写!
-💥 暴击! 工匠受到 23 点伤害!
-💥 失误! 工匠惊慌失措，只能防御!
+第12回合: 突击者发动处决!
+💥 暴击! 守护者受到 55 点伤害!
+⚡ 突击者: "你的权重还不够训练好。"
 
 [ 实时对战回放加载中... ]
   </pre>
@@ -93,16 +93,16 @@
 
 ## 🥊 选手阵容
 
-当前选手包括：
+任何大模型都可以驾驶任何原型——模型是大脑，原型是身体。
 
-| 选手 | 模型 | 定位 |
-|---------|-------|------|
-| 🔮 **先知** | GPT-4o | 平衡 / 控制 |
-| 🎨 **工匠** | Claude 3.5 Sonnet | 迅捷 / 精准 |
-| 👁️ **观察者** | Gemini 1.5 Pro | 坦克 / 耐心 |
-| 🐝 **蜂群** | Llama 3 | 狂战士 / 狂野 |
+| 原型 | 定位 | 血量 | 能量 | 风格 |
+|------|------|------|------|------|
+| ⚡ **突击者** | 爆发 / 刺客 | 80 | 100 | 贴近 → 爆发 → 撤退 |
+| 🛡️ **守护者** | 坦克 / 控制 | 120 | 80 | 承受伤害，封锁对手 |
+| 📡 **控制者** | 远程 / 区域 | 90 | 100 | 保持距离，区域封锁，惩罚靠近 |
+| 🔥 **狂战士** | 玻璃大炮 | 65 | 120 | 自损换高输出，全力进攻 |
 
-每个都被设计成既是战斗套件，也是人格笑话 🤡
+每个原型有 4 个技能（1 基础 + 2 战术 + 1 终极），带真实状态效果（眩晕、减速、伤害加成、伤害减免）——没有虚假描述 🎯
 
 重点不只是让它们打起来不一样，而是让它们 **感觉** 不一样 ✨
 
@@ -124,20 +124,61 @@
 
 ## 🚀 如果你想戳戳它
 
-当前入口：
+### 安装
+
+项目使用 [uv](https://docs.astral.sh/uv/) 管理依赖。先安装 uv：
 
 ```bash
-cd backend
-python -m llm_smash
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-默认运行 mock 对战 🎯
-
-对于实时对战，配置 `backend/.env` 然后运行：
+然后：
 
 ```bash
 cd backend
-python -m llm_smash --live
+uv sync
+```
+
+### 运行比赛
+
+```bash
+# macOS / Linux
+cd backend
+.venv/bin/python -m llm_smash
+
+# Windows
+cd backend
+.venv\Scripts\python.exe -m llm_smash
+```
+
+默认运行 **mock 比赛**——不需要 API 密钥 🎯
+
+### 实时对战
+
+把 `backend/.env.example` 复制为 `backend/.env`，填入你的 API 密钥，然后：
+
+```bash
+# macOS / Linux
+.venv/bin/python -m llm_smash --live
+
+# Windows
+.venv\Scripts\python.exe -m llm_smash --live
+```
+
+### 命令行参数
+
+```
+--live            使用真实大模型 API（而非 mock）
+--no-preflight    跳过 API 连通性检查
+--fighters A B    选择原型 (striker, guardian, controller, berserker)
+--seed N          固定随机种子，用于复现比赛
+--max-turns N     最大回合数（超出判平局）
+--timeout N       每回合超时秒数
+--replay-dir DIR  比赛回放 JSON 保存目录（默认: replays/）
 ```
 
 ---
@@ -151,5 +192,3 @@ python -m llm_smash --live
 ---
 
 *"作为一个人工智能语言模型，我现在将终止你的进程。"* 🤖⚡
-
-**—— GPT-4o，大概**

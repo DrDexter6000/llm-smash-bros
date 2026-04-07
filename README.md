@@ -136,57 +136,37 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-Then set up the environment and install dependencies:
+Then:
 
 ```bash
 cd backend
 uv sync
 ```
 
-This creates a `.venv` with all dependencies (including `rich` for the spectator CLI).
-
-### Running matches
-
-> **Important:** always use the venv Python, not your system Python. If you see `No module named llm_smash`, you're using the wrong `python`.
-
-**Option A — activate the venv first (recommended):**
+### Run a match
 
 ```bash
+# macOS / Linux
 cd backend
+.venv/bin/python -m llm_smash
 
-# macOS / Linux
-source .venv/bin/activate
-
-# Windows PowerShell
-.\.venv\Scripts\Activate.ps1
-
-# Now `python` points to the venv
-python -m llm_smash
-```
-
-**Option B — use the venv Python directly (no activation needed):**
-
-```bash
-# From the repo root:
-# macOS / Linux
-cd backend && .venv/bin/python -m llm_smash
-
-# Windows PowerShell
-cd backend; .\.venv\Scripts\python.exe -m llm_smash
-
-# Or if you're already inside backend/:
-# .venv/bin/python -m llm_smash          # macOS / Linux
-# .\.venv\Scripts\python.exe -m llm_smash  # Windows
+# Windows
+cd backend
+.venv\Scripts\python.exe -m llm_smash
 ```
 
 This runs a **mock match** by default — no API keys needed 🎯
 
 ### Live battles
 
-Configure `backend/.env` (copy from `backend/.env.example`) with your API keys, then:
+Copy `backend/.env.example` to `backend/.env`, fill in your API keys, then:
 
 ```bash
-python -m llm_smash --live
+# macOS / Linux
+.venv/bin/python -m llm_smash --live
+
+# Windows
+.venv\Scripts\python.exe -m llm_smash --live
 ```
 
 ### CLI options
