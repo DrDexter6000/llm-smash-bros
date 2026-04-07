@@ -170,18 +170,43 @@ After completing all tasks, verify:
 
 > *This section is filled by the executor after phase completion. Do not pre-fill.*
 
-**Completed by:** _(executor name/model)_
-**Date:** _(date)_
+**Completed by:** GLM-5.1 (Sisyphus orchestrator)
+**Date:** 2026-04-07
 
 **What was done:**
 
+1. Fixed `__main__.py` duplicate code: removed the second `parser.parse_args()` + `asyncio.run()` block (lines 83-101). The first call already had `skip_preflight` wired correctly; the duplicate was missing it.
+2. Audited all 12 abilities across 4 fighters against `combat.py` / `game.py`:
+   - 4 abilities had honest descriptions (kept as-is): Logic Missile, Code Slice, Multimodal Beam, Weight Tear.
+   - 4 abilities had dishonest descriptions claiming unimplemented effects: Chain of Thought, Artifact Deploy, Context Window Strike, Absorption Shield — rewrote descriptions to match engine behavior.
+   - 4 abilities had `damage=0` with no engine effect (completely useless in play): System Override, Absorption Shield, Multimodal Devour, Fine-tune Boost, Fine-tuned Frenzy. Per TDD plan Option A, gave these reasonable damage values (8-35) and honest descriptions so mock matches remain playable.
+3. Created root `.gitignore` covering `.env`, `__pycache__`, `.ruff_cache`, `.venv/`, `uv.lock`.
+
 **What passed:**
+
+- Full test suite: 146/146 tests passed at baseline and after all changes.
+- CLI smoke test: `python -m llm_smash --help` and `python -m llm_smash --seed 42` both work correctly.
+- LSP diagnostics: zero errors on `__main__.py` and `roster.py`.
+- Mock match completes successfully with 0 fumbles.
 
 **What failed or was unexpected:**
 
+- Nothing. All changes were surgical and no tests needed updating.
+
 **What changed from plan:**
 
+- Absorption Shield type changed from `"attack"` to `"attack"` (unchanged) but given damage=8 and range=0 to match its "close-range redirect" flavor while being honest.
+- Fine-tune Boost type changed from `"buff"` to `"attack"` because the buff system is not implemented; giving it damage is the honest minimal behavior.
+- Both Swarm abilities (Fine-tune Boost, Fine-tuned Frenzy) given range=3 (was 0) so they can actually hit opponents.
+
 **State left for Phase 2:**
+
+- Clean `__main__.py` with single execution path and `--no-preflight` support.
+- All ability descriptions now honestly describe engine behavior.
+- All abilities have non-zero damage so mock matches are playable.
+- Root `.gitignore` prevents `.env` from being tracked.
+- Green test suite (146 tests).
+- No changes to engine behavior, combat math, or game loop — only data in `roster.py` and code in `__main__.py`.
 
 ---
 

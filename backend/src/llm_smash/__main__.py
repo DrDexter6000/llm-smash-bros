@@ -80,25 +80,6 @@ def main() -> None:
             skip_preflight=args.no_preflight,
         )
     )
-    args = parser.parse_args()
-
-    # Default to mock when neither flag is specified
-    use_mock = not args.live
-
-    # Pick a sensible timeout: explicit flag > mode-based default
-    timeout: float = (
-        args.timeout if args.timeout is not None else (8.0 if use_mock else 30.0)
-    )
-
-    asyncio.run(
-        run_cli_match(
-            fighter_ids=args.fighters,
-            use_mock=use_mock,
-            max_turns=args.max_turns,
-            seed=args.seed,
-            timeout=timeout,
-        )
-    )
 
 
 if __name__ == "__main__":

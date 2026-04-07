@@ -1,0 +1,15 @@
+# Environment files with secrets
+**/.env
+!**/.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ruff_cache/
+
+# Virtual environments
+.venv/
+
+# Lockfiles (generated locally)
+uv.lock
