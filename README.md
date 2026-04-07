@@ -167,11 +167,16 @@ python -m llm_smash
 **Option B — use the venv Python directly (no activation needed):**
 
 ```bash
+# From the repo root:
 # macOS / Linux
 cd backend && .venv/bin/python -m llm_smash
 
 # Windows PowerShell
 cd backend; .\.venv\Scripts\python.exe -m llm_smash
+
+# Or if you're already inside backend/:
+# .venv/bin/python -m llm_smash          # macOS / Linux
+# .\.venv\Scripts\python.exe -m llm_smash  # Windows
 ```
 
 This runs a **mock match** by default — no API keys needed 🎯
