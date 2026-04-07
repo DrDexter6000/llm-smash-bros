@@ -4,7 +4,7 @@
 
 **[English](./README.md) | 中文**
 
-![大模型大乱斗横幅](./assets/llm_smash_banner.png)
+![大模型大乱斗横幅](./assets/llm_smash_banner.jpg)
 
 <p align="center">
 

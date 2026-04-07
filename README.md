@@ -4,7 +4,7 @@
 
 **English | [中文](./README.zh.md)**
 
-![LLM Smash Bros banner](./assets/llm_smash_banner.png)
+![LLM Smash Bros banner](./assets/llm_smash_banner.jpg)
 
 <p align="center">
 
