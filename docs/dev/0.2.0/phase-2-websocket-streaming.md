@@ -320,7 +320,13 @@ After completing all tasks, verify:
 
 ## §8 Execution Writeback
 
-> *This section is filled by the executor after phase completion. Do not pre-fill.*
+Completed WebSocket match streaming in the FastAPI backend with a new `api/ws.py` connection manager, `/api/matches/{id}/ws` endpoint, and MatchManager broadcasting for `match_start`, `turn`, `match_end`, plus error handling.
+
+`MatchRecord` now accumulates `turns_so_far`, stores `current_state`, and preserves a start payload for sync behavior. Late joiners receive `state_sync` with prior turns and current state; completed matches immediately receive `match_end`; ping/pong is supported.
+
+Added `backend/tests/test_websocket.py` covering full stream, nonexistent match, ping/pong, and late join. Initial implementation hung because direct broadcast writes from the match task blocked under `TestClient`; fixed by switching to per-connection outbound queues multiplexed with client receives inside the WebSocket route.
+
+Verification: `backend\.venv\Scripts\python.exe -m pytest -q` → 208 passed.
 
 ---
 

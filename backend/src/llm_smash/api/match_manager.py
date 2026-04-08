@@ -6,7 +6,7 @@ import asyncio
 import time
 import uuid
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from fastapi import HTTPException
 
@@ -33,6 +33,7 @@ from .schemas import (
     MatchSummary,
     MatchTurnsResponse,
 )
+from .ws import ConnectionManager
 
 
 MatchStatus = Literal["running", "completed", "error"]
@@ -46,6 +47,9 @@ class MatchRecord:
     config: MatchCreateRequest
     created_at: float
     turns_so_far: list[TurnLog] = field(default_factory=list)
+    current_state: dict[str, Any] | None = None
+    start_message: dict[str, Any] | None = None
+    start_message_sent: bool = False
     result: MatchResult | None = None
     error: str | None = None
     task: asyncio.Task[None] | None = None
@@ -87,6 +91,8 @@ class MatchManager:
 
     def __init__(self) -> None:
         self._matches: dict[str, MatchRecord] = {}
+        self.ws_manager = ConnectionManager()
+        self._mock_client_latency_ms = 50.0
 
     async def create_match(self, request: MatchCreateRequest) -> str:
         self._validate_request(request)
@@ -149,6 +155,15 @@ class MatchManager:
 
         async def on_turn(turn_log: TurnLog) -> None:
             record.turns_so_far.append(turn_log)
+            record.current_state = turn_log.state_after
+            await self.ws_manager.broadcast(
+                match_id,
+                {
+                    "type": "turn",
+                    "turn_number": turn_log.turn_number,
+                    "turn_log": turn_log.model_dump(mode="json"),
+                },
+            )
 
         config = MatchConfig(
             fighter_ids=slot_ids,
@@ -159,6 +174,7 @@ class MatchManager:
         llm_clients: dict[str, LLMAdapter] = {
             slot_id: MockLLMClient(
                 fighter_id=slot_id,
+                latency_ms=self._mock_client_latency_ms,
                 seed=(record.config.seed or 0) + index,
             )
             for index, slot_id in enumerate(slot_ids, start=1)
@@ -173,13 +189,38 @@ class MatchManager:
             archetype_ids=archetype_ids,
             seed=record.config.seed,
         )
+        record.current_state = engine.state.model_dump(mode="json")
+        record.start_message = {
+            "type": "match_start",
+            "match_id": match_id,
+            "fighters": [
+                fighter.model_dump(mode="json") for fighter in record.fighters
+            ],
+            "arena": engine.state.arena.model_dump(mode="json"),
+        }
 
         try:
+            await self.ws_manager.broadcast(match_id, record.start_message)
+            record.start_message_sent = True
             record.result = await engine.run_match()
             record.status = "completed"
+            record.current_state = engine.state.model_dump(mode="json")
+            await self.ws_manager.broadcast(
+                match_id,
+                {
+                    "type": "match_end",
+                    "result": record.result.model_dump(mode="json"),
+                },
+            )
         except Exception as exc:
             record.status = "error"
             record.error = str(exc)
+            await self.ws_manager.broadcast(
+                match_id,
+                {"type": "error", "message": str(exc)},
+            )
+        finally:
+            await self.ws_manager.cleanup(match_id)
 
     def _validate_request(self, request: MatchCreateRequest) -> None:
         invalid = [
