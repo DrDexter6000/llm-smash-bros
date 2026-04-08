@@ -1,4 +1,4 @@
-import { Fighter } from '../types/game';
+import type { Fighter } from '../types/game';
 import styles from './FighterPanel.module.css';
 
 interface FighterPanelProps {

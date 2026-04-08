@@ -1,4 +1,4 @@
-import { BattleState } from "../types/game";
+import type { BattleState } from "../types/game";
 
 export const MOCK_STATE: BattleState = {
   turn_number: 12,

@@ -1,4 +1,4 @@
-import { BattleState } from '../types/game';
+import type { BattleState } from '../types/game';
 import ArenaGrid from './ArenaGrid';
 import FighterPanel from './FighterPanel';
 import styles from './MatchLayout.module.css';

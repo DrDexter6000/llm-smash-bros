@@ -1,10 +1,15 @@
-import MatchLayout from './components/MatchLayout'
-import { MOCK_STATE } from './data/mockState'
+import { useState } from 'react';
+import LobbyPage from './components/LobbyPage';
+import MatchPage from './components/MatchPage';
 
 function App() {
-  return (
-    <MatchLayout state={MOCK_STATE} />
-  )
+  const [currentMatchId, setCurrentMatchId] = useState<string | null>(null);
+
+  if (currentMatchId) {
+    return <MatchPage matchId={currentMatchId} onExit={() => setCurrentMatchId(null)} />;
+  }
+
+  return <LobbyPage onFight={(matchId) => setCurrentMatchId(matchId)} />;
 }
 
 export default App

@@ -1,4 +1,15 @@
 .fighterToken {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.4s ease-out;
+  pointer-events: none;
+}
+
+.tokenInner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -13,10 +24,10 @@
   position: relative;
 }
 
-.token_striker { border-color: var(--accent-yellow); }
-.token_guardian { border-color: var(--accent-blue); }
-.token_controller { border-color: var(--accent-purple); }
-.token_berserker { border-color: var(--accent-red); }
+.token_striker .tokenInner { border-color: var(--accent-yellow); }
+.token_guardian .tokenInner { border-color: var(--accent-blue); }
+.token_controller .tokenInner { border-color: var(--accent-purple); }
+.token_berserker .tokenInner { border-color: var(--accent-red); }
 
 .fighterIcon {
   font-size: 24px;
@@ -36,5 +47,5 @@
 
 .hpBarFill {
   height: 100%;
-  transition: width 0.3s ease, background-color 0.3s ease;
+  transition: width 0.6s ease-out, background-color 0.6s ease-out;
 }
