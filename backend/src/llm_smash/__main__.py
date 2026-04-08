@@ -6,7 +6,7 @@ import argparse
 import asyncio
 
 from llm_smash.cli import run_cli_match
-from llm_smash.fighters.roster import ARCHETYPE_IDS, FIGHTER_IDS
+from llm_smash.fighters.roster import ARCHETYPE_IDS
 
 
 def main() -> None:
@@ -24,6 +24,18 @@ def main() -> None:
         action="store_true",
         default=False,
         help="Use real LLM APIs (configure FIGHTER1_*/FIGHTER2_* in .env)",
+    )
+    parser.add_argument(
+        "--serve",
+        action="store_true",
+        default=False,
+        help="Start the FastAPI server instead of running a CLI match",
+    )
+    parser.add_argument(
+        "--port",
+        type=int,
+        default=8000,
+        help="Port for the API server when using --serve (default: 8000)",
     )
     parser.add_argument(
         "--fighters",
@@ -67,6 +79,14 @@ def main() -> None:
         help="Directory to save match replay JSONs (default: replays/)",
     )
     args = parser.parse_args()
+
+    if args.serve:
+        import uvicorn
+
+        from llm_smash.api.app import create_app
+
+        uvicorn.run(create_app(), host="0.0.0.0", port=args.port)
+        return
 
     # Default to mock when neither flag is specified
     use_mock = not args.live

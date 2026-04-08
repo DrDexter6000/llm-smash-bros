@@ -337,7 +337,11 @@ After completing all tasks, verify:
 
 ## §8 Execution Writeback
 
-> *This section is filled by the executor after phase completion. Do not pre-fill.*
+- Done: added `backend/src/llm_smash/api/` package with app factory, routes, schemas, and in-memory `MatchManager`; added `backend/tests/test_api.py`; added `--serve`/`--port` handling in `__main__.py`; extracted shared replay serialization helper in `cli.py` and kept replay JSON format aligned with CLI output.
+- Passed: changed-file LSP diagnostics were clean; targeted API test file passed (`7 passed`); full backend suite passed from `backend/` (`204 passed`).
+- Failed: one first-pass API replay test exposed a match ID mismatch because API record IDs and engine state match IDs diverged; fixed by seeding the engine `BattleState.match_id` from the API record before final verification.
+- Changed from plan: endpoints were mounted under `/api/*` to match the task request and current milestone expectation even though the phase doc table lists bare paths; replay endpoint returns a 409 while a match is still running rather than fabricating partial replay data.
+- Next phase start state: FastAPI app now owns a singleton `MatchManager` in `app.state`, live match state is accessible during execution via stored turn logs, and replay serialization is centralized so WebSocket streaming can reuse the same match/result contract.
 
 ---
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import os
 import sys
 import time
@@ -244,8 +245,13 @@ def save_replay(result: MatchResult, replay_dir: Path) -> Path:
     replay_dir.mkdir(parents=True, exist_ok=True)
     filename = f"match_{result.match_id[:8]}_{result.total_turns}turns.json"
     path = replay_dir / filename
-    path.write_text(result.model_dump_json(indent=2))
+    path.write_text(json.dumps(serialize_match_result(result), indent=2))
     return path
+
+
+def serialize_match_result(result: MatchResult) -> dict[str, Any]:
+    """Serialize a match result to the CLI replay JSON structure."""
+    return result.model_dump(mode="json")
 
 
 async def turn_callback(
@@ -551,11 +557,8 @@ async def run_cli_match(
     if not result.is_draw and result.winner:
         winner_client = llm_clients.get(result.winner)
         loser_slots = [sid for sid in slot_ids if sid != result.winner]
-        loser_codename = (
-            fighters_map.get(loser_slots[0]).codename
-            if loser_slots and fighters_map.get(loser_slots[0])
-            else "Unknown"
-        )
+        loser_obj = fighters_map.get(loser_slots[0]) if loser_slots else None
+        loser_codename = loser_obj.codename if loser_obj is not None else "Unknown"
         if winner_client:
             comment = await winner_client.get_post_match_comment(
                 result.winner, loser_codename, "victory"
@@ -574,10 +577,11 @@ async def run_cli_match(
             client = llm_clients.get(sid)
             if client:
                 opponent_slots = [s for s in slot_ids if s != sid]
+                opponent_obj = (
+                    fighters_map.get(opponent_slots[0]) if opponent_slots else None
+                )
                 opp_codename = (
-                    fighters_map.get(opponent_slots[0]).codename
-                    if opponent_slots and fighters_map.get(opponent_slots[0])
-                    else "Unknown"
+                    opponent_obj.codename if opponent_obj is not None else "Unknown"
                 )
                 comment = await client.get_post_match_comment(sid, opp_codename, "draw")
                 if comment:
