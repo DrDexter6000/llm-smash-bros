@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styles from './LobbyPage.module.css';
 
 interface Archetype {
@@ -6,11 +7,8 @@ interface Archetype {
   codename: string;
 }
 
-interface LobbyPageProps {
-  onFight: (matchId: string) => void;
-}
-
-export default function LobbyPage({ onFight }: LobbyPageProps) {
+export default function LobbyPage() {
+  const navigate = useNavigate();
   const [archetypes, setArchetypes] = useState<Archetype[]>([]);
   const [fighter1, setFighter1] = useState('striker');
   const [fighter2, setFighter2] = useState('guardian');
@@ -45,12 +43,33 @@ export default function LobbyPage({ onFight }: LobbyPageProps) {
       });
       if (!response.ok) throw new Error('Failed to create match');
       const data = await response.json();
-      onFight(data.match_id);
+      navigate(`/match/${data.match_id}`);
     } catch (err: any) {
       setError(err.message);
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const replay = JSON.parse(reader.result as string);
+        navigate('/replay-local', { state: { replayData: replay } });
+      } catch (err) {
+        setError('Invalid replay JSON file');
+      }
+    };
+    reader.readAsText(file);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
   };
 
   return (
@@ -112,6 +131,14 @@ export default function LobbyPage({ onFight }: LobbyPageProps) {
         >
           {loading ? 'INITIALIZING...' : 'FIGHT!'}
         </button>
+      </div>
+
+      <div 
+        className={styles.dropZone} 
+        onDrop={handleDrop} 
+        onDragOver={handleDragOver}
+      >
+        <p>📥 Drop a CLI replay JSON file here to watch it</p>
       </div>
     </div>
   );

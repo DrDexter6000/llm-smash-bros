@@ -109,3 +109,18 @@
   border: 1px solid var(--hp-low);
   background: rgba(255, 0, 0, 0.1);
 }
+
+.dropZone {
+  margin-top: 2rem;
+  border: 2px dashed var(--border-color, #666);
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted, #aaa);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.dropZone:hover {
+  border-color: var(--primary-color, #eee);
+  color: var(--primary-color, #eee);
+}

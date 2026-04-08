@@ -79,6 +79,7 @@ export interface TurnLog {
   turn_number: number;
   actions: TurnAction[];
   events: TurnEvent[];
+  state_after?: BattleState;
 }
 
 export interface TurnAction {

@@ -1,16 +1,14 @@
 import 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useMatchWebSocket } from '../hooks/useMatchWebSocket';
 import { useTurnPacer } from '../hooks/useTurnPacer';
 import MatchLayout from './MatchLayout';
 import styles from './MatchPage.module.css';
 
-interface MatchPageProps {
-  matchId: string;
-  onExit: () => void;
-}
-
-export default function MatchPage({ matchId, onExit }: MatchPageProps) {
-  const wsState = useMatchWebSocket(matchId);
+export default function MatchPage() {
+  const { matchId } = useParams<{ matchId: string }>();
+  const navigate = useNavigate();
+  const wsState = useMatchWebSocket(matchId!);
   const pacer = useTurnPacer(wsState.battleState, wsState.turns);
   
   if (wsState.status === 'connecting') {
@@ -22,7 +20,7 @@ export default function MatchPage({ matchId, onExit }: MatchPageProps) {
       <div className={styles.errorScreen}>
         <h2>Connection Error</h2>
         <p>{wsState.error}</p>
-        <button onClick={onExit} type="button">Back to Lobby</button>
+        <button onClick={() => navigate('/')} type="button">Back to Lobby</button>
       </div>
     );
   }
@@ -45,7 +43,7 @@ export default function MatchPage({ matchId, onExit }: MatchPageProps) {
           <option value={4}>4x Speed</option>
         </select>
         <button onClick={pacer.skipToEnd} type="button">⏭ Skip to End</button>
-        <button onClick={onExit} type="button">Exit Match</button>
+        <button onClick={() => navigate('/')} type="button">Exit Match</button>
       </div>
 
       <MatchLayout state={stateToRender} />
@@ -64,7 +62,7 @@ export default function MatchPage({ matchId, onExit }: MatchPageProps) {
           <h1>MATCH OVER</h1>
           <h2>{wsState.matchResult.winner ? `${wsState.matchResult.winner} WINS!` : 'DRAW!'}</h2>
           <p>Reason: {wsState.matchResult.reason}</p>
-          <button onClick={onExit} type="button">Back to Lobby</button>
+          <button onClick={() => navigate('/history')} type="button">Match History</button>
         </div>
       )}
     </div>
