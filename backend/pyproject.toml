@@ -4,14 +4,16 @@ version = "0.1.0"
 description = "LLM Smash Bros - Turn-based AI fighting game"
 requires-python = ">=3.12"
 dependencies = [
+    # Core engine
     "pydantic>=2.0",
-    "fastapi>=0.110",
-    "uvicorn[standard]>=0.27",
-    "websockets>=12.0",
     "openai>=1.0",
     "anthropic>=0.25",
     "python-dotenv>=1.0",
     "rich>=13.0",
+    # v0.2.0 web spectator layer
+    "fastapi>=0.110",       # Phase 1: REST API server
+    "uvicorn[standard]>=0.27",  # Phase 1: ASGI server
+    "websockets>=12.0",     # Phase 2: WebSocket match streaming
 ]
 
 [project.optional-dependencies]

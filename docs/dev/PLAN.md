@@ -1,7 +1,7 @@
 # LLM Smash Bros — Roadmap & Implementation Plan
 
-**Version:** 0.4.0
-**Last Updated:** 2026-04-07
+**Version:** 0.5.0
+**Last Updated:** 2026-04-08
 **Authority:** Roadmap/execution document; subordinate to `STRATEGY.md` and `PRD.md`
 **Read after:** `STRATEGY.md`, `PRD.md`
 
@@ -150,21 +150,151 @@ Phases 1→2→3→4 are strictly sequential (each builds on the prior). Phase 5
 
 ---
 
-## 5. Later Milestones (Post v0.1.0)
+## 5. v0.2.0 — Web Spectator Layer
 
-These are directional only. Do not plan or execute until v0.1.0 is complete.
+### Strategic Rationale
 
-### v0.2.0 — Web Spectator Layer
+v0.1.0 proved the engine produces compelling content. v0.2.0 proves the content is **watchable in a browser** — the format that enables sharing, embedding, streaming, and viral spread. The milestone transforms the project from a developer tool into a spectator-ready product.
 
-- FastAPI backend with WebSocket match streaming
-- Browser-based spectator UI with animated turn rhythm
-- Match history and replay browser
+### Dependency Chain
+
+```
+Phase 0 (Hygiene) → Phase 1 (API Server) → Phase 2 (WebSocket) → Phase 3 (Frontend)
+                                                                         ↓
+                                                              Phase 4 (Live Viewer)
+                                                                         ↓
+                                                              Phase 5 (Replays)
+                                                                         ↓
+                                                              Phase 6 (Integration)
+```
+
+Phases 0→1→2→3 are strictly sequential. Phase 4 depends on Phase 3 (needs visual components + WebSocket). Phase 5 depends on Phase 4 (reuses live viewer components). Phase 6 depends on Phase 5 (verifies the full system).
+
+### Phase 0 — Engineering Hygiene
+
+**Goal:** Harden the engineering foundation before building the web layer.
+
+**Key Deliverables:**
+- GitHub Actions CI pipeline
+- Root-level pytest fix
+- API retry logic with exponential backoff
+- Dependency verification
+
+**TDD Plan:** `docs/dev/0.2.0/phase-0-engineering-hygiene.md`
+
+### Phase 1 — API Server Foundation
+
+**Goal:** Turn the CLI-only engine into a headless match service via FastAPI REST endpoints.
+
+**Key Deliverables:**
+- REST endpoints: health, create match, list matches, get result, get turns, get replay, list archetypes
+- In-memory MatchManager with background match execution
+- `--serve` flag for `__main__.py`
+- API tests
+
+**TDD Plan:** `docs/dev/0.2.0/phase-1-api-server.md`
+
+### Phase 2 — WebSocket Match Streaming
+
+**Goal:** Real-time turn-by-turn streaming for live spectating.
+
+**Key Deliverables:**
+- WebSocket endpoint at `/api/matches/{id}/ws`
+- ConnectionManager with multi-spectator broadcast
+- Late-join state sync
+- WebSocket message protocol (match_start, turn, match_end, state_sync)
+
+**TDD Plan:** `docs/dev/0.2.0/phase-2-websocket-streaming.md`
+
+### Phase 3 — Frontend Scaffold & Arena Renderer
+
+**Goal:** React + TypeScript app with the core arena grid and fighter status components.
+
+**Key Deliverables:**
+- Vite + React + TypeScript scaffold in `frontend/`
+- ArenaGrid component (8x6 CSS Grid with terrain colors)
+- FighterToken and FighterPanel components
+- TypeScript types mirroring backend Pydantic models
+- Dark fighting game theme
+- CORS middleware on FastAPI
+
+**TDD Plan:** `docs/dev/0.2.0/phase-3-frontend-scaffold.md`
+
+### Phase 4 — Live Battle Viewer
+
+**Goal:** Wire WebSocket to frontend — real-time match viewing with transitions and drama.
+
+**Key Deliverables:**
+- useMatchWebSocket hook
+- Turn pacing queue (1.5s per turn)
+- LobbyPage (archetype selection, fight button)
+- MatchPage (animated turn resolution, tactical summaries, trash talk)
+- CSS transitions (movement, HP bars, damage numbers)
+- Match intro and conclusion screens
+- Playback controls (pause, speed, skip)
+
+**TDD Plan:** `docs/dev/0.2.0/phase-4-live-battle-viewer.md`
+
+### Phase 5 — Replay Browser & Match History
+
+**Goal:** Browse past matches and re-watch replays with full playback controls.
+
+**Key Deliverables:**
+- React Router for multi-page navigation
+- MatchHistoryPage (list completed matches)
+- ReplayPage (turn-by-turn replay with scrub, step, speed controls)
+- Replay file upload (drag-and-drop CLI replay JSON)
+- Shared MatchView component for live and replay modes
+
+**TDD Plan:** `docs/dev/0.2.0/phase-5-replay-browser.md`
+
+### Phase 6 — Integration, Polish & Deployment
+
+**Goal:** Prove E2E, polish edges, make it deployable.
+
+**Key Deliverables:**
+- End-to-end integration tests
+- Frontend smoke tests (Vitest)
+- Error states and loading states
+- Production build (FastAPI serves frontend static files)
+- Docker Compose single-command deployment
+- README web mode documentation
+- Visual polish pass
+- v0.2.0 exit criteria verification
+
+**TDD Plan:** `docs/dev/0.2.0/phase-6-integration-polish.md`
+
+---
+
+## 6. v0.2.0 Exit Criteria
+
+The milestone is complete when all of the following are true:
+
+- [ ] A user can start a match from a browser and watch it live
+- [ ] Turn-by-turn WebSocket streaming delivers real-time updates
+- [ ] Arena grid with terrain renders correctly in the browser
+- [ ] Fighter status (HP, energy, effects) is visible and updates live
+- [ ] Tactical summaries and trash talk are displayed each turn
+- [ ] Match history page lists completed matches
+- [ ] Replays can be loaded and played back with controls (pause, speed, scrub, step)
+- [ ] CLI replay JSON files can be uploaded and viewed in the browser
+- [ ] The full stack can be deployed with `docker-compose up`
+- [ ] All backend tests pass
+- [ ] Frontend smoke tests pass
+- [ ] The web experience is polished enough for a demo / screenshot
+
+---
+
+## 7. Later Milestones (Post v0.2.0)
+
+These are directional only. Do not plan or execute until v0.2.0 is complete.
 
 ### v0.3.0 — Expanded Arena
 
-- Additional archetypes
+- Additional archetypes (Summoner? Support?)
 - Audience interaction (viewer-triggered chaos)
 - AI commentator / TTS integration
+- Sound effects
 
 ### v0.4.0 — Tournament & Meta
 
@@ -174,9 +304,9 @@ These are directional only. Do not plan or execute until v0.1.0 is complete.
 
 ---
 
-## 6. v0.1.0 Exit Criteria
+## 8. v0.1.0 Exit Criteria (Completed)
 
-Per `PRD §10`, the milestone is complete when all of the following are true:
+All criteria met as of 2026-04-07:
 
 - [x] Fighter archetypes are generic and decoupled from LLM identity
 - [x] Terrain exists and creates meaningful positioning decisions
@@ -190,21 +320,23 @@ Per `PRD §10`, the milestone is complete when all of the following are true:
 
 ---
 
-## 7. Deferred / Deprioritized Work
+## 9. Deferred / Deprioritized Work
 
-The following must not take priority over v0.1.0 phases:
+The following must not take priority over v0.2.0 phases:
 
-- More provider/model plumbing unless it blocks live matches
-- Web GUI / animation layer
-- Broad deployment polish
-- Tournament systems
-- Audience chaos features
-- Raw chain-of-thought visualization
 - Additional archetypes beyond the initial 4
+- Audience interaction systems
+- AI commentator / TTS
+- Tournament bracket or ELO systems
+- Sound effects or music
+- Video/GIF export
+- User authentication
+- Database persistence (in-memory is sufficient for v0.2.0)
+- Cloud deployment (document how, but do not execute)
 
 ---
 
-## 8. Documentation Responsibility
+## 10. Documentation Responsibility
 
 If this file proposes work that changes product meaning or conflicts with strategy, the higher document must be updated or this file must be corrected.
 

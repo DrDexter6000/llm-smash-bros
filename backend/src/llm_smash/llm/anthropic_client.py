@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 from importlib import import_module
 import json
+import random
 import re
 import time
+from typing import Any, Awaitable, Callable
 
 _THINK_TAG_PATTERN = re.compile(r"<think.*?>.*?</think\s*>", re.DOTALL)
 
@@ -25,6 +28,10 @@ JSON_ONLY_SUFFIX = (
 class AnthropicClient(LLMAdapter):
     """Anthropic adapter that requests a single JSON turn response."""
 
+    MAX_RETRIES = 3
+    BASE_DELAY = 1.0
+    _TRANSIENT_STATUS_CODES = {429, 500, 502, 503, 504}
+
     def __init__(
         self,
         model: str = DEFAULT_MODEL,
@@ -38,6 +45,32 @@ class AnthropicClient(LLMAdapter):
         if base_url:
             kwargs["base_url"] = base_url
         self._client = AsyncAnthropic(**kwargs)
+
+    def _is_transient_api_error(self, exc: Exception) -> bool:
+        if isinstance(exc, (anthropic.APITimeoutError, anthropic.APIConnectionError)):
+            return True
+        status_code = getattr(exc, "status_code", None)
+        return (
+            isinstance(exc, anthropic.APIStatusError)
+            and status_code in self._TRANSIENT_STATUS_CODES
+        )
+
+    async def _retry_api_call(
+        self,
+        coro_factory: Callable[[], Awaitable[Any]],
+        retries: int = MAX_RETRIES,
+    ) -> Any:
+        for attempt in range(retries + 1):
+            try:
+                return await coro_factory()
+            except Exception as exc:
+                if attempt == retries or not self._is_transient_api_error(exc):
+                    raise
+
+                delay = self.BASE_DELAY * (2**attempt) + random.uniform(0.0, 0.5)
+                await asyncio.sleep(delay)
+
+        raise RuntimeError("Retry loop exited unexpectedly")
 
     async def get_post_match_comment(
         self,
@@ -67,10 +100,12 @@ class AnthropicClient(LLMAdapter):
             )
 
         try:
-            message = await self._client.messages.create(
-                model=self.model,
-                max_tokens=80,
-                messages=[{"role": "user", "content": prompt}],
+            message = await self._retry_api_call(
+                lambda: self._client.messages.create(
+                    model=self.model,
+                    max_tokens=80,
+                    messages=[{"role": "user", "content": prompt}],
+                )
             )
             text = message.content[0].text if message.content else ""
             if not text:
@@ -100,11 +135,13 @@ class AnthropicClient(LLMAdapter):
         )
 
         try:
-            message = await self._client.messages.create(
-                model=self.model,
-                max_tokens=1024,
-                system=system_prompt,
-                messages=[{"role": "user", "content": user_message}],
+            message = await self._retry_api_call(
+                lambda: self._client.messages.create(
+                    model=self.model,
+                    max_tokens=1024,
+                    system=system_prompt,
+                    messages=[{"role": "user", "content": user_message}],
+                )
             )
             latency_ms = (time.perf_counter() - started) * 1000
             return AdapterResult(

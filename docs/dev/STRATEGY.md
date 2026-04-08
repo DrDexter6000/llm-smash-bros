@@ -1,6 +1,6 @@
 # LLM Smash Bros — Strategy Snapshot
 
-**Last Updated:** 2026-04-07
+**Last Updated:** 2026-04-08
 **Authority:** Highest current-priority document in `docs/dev/`
 **Read after:** repo `README.md`
 **Read before:** `PRD.md`, `PLAN.md`
@@ -45,43 +45,57 @@ The arena must be a level playing field. Fighter archetypes (stat kits, abilitie
 
 ---
 
-## 3. Strategic Priorities (v0.1.0)
+## 3. Strategic Priorities
 
-### Priority 1 — Foundation Integrity
+### v0.1.0 — Fair Arena (Completed 2026-04-07)
 
-Fix known bugs and mechanical debt. Remove any prompt content that describes unimplemented mechanics. The codebase must be honest before new features are added.
+Delivered: honest foundation, generic archetypes, terrain, battle memory, rich CLI, balance verification. The engine produces compelling content. 189 tests green. See `PLAN §8` for exit criteria.
 
-**Locks:** `PLAN §4 Phase 1`
+### v0.2.0 — Web Spectator Layer (Current)
 
-### Priority 2 — Fair Archetype System
+The engine is ready. Now it needs an audience. The browser is the format that enables sharing, embedding, and streaming. v0.2.0 builds the web surface.
 
-Replace the current LLM-branded fighter roster with generic, balanced archetypes. Decouple "who the fighter is" from "which model is playing." This is the single most important architectural change for the project's evaluation credibility.
+### Priority 1 — Engineering Hygiene
 
-**Locks:** `PRD §5`, `PLAN §4 Phase 2`
+CI pipeline, API resilience (retry/backoff), dependency health. Infrastructure that prevents regressions as the codebase doubles in size.
 
-### Priority 3 — Spatial Strategy (Terrain)
+**Locks:** `PLAN §5 Phase 0`
 
-Add terrain types to the arena so positioning has real tactical meaning. Movement should matter. The board should create interesting choices every turn, not just be a flat grid.
+### Priority 2 — API Server
 
-**Locks:** `PRD §6`, `PLAN §4 Phase 3`
+Turn the CLI-only engine into a headless match service. REST endpoints for match lifecycle and archetype info. This is the bridge between engine and frontend.
 
-### Priority 4 — Battle Memory & Prompt Contract
+**Locks:** `PLAN §5 Phase 1`
 
-Give models access to recent turn history so they can do multi-turn reasoning. Redesign the prompt output contract to produce spectator-readable tactical summaries instead of raw inner monologue.
+### Priority 3 — Real-Time Streaming
 
-**Locks:** `PRD §7`, `PLAN §4 Phase 4`
+WebSocket endpoint for live turn-by-turn spectating. This is the architectural difference between "check results later" and "watch it happen." Multi-spectator broadcast, late-join state sync.
 
-### Priority 5 — Spectator-Ready CLI
+**Locks:** `PLAN §5 Phase 2`
 
-Migrate terminal output to `rich` for a polished, OBS-streamable terminal experience. This is the fastest path to audience validation.
+### Priority 4 — Visual Arena
 
-**Locks:** `PRD §4`, `PLAN §4 Phase 5`
+React + TypeScript frontend with the arena grid renderer, fighter panels, and dark fighting game aesthetic. The first time the game exists outside a terminal.
 
-### Priority 6 — Balance & Credibility
+**Locks:** `PLAN §5 Phase 3`
 
-Measure and tune: fumble rates, randomness-vs-skill ratio, archetype balance. Produce evidence that matches reflect model quality.
+### Priority 5 — Live Battle Experience
 
-**Locks:** `PRD §10`, `PLAN §4 Phase 6`
+Wire WebSocket to frontend. Turn pacing, CSS transitions, damage numbers, tactical summaries, trash talk display, match intro/conclusion. This is the money phase — where it goes from "works" to "fun to watch."
+
+**Locks:** `PLAN §5 Phase 4`
+
+### Priority 6 — Replay & History
+
+Match history browser, replay playback with full controls (pause, speed, scrub, step backward), replay file upload from CLI. Matches become persistent, shareable content.
+
+**Locks:** `PLAN §5 Phase 5`
+
+### Priority 7 — Ship It
+
+E2E integration tests, frontend smoke tests, error/loading states, production build, Docker deployment, README update, visual polish. The "would you show this to someone" phase.
+
+**Locks:** `PLAN §5 Phase 6`
 
 ---
 
@@ -111,15 +125,19 @@ Total prompt size (system prompt + battle state JSON + recent history) should st
 
 ---
 
-## 5. Non-Goals for v0.1.0
+## 5. Non-Goals for v0.2.0
 
-- exhaustive provider support beyond OpenAI-compatible and Anthropic-compatible
-- audience interaction systems
-- AI commentator / TTS
-- deployment polish before the core match experience is convincing
-- tournament meta systems
-- web GUI / animation layer (terminal-first for this milestone)
-- raw chain-of-thought display as a core feature
+- additional archetypes beyond the initial 4 (v0.3.0)
+- audience interaction or viewer-triggered chaos (v0.3.0)
+- AI commentator / TTS (v0.3.0)
+- sound effects or music (v0.3.0)
+- tournament bracket or ELO systems (v0.4.0)
+- video/GIF export from replays
+- user accounts or authentication
+- database persistence (in-memory store is sufficient)
+- cloud deployment execution (document how, do not do)
+- Canvas/WebGL rendering (CSS Grid is sufficient)
+- animation libraries (CSS transitions only)
 
 ---
 

@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+import asyncio
 from importlib import import_module
 import json
+import random
 import re
 import time
-from typing import Any
+from typing import Any, Awaitable, Callable
 
 _THINK_TAG_PATTERN = re.compile(r"<think.*?>.*?</think\s*>", re.DOTALL)
 
@@ -19,6 +21,10 @@ openai = import_module("openai")
 
 class OpenAIClient(LLMAdapter):
     """LLM adapter backed by the OpenAI async Python SDK."""
+
+    MAX_RETRIES = 3
+    BASE_DELAY = 1.0
+    _TRANSIENT_STATUS_CODES = {429, 500, 502, 503, 504}
 
     def __init__(
         self,
@@ -43,6 +49,32 @@ class OpenAIClient(LLMAdapter):
                 kwargs["base_url"] = self.base_url
             self.client = openai.AsyncOpenAI(**kwargs)
         return self.client
+
+    def _is_transient_api_error(self, exc: Exception) -> bool:
+        if isinstance(exc, (openai.APITimeoutError, openai.APIConnectionError)):
+            return True
+        status_code = getattr(exc, "status_code", None)
+        return (
+            isinstance(exc, openai.APIStatusError)
+            and status_code in self._TRANSIENT_STATUS_CODES
+        )
+
+    async def _retry_api_call(
+        self,
+        coro_factory: Callable[[], Awaitable[Any]],
+        retries: int = MAX_RETRIES,
+    ) -> Any:
+        for attempt in range(retries + 1):
+            try:
+                return await coro_factory()
+            except Exception as exc:
+                if attempt == retries or not self._is_transient_api_error(exc):
+                    raise
+
+                delay = self.BASE_DELAY * (2**attempt) + random.uniform(0.0, 0.5)
+                await asyncio.sleep(delay)
+
+        raise RuntimeError("Retry loop exited unexpectedly")
 
     async def get_post_match_comment(
         self,
@@ -72,10 +104,12 @@ class OpenAIClient(LLMAdapter):
             )
 
         try:
-            completion = await self._get_client().chat.completions.create(
-                model=self.model,
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=80,
+            completion = await self._retry_api_call(
+                lambda: self._get_client().chat.completions.create(
+                    model=self.model,
+                    messages=[{"role": "user", "content": prompt}],
+                    max_tokens=80,
+                )
             )
             content = completion.choices[0].message.content
             if not content:
@@ -105,10 +139,12 @@ class OpenAIClient(LLMAdapter):
         ]
 
         try:
-            completion = await self._get_client().chat.completions.create(
-                model=self.model,
-                messages=messages,
-                response_format={"type": "json_object"},
+            completion = await self._retry_api_call(
+                lambda: self._get_client().chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    response_format={"type": "json_object"},
+                )
             )
             latency_ms = (time.perf_counter() - started) * 1000
             return AdapterResult(
