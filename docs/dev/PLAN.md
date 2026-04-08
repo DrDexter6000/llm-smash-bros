@@ -270,18 +270,18 @@ Phases 0→1→2→3 are strictly sequential. Phase 4 depends on Phase 3 (needs 
 
 The milestone is complete when all of the following are true:
 
-- [ ] A user can start a match from a browser and watch it live
-- [ ] Turn-by-turn WebSocket streaming delivers real-time updates
-- [ ] Arena grid with terrain renders correctly in the browser
-- [ ] Fighter status (HP, energy, effects) is visible and updates live
-- [ ] Tactical summaries and trash talk are displayed each turn
-- [ ] Match history page lists completed matches
-- [ ] Replays can be loaded and played back with controls (pause, speed, scrub, step)
-- [ ] CLI replay JSON files can be uploaded and viewed in the browser
-- [ ] The full stack can be deployed with `docker-compose up`
-- [ ] All backend tests pass
-- [ ] Frontend smoke tests pass
-- [ ] The web experience is polished enough for a demo / screenshot
+- [x] A user can start a match from a browser and watch it live
+- [x] Turn-by-turn WebSocket streaming delivers real-time updates
+- [x] Arena grid with terrain renders correctly in the browser
+- [x] Fighter status (HP, energy, effects) is visible and updates live
+- [x] Tactical summaries and trash talk are displayed each turn
+- [x] Match history page lists completed matches
+- [x] Replays can be loaded and played back with controls (pause, speed, scrub, step)
+- [x] CLI replay JSON files can be uploaded and viewed in the browser
+- [x] The full stack can be deployed with `docker-compose up`
+- [x] All backend tests pass
+- [x] Frontend smoke tests pass
+- [x] The web experience is polished enough for a demo / screenshot
 
 ---
 
