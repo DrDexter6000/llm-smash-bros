@@ -1,0 +1,29 @@
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent-red: #f85149;
+  --accent-green: #3fb950;
+  --accent-blue: #58a6ff;
+  --accent-yellow: #d29922;
+  --accent-purple: #bc8cff;
+
+  --hp-high: #3fb950;
+  --hp-mid: #d29922;
+  --hp-low: #f85149;
+  --energy-bar: #58a6ff;
+
+  --terrain-open: #1a1a2e;
+  --terrain-high-ground: #2d4a3e;
+  --terrain-cover: #3a2a1a;
+  --terrain-rift: #0a0a0a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}

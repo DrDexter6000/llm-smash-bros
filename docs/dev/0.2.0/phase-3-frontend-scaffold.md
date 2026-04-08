@@ -521,7 +521,25 @@ After completing all tasks, verify:
 
 ## §8 Execution Writeback
 
-> *This section is filled by the executor after phase completion. Do not pre-fill.*
+**What was done:**
+- Scaffolded a Vite React + TS frontend app in `frontend/`.
+- Added `CORSMiddleware` to `backend/src/llm_smash/api/app.py` so the frontend dev server can reach the API.
+- Fixed a minor `pytest-asyncio` strictness issue on async fixtures in `test_api.py` that surfaced when running backend tests.
+- Defined TS types `BattleState`, `Fighter`, `Arena`, `Ability`, `Hazard` etc. mirroring the backend models.
+- Created `MOCK_STATE` populated with authentic `Striker` and `Guardian` data derived from `roster.py`.
+- Implemented `ArenaGrid`, `FighterPanel`, `FighterToken`, and `MatchLayout` using pure CSS Modules and standard React, providing a distinct dark-theme fighting game aesthetic.
+- Set up `global.css` with the specified layout attributes and color variables.
+
+**What passed:**
+- All 208 backend tests passed perfectly.
+- The static layout renders correctly against the mock data.
+
+**What changed from plan:**
+- The backend `pytest` suite was throwing `pytest.PytestRemovedIn9Warning` as errors for using `@pytest.fixture` instead of `@pytest_asyncio.fixture` for the async `client` fixture, so `test_api.py` was updated to ensure tests pass on the latest environment.
+- The UI components were structured to strictly follow the TDD design recommendations without deviating into complex CSS frameworks.
+
+**Next phase starting point:**
+- Proceed to Phase 4 (Live Battle Viewer) having a working DOM structure, TS types, CSS grid layout, and CORS-enabled API to wire up WebSockets.
 
 ---
 

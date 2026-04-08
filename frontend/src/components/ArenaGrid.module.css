@@ -1,0 +1,67 @@
+.arenaGrid {
+  display: grid;
+  gap: 2px;
+  background-color: var(--bg-tertiary);
+  border: 4px solid var(--bg-tertiary);
+  border-radius: 8px;
+  overflow: hidden;
+  width: 512px;
+  height: 384px;
+}
+
+.cell {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.terrain_open {
+  background-color: var(--terrain-open);
+  border: 1px solid #16213e;
+}
+
+.terrain_high_ground {
+  background-color: var(--terrain-high-ground);
+  border: 1px solid #4a7c59;
+}
+
+.terrain_cover {
+  background-color: var(--terrain-cover);
+  border: 1px solid #6b4c2a;
+}
+
+.terrain_rift {
+  background-color: var(--terrain-rift);
+  border: 1px solid #8b0000;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(139, 0, 0, 0.2) 10px,
+    rgba(139, 0, 0, 0.2) 20px
+  );
+}
+
+.hazardIndicator {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 10px;
+  color: var(--accent-red);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2px;
+  border-radius: 4px;
+  z-index: 1;
+}
+
+.hazardIcon {
+  font-size: 14px;
+}
+
+.hazardTurns {
+  font-weight: bold;
+}

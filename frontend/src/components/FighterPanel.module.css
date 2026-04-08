@@ -1,0 +1,150 @@
+.fighterPanel {
+  width: 320px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--bg-tertiary);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--bg-tertiary);
+  padding-bottom: 12px;
+}
+
+.headerIcon {
+  font-size: 32px;
+  line-height: 1;
+}
+
+.headerText {
+  display: flex;
+  flex-direction: column;
+}
+
+.archetype {
+  font-weight: bold;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.modelName {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.statLabel {
+  width: 24px;
+  color: var(--text-secondary);
+}
+
+.barTrack {
+  flex: 1;
+  height: 12px;
+  background-color: var(--bg-tertiary);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.statValue {
+  width: 60px;
+  text-align: right;
+  font-family: monospace;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.statusEffects {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  border-radius: 4px;
+  background-color: var(--bg-tertiary);
+  border-left: 4px solid var(--text-secondary);
+}
+
+.status_damage_boost { border-left-color: var(--accent-yellow); }
+.status_damage_reduction { border-left-color: var(--accent-blue); }
+.status_stun { border-left-color: var(--accent-purple); }
+.status_slow { border-left-color: var(--text-secondary); }
+.status_default { border-left-color: var(--text-secondary); }
+
+.abilities {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.abilityList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.abilityItem {
+  background-color: var(--bg-tertiary);
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.abilityCooldown {
+  opacity: 0.5;
+}
+
+.abilityHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.abilityName {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.abilityStatus {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.abilityDesc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}

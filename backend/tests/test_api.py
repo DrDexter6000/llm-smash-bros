@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
+import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -29,7 +30,7 @@ def app():
     return create_app()
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def client(app):
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as async_client:
