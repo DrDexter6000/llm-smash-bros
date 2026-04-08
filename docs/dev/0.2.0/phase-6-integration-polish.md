@@ -1,7 +1,7 @@
 # Phase 6 — Integration, Polish & Deployment
 
 **Milestone:** v0.2.0
-**Status:** Not Started
+**Status:** Completed
 **Authority:** `PLAN §4 Phase 6`
 **Prerequisites:** Phase 5 complete (all pages working, replay browser, shared components)
 
@@ -387,7 +387,13 @@ After completing all tasks, verify:
 
 ## §8 Execution Writeback
 
-> *This section is filled by the executor after phase completion. Do not pre-fill.*
+### Execution Brief — 2026-04-08
+
+- Completed the requested Phase 6 integration slice: added `backend/tests/test_e2e.py` for full lifecycle, concurrent match, archetype matchup, and replay-vs-WebSocket verification using `AsyncClient` + `ASGITransport` for REST and `TestClient` for WebSocket coverage.
+- Updated `backend/src/llm_smash/api/app.py` to serve `frontend/dist` in production only after API route registration so `/api/*` keeps priority while `/` becomes the frontend catch-all.
+- Added root `Dockerfile` and `docker-compose.yml` for single-command packaging, and updated `README.md` with a Web Mode quick start plus manual dev/prod-style local runs while preserving the existing CLI guidance.
+- Verification passed for the requested scope: backend pytest suite green and frontend Vite production build green.
+- Scope note: the broader phase plan also listed frontend smoke tests, explicit loading/error states, and additional visual polish. Those items were not executed here because the implementation brief for this run explicitly narrowed Phase 6 to integration tests, production serving, deployment packaging, README updates, and writeback only.
 
 ---
 

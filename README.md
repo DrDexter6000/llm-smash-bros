@@ -78,14 +78,14 @@ The long-term goal is to build a game-shaped arena where pieces of LLM ability c
 
 ## 📊 Current state
 
-Right now, the real thing that exists is the **Python CLI battle engine** 🐍
+Right now, the project has a **Python battle engine** plus a **browser spectator layer** 🐍🌐
 
 - 🧪 **Mock mode** exists for cheap local matches and testing
 - 🌐 **Live mode** uses real LLM APIs
-- 💻 The current interface is terminal-first
-- 🎨 The future spectator layer (GUI / animation / streaming theatrics) is still in development
+- 💻 **CLI mode** is still the fastest way to run direct matches
+- 🖥️ **Web mode** now supports lobby, live spectating, history, and replay viewing
 
-So yes: the current version is closer to "AI fight club in a command line" than "full esports broadcast" 📺
+So yes: the current version is now somewhere between "AI fight club in a command line" and "tiny browser esports broadcast" 📺
 
 That is fine. Rome was not built in a day, and neither was a tasteful multimodal cage match 🏛️
 
@@ -180,6 +180,44 @@ Copy `backend/.env.example` to `backend/.env`, fill in your API keys, then:
 --timeout N       Per-turn timeout in seconds
 --replay-dir DIR  Directory for match replay JSON files (default: replays/)
 ```
+
+### Web Mode
+
+#### Quick start
+
+```bash
+docker-compose up --build
+# Open http://localhost:8000
+```
+
+#### Manual dev mode
+
+```bash
+# Terminal 1: backend API + WebSocket server
+cd backend
+uv run python -m llm_smash --serve
+
+# Terminal 2: frontend dev server
+cd frontend
+npm install
+npm run dev
+# Open http://localhost:5173
+```
+
+#### Manual production-style local run
+
+```bash
+cd frontend
+npm install
+npm run build
+
+cd ../backend
+uv sync
+uv run python -m llm_smash --serve
+# Open http://localhost:8000
+```
+
+For CLI-only usage, see the match setup, live battle, and CLI options sections above.
 
 ---
 
